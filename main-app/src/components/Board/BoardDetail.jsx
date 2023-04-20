@@ -31,13 +31,13 @@ const Container = styled.div`
   height: 100vh;
 `;
 const FormContainer = styled.div`
-display: flex;
-flex-direction: column;
-background-color: #f5fffa;
-padding: 2rem;
-border-radius: 5px;
-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-height: 600px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5fffa;
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  height: 600px;
 
   h1.title {
     width: 200px;
@@ -65,17 +65,17 @@ height: 600px;
     flex-direction: column;
   }
   p.nickname {
-    width:45px;
+    width: 45px;
     background-color: green;
     color: white;
     border: none;
     border-radius: 4px;
     padding: 8px 16px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
 `;
 const Section = styled.div`
   display: flex;
-  }
   p.views {
     padding: 0 50px 0 0;
     margin-right: 25px;
