@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 function BoardForm({ onAdd }) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   // const [image, setImage] = useState("");
   const navigate = useNavigate();
 
@@ -12,10 +12,10 @@ function BoardForm({ onAdd }) {
     console.log(e);
     e.preventDefault();
     onAdd(title, content);
-    setTitle("");
-    setContent("");
+    setTitle('');
+    setContent('');
     // setImage("");
-    navigate("/BoardPage");
+    navigate('/BoardPage');
   };
 
   return (
@@ -23,18 +23,27 @@ function BoardForm({ onAdd }) {
       <FormContainer>
         <form onSubmit={handleSubmit}>
           <div>
-            <label className="title">제목</label>
-            <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <label className='title'>제목</label>
+            <input
+              type='text'
+              id='title'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
           <div>
-            <label className="content">내용:</label>
-            <input id="content" value={content} onChange={(e) => setContent(e.target.value)} />
+            <label className='content'>내용:</label>
+            <input
+              id='content'
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
           </div>
           {/* <div>
         <label>사진첨부</label>
         <input id="image" value={image} onChange={(e) => setContent(e.target.value)} />
       </div> */}
-          <button type="submit">완료</button>
+          <button type='submit'>완료</button>
         </form>
       </FormContainer>
     </Container>
@@ -86,7 +95,7 @@ const FormContainer = styled.div`
     }
   }
 
-  button[type="submit"] {
+  button[type='submit'] {
     padding: 0.5rem 1rem;
     background-color: green;
     color: white;

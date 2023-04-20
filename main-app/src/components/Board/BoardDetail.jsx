@@ -1,6 +1,6 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-import styled from "styled-components";
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 
 const BoardDetail = () => {
   const location = useLocation();
@@ -8,13 +8,13 @@ const BoardDetail = () => {
   return (
     <Container>
       <FormContainer>
-        <h1 className="title">{title}</h1>
-        <h2 className="content">{content}</h2>
-        <h2 className="image">{image}</h2>
-        <p className="nickname">{nickname}</p>
+        <h1 className='title'>{title}</h1>
+        <h2 className='content'>{content}</h2>
+        <h2 className='image'>{image}</h2>
+        <p className='nickname'>{nickname}</p>
         <Section>
-          <p className="views">{views}</p>
-          <p className="like">{like}</p>
+          <p className='views'>{views}</p>
+          <p className='like'>{like}</p>
         </Section>
       </FormContainer>
     </Container>

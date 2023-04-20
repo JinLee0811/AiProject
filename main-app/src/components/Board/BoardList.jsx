@@ -1,13 +1,29 @@
-import { React, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import BoardForm from "./BoardForm";
-import styled from "styled-components";
+import { React, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import BoardForm from './BoardForm';
+import styled from 'styled-components';
 
 function BoardList() {
   let navigate = useNavigate();
   const [posts, setPosts] = useState([
-    { id: 1, title: "제목1", content: "내용1", like: "1하트", nickname: "꽃좋아", image: "사진", views: "1" },
-    { id: 2, title: "제목2", content: "내용2", like: "2하트", nickname: "꽃싫어", image: "사진", views: "2" },
+    {
+      id: 1,
+      title: '제목1',
+      content: '내용1',
+      like: '1하트',
+      nickname: '꽃좋아',
+      image: '사진',
+      views: '1',
+    },
+    {
+      id: 2,
+      title: '제목2',
+      content: '내용2',
+      like: '2하트',
+      nickname: '꽃싫어',
+      image: '사진',
+      views: '2',
+    },
   ]);
 
   const addPost = (title, content) => {
@@ -16,7 +32,7 @@ function BoardList() {
   };
   function detailClick(id) {
     const post = posts.find((post) => post.id === id);
-    navigate("/BoardDetail", {
+    navigate('/BoardDetail', {
       state: {
         title: post.title,
         content: post.content,
@@ -28,14 +44,14 @@ function BoardList() {
     });
   }
   function formClick() {
-    navigate("/BoardForm");
+    navigate('/BoardForm');
   }
   return (
     <>
       <Container>
         <h1>게시판</h1>
         {/* <BoardForm onAdd={addPost} /> */}
-        <button className="write" onClick={formClick}>
+        <button className='write' onClick={formClick}>
           작성하기
         </button>
         <FormContainer>
@@ -44,7 +60,7 @@ function BoardList() {
               <li key={post.id}>
                 <h2>{post.title}</h2>
                 <p>{post.content}</p>
-                <button className="Detail" onClick={() => detailClick(post.id)}>
+                <button className='Detail' onClick={() => detailClick(post.id)}>
                   자세히 보기
                 </button>
               </li>

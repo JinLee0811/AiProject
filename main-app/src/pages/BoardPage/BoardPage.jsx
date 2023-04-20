@@ -1,7 +1,7 @@
 import React from 'react';
+import BoardList from '../../components/Board/BoardList';
 
 const BoardPage = () => {
-  return <div>boardpage</div>;
+  return <BoardList />;
 };
-
 export default BoardPage;

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
-import { MainPage, BoardPage } from './pages';
+import { MainPage, BoardPage, BoardDetailPage, BoardFormPage } from './pages';
 
 const router = createBrowserRouter([
   {
@@ -16,6 +16,14 @@ const router = createBrowserRouter([
       {
         path: '/board',
         element: <BoardPage />,
+      },
+      {
+        path: '/boardDetail',
+        element: <BoardDetailPage />,
+      },
+      {
+        path: '/boardForm',
+        element: <BoardFormPage />,
       },
     ],
   },
