@@ -12,6 +12,8 @@ import {
   LoginPage,
   SignUpPage,
   MyPage,
+  NutritionPage,
+  NutritionPage1
 } from './pages';
 
 const router = createBrowserRouter([
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
         element: <BoardDetailPage />,
       },
       {
+        path: '/nutrition',
+        element: <NutritionPage />,
+      },
+      {
+        path: '/nutrition1',
+        element: <NutritionPage1 />,
+      },
+      { 
         path: '/boardForm',
         element: <BoardFormPage />,
       },
@@ -43,7 +53,7 @@ const router = createBrowserRouter([
         path: '/login',
         element: <LoginPage />,
       },
-      {
+      { 
         path: '/signup',
         element: <SignUpPage />,
       },

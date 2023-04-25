@@ -30,7 +30,9 @@ const Navbar = () => {
           <StyledLink to='/service'>
             <MenuItem1>진단하기</MenuItem1>
           </StyledLink>
-          <MenuItem>영양제 사전</MenuItem>
+          <StyledLink to='/nutrition'>
+            <MenuItem>영양제 사전</MenuItem>
+          </StyledLink>
           <MenuItem>작물아비</MenuItem>
         </Menu>
         <Menu>

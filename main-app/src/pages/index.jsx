@@ -9,6 +9,8 @@ import MyPage from './MyPage/MyPage';
 import MyPageData from './MyPage/MyPageData';
 import MyPageList from './MyPage/MyPageList';
 import MyPageSignOut from './MyPage/MyPageSignOut';
+import NutritionPage from './ServicePage/NutritionPage';
+import NutritionPage1 from './ServicePage/NutritionSubPage/NutritionPage1';
 export {
   MainPage,
   BoardPage,
@@ -21,4 +23,6 @@ export {
   MyPageData,
   MyPageList,
   MyPageSignOut,
+  NutritionPage,
+  NutritionPage1,
 };
