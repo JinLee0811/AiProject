@@ -9,6 +9,9 @@ import {
   ServicePage,
   BoardDetailPage,
   BoardFormPage,
+  LoginPage,
+  SignUpPage,
+  MyPage,
 } from './pages';
 
 const router = createBrowserRouter([
@@ -27,12 +30,26 @@ const router = createBrowserRouter([
       {
         path: '/service',
         element: <ServicePage />,
+      },
+      {
         path: '/boardDetail',
         element: <BoardDetailPage />,
       },
       {
         path: '/boardForm',
         element: <BoardFormPage />,
+      },
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
+      {
+        path: '/signup',
+        element: <SignUpPage />,
+      },
+      {
+        path: '/mypage',
+        element: <MyPage />,
       },
     ],
   },
