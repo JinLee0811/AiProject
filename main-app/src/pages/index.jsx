@@ -11,12 +11,17 @@ import MyPageList from './MyPage/MyPageList';
 import MyPageSignOut from './MyPage/MyPageSignOut';
 import NutritionPage from './ServicePage/NutritionPage';
 import NutritionPage1 from './ServicePage/NutritionSubPage/NutritionPage1';
+import ImageUpload from './ServicePage/ImageUpload';
+import AdminPage from './AdminPage/AdminPage';
+import BoardManage from './AdminPage/BoardManage';
+import UserManage from './AdminPage/UserManage';
+import NutritionManage from './AdminPage/NutritionManage';
+import AddNutrition from './AdminPage/AddNutrition';
+
 export {
   MainPage,
   BoardPage,
   ServicePage,
-  BoardDetailPage,
-  BoardFormPage,
   LoginPage,
   SignUpPage,
   MyPage,
@@ -25,4 +30,12 @@ export {
   MyPageSignOut,
   NutritionPage,
   NutritionPage1,
+  ImageUpload,
+  BoardDetailPage,
+  BoardFormPage,
+  AdminPage,
+  BoardManage,
+  UserManage,
+  NutritionManage,
+  AddNutrition,
 };

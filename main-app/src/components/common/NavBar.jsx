@@ -30,14 +30,26 @@ const Navbar = () => {
           <StyledLink to='/service'>
             <MenuItem1>진단하기</MenuItem1>
           </StyledLink>
-          <StyledLink to='/nutrition'>
-            <MenuItem>영양제 사전</MenuItem>
+          <StyledLink to='/board'>
+            <MenuItem>크롭토크</MenuItem>
           </StyledLink>
-          <MenuItem>작물아비</MenuItem>
+          <StyledLink to='/nutrition'>
+            <MenuItem>크롭영양제</MenuItem>
+          </StyledLink>
+          <StyledLink to='/admin/user'>
+            <MenuItem>admin</MenuItem>
+          </StyledLink>
         </Menu>
         <Menu>
-          <MenuItem>로그인</MenuItem>
-          <MenuItem>회원가입</MenuItem>
+          <StyledLink to='/mypage'>
+            <MenuItem>마이페이지</MenuItem>
+          </StyledLink>
+          <StyledLink to='/login'>
+            <MenuItem>로그인</MenuItem>
+          </StyledLink>
+          <StyledLink to='/signup'>
+            <MenuItem>회원가입</MenuItem>
+          </StyledLink>
         </Menu>
       </Nav>
       <NavWrite>
@@ -62,7 +74,7 @@ const LogoImage = styled.img`
 `;
 
 const Nav = styled.nav`
-  height: 50px;
+  height: 3rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -95,7 +107,7 @@ const NavWrite = styled.div`
   font-weight: 700;
   background-color: #759683;
   padding: 10px;
-  margin-bottom: 50px;
+  margin-bottom: 0px;
   border-bottom: 1px solid #e5e8e7;
   font-size: 17px;
   transition: color 0.5s ease-in-out;
@@ -123,7 +135,7 @@ const Menu = styled.ul`
 const MenuItem1 = styled.li`
   margin-right: 20px;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 900;
   line-height: 24px;
   color: #4ba888;
   cursor: pointer;

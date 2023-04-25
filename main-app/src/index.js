@@ -13,7 +13,13 @@ import {
   SignUpPage,
   MyPage,
   NutritionPage,
-  NutritionPage1
+  NutritionPage1,
+  ImageUpload,
+  AdminPage,
+  BoardManage,
+  UserManage,
+  NutritionManage,
+  AddNutrition,
 } from './pages';
 
 const router = createBrowserRouter([
@@ -26,12 +32,28 @@ const router = createBrowserRouter([
         element: <MainPage />,
       },
       {
+        path: '/login',
+        element: <LoginPage />,
+      },
+      {
+        path: '/signup',
+        element: <SignUpPage />,
+      },
+      {
+        path: '/mypage',
+        element: <MyPage />,
+      },
+      {
         path: '/board',
         element: <BoardPage />,
       },
       {
         path: '/service',
         element: <ServicePage />,
+      },
+      {
+        path: '/service/upload',
+        element: <ImageUpload />,
       },
       {
         path: '/boardDetail',
@@ -45,21 +67,31 @@ const router = createBrowserRouter([
         path: '/nutrition1',
         element: <NutritionPage1 />,
       },
-      { 
+      {
         path: '/boardForm',
         element: <BoardFormPage />,
       },
       {
-        path: '/login',
-        element: <LoginPage />,
-      },
-      { 
-        path: '/signup',
-        element: <SignUpPage />,
-      },
-      {
-        path: '/mypage',
-        element: <MyPage />,
+        path: '/admin',
+        element: <AdminPage />,
+        children: [
+          {
+            path: 'user',
+            element: <UserManage />,
+          },
+          {
+            path: 'Board',
+            element: <BoardManage />,
+          },
+          {
+            path: 'Nutrition',
+            element: <NutritionManage />,
+          },
+          {
+            path: 'AddNutrition',
+            element: <AddNutrition />,
+          },
+        ],
       },
     ],
   },
