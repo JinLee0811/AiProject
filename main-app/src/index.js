@@ -9,6 +9,12 @@ import {
   ServicePage,
   BoardDetailPage,
   BoardFormPage,
+  ImageUpload,
+  AdminPage,
+  BoardManage,
+  UserManage,
+  NutritionManage,
+  AddNutrition,
 } from './pages';
 
 const router = createBrowserRouter([
@@ -29,12 +35,38 @@ const router = createBrowserRouter([
         element: <ServicePage />,
       },
       {
+        path: '/service/upload',
+        element: <ImageUpload />,
+      },
+      {
         path: '/boardDetail',
         element: <BoardDetailPage />,
       },
       {
         path: '/boardForm',
         element: <BoardFormPage />,
+      },
+      {
+        path: '/admin',
+        element: <AdminPage />,
+        children: [
+          {
+            path: 'user',
+            element: <UserManage />,
+          },
+          {
+            path: 'Board',
+            element: <BoardManage />,
+          },
+          {
+            path: 'Nutrition',
+            element: <NutritionManage />,
+          },
+          {
+            path: 'AddNutrition',
+            element: <AddNutrition />,
+          },
+        ],
       },
     ],
   },
