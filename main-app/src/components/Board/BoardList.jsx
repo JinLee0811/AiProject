@@ -1,36 +1,30 @@
-import { React, useState } from 'react';
+import { React, useEffect } from 'react';
+import { atom, useAtom } from 'jotai';
 import { useNavigate } from 'react-router-dom';
-import BoardForm from './BoardForm';
+// import BoardForm from './BoardForm';
 import styled from 'styled-components';
+import axios from 'axios';
 
+const postAtom = atom([]);
 function BoardList() {
   let navigate = useNavigate();
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: '제목1',
-      content: '내용1',
-      like: '1하트',
-      nickname: '꽃좋아',
-      image: '사진',
-      views: '1',
-    },
-    {
-      id: 2,
-      title: '제목2',
-      content: '내용2',
-      like: '2하트',
-      nickname: '꽃싫어',
-      image: '사진',
-      views: '2',
-    },
-  ]);
+  const [posts, setPosts] = useAtom(postAtom);
+  useEffect(() => {
+    axios
+      .get('/BoardList.json')
+      .then((response) => {
+        setPosts(response.data); //postAtom에 업데이트
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [setPosts]);
 
-  const addPost = (title, content) => {
-    const newPost = { id: posts.length + 1, title, content };
-    setPosts([...posts, newPost]);
-  };
   function detailClick(id) {
+    // axios   => axios사용시 이런식으로?
+    // .get(`/BoardList/${id}.json`)
+    // .then((response) => {
+    //   navigate('/BoardDetail'
     const post = posts.find((post) => post.id === id);
     navigate('/BoardDetail', {
       state: {
@@ -40,6 +34,7 @@ function BoardList() {
         nickname: post.nickname,
         image: post.image,
         views: post.views,
+        commentCount: post.commentCount,
       },
     });
   }
@@ -49,7 +44,7 @@ function BoardList() {
   return (
     <>
       <Container>
-        <h1>게시판</h1>
+        <h1>성장일지</h1>
         {/* <BoardForm onAdd={addPost} /> */}
         <button className='write' onClick={formClick}>
           작성하기
