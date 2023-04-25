@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "제목1",
+    "content": "내용1",
+    "like": "1하트",
+    "nickname": "꽃좋아",
+    "image": "사진",
+    "views": "1",
+    "commentCount": "1"
+  },
+  {
+    "id": 2,
+    "title": "제목2",
+    "content": "내용2",
+    "like": "2하트",
+    "nickname": "꽃싫어",
+    "image": "사진",
+    "views": "2",
+    "commentCount": "2"
+  }
+]
