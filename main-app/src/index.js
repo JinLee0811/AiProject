@@ -9,6 +9,8 @@ import {
   ServicePage,
   BoardDetailPage,
   BoardFormPage,
+  NutritionPage,
+  NutritionPage1
 } from './pages';
 
 const router = createBrowserRouter([
@@ -33,8 +35,16 @@ const router = createBrowserRouter([
         element: <BoardDetailPage />,
       },
       {
+        path: '/nutrition',
+        element: <NutritionPage />,
+      },
+      {
         path: '/boardForm',
         element: <BoardFormPage />,
+      },
+      {
+        path: '/nutrition1',
+        element: <NutritionPage1 />,
       },
     ],
   },

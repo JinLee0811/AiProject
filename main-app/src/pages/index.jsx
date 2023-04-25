@@ -3,4 +3,6 @@ import BoardPage from './BoardPage/BoardPage';
 import ServicePage from './ServicePage/ServicePage';
 import BoardDetailPage from './BoardPage/BoardDetailPage';
 import BoardFormPage from './BoardPage/BoardFormPage';
-export { MainPage, BoardPage, ServicePage, BoardDetailPage, BoardFormPage };
+import NutritionPage from './ServicePage/NutritionPage';
+import NutritionPage1 from './ServicePage/NutritionSubPage/NutritionPage1';
+export { MainPage, BoardPage, ServicePage, BoardDetailPage, BoardFormPage, NutritionPage, NutritionPage1 };
