@@ -86,6 +86,9 @@ const Section = styled.div`
   align-items: center;
   opacity: ${(props) => (props.inView ? '1' : '0')};
   transition: opacity 0.9s ease-in-out;
+  @media (max-width: 968px) {
+    flex-direction: column;
+  }
 `;
 const ContentsBox = styled.div`
   display: flex;
@@ -104,9 +107,23 @@ const Contents = styled.p`
 `;
 
 const Image = styled.img`
+  display: flex;
   width: 500px;
   height: 500px;
   border-radius: 22px;
+  @media (max-width: 968px) {
+    width: 350px;
+    height: 350px;
+  }
+`;
+const Container = styled.section`
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  margin-top: 2rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 export default MainPage;

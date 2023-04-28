@@ -66,6 +66,7 @@ const MainContainer = styled.section`
   flex: 1;
   padding: 40px;
   font-size: 1.2rem;
+  
 `;
 
 const Aside = styled.aside`

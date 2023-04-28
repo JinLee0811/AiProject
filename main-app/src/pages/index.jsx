@@ -1,6 +1,7 @@
 import MainPage from './MainPage/MainPage';
 import BoardPage from './BoardPage/BoardPage';
-import ServicePage from './ServicePage/ServicePage';
+import ServicePage from './MainServicePage/ServicePage';
+import ImageUpload from './MainServicePage/ImageUpload';
 import BoardDetailPage from './BoardPage/BoardDetailPage';
 import BoardFormPage from './BoardPage/BoardFormPage';
 import LoginPage from './LoginPage/Login';
@@ -11,7 +12,6 @@ import MyPageList from './MyPage/MyPageList';
 import MyPageSignOut from './MyPage/MyPageSignOut';
 import NutritionPage from './ServicePage/NutritionPage';
 import NutritionPage1 from './ServicePage/NutritionSubPage/NutritionPage1';
-import ImageUpload from './ServicePage/ImageUpload';
 import AdminPage from './AdminPage/AdminPage';
 import BoardManage from './AdminPage/BoardManage';
 import UserManage from './AdminPage/UserManage';

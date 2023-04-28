@@ -2,32 +2,38 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import Dropzone from 'react-dropzone';
 import { atom, useAtom } from 'jotai';
+import useApiRequest from '../../API/useApi';
+import axios from 'axios';
 
 const fileAtom = atom(null);
 const resultAtom = atom('진단 내용이 없습니다');
 
+const uploadFile = async (formData) => {
+  const response = await axios.post('/api/upload', formData);
+  return response.data.result;
+};
+
 const ImageUpload = () => {
   const [file, setFile] = useAtom(fileAtom);
   const [result, setResult] = useAtom(resultAtom);
+  const [error, setError] = useState(null);
 
-  const handleDrop = (acceptedFiles) => {
-    setFile(acceptedFiles[0]);
-  };
+  const { isLoading: isApiRequestLoading, sendRequest } = useApiRequest();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await fetch('', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await response.json();
-      setResult(data.result);
+      const result = await sendRequest('/api/upload', 'post', formData);
+      setResult(result);
     } catch (error) {
-      console.log(error);
+      setError(error);
     }
+  };
+
+  const handleDrop = (acceptedFiles) => {
+    setFile(acceptedFiles[0]);
   };
 
   return (
@@ -51,18 +57,21 @@ const ImageUpload = () => {
                 </FileUploader>
               )}
             </Dropzone>
-            <Button onClick={handleSubmit}>진단하기</Button>
+            <Button onClick={handleSubmit} disabled={isApiRequestLoading}>
+              {isApiRequestLoading ? '진단 중...' : '진단하기'}
+            </Button>
           </form>
         </LeftBox>
         <Arrow>➡</Arrow>
         <RightBox>
           <Title>진단을 확인하세요.</Title>
           <ResultBox>
-            <ResultTitle>풀잎사귀병</ResultTitle>
+            <ResultTitle>{result.title}</ResultTitle>
             <Result>
               <ul>
-                <li>1. 감염된 식물 부분은 즉시 제거하고 폐기해야 합니다.</li>
-                <li>2. 식물이 충분한 공기 순환을 받도록 하세요.</li>
+                {result &&
+                  result.items &&
+                  result.items.map((item) => <li key={item}>{item}</li>)}
               </ul>
             </Result>
           </ResultBox>
@@ -71,6 +80,7 @@ const ImageUpload = () => {
     </>
   );
 };
+
 const LeftBox = styled.div`
   display: flex;
   align-items: center;

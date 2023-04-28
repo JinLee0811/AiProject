@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { atom, useAtom } from 'jotai';
+import useApiRequest from '../../API/useApi';
+import axios from 'axios';
 
 const productNameAtom = atom('');
 const shortDescriptionAtom = atom('');
@@ -13,9 +15,22 @@ function ProductForm() {
   const [longDescription, setLongDescription] = useAtom(longDescriptionAtom);
   const [image, setImage] = useAtom(imageAtom);
 
-  const handleSubmit = (event) => {
+  const { isLoading, sendRequest } = useApiRequest();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO: submit form data to server using axios
+
+    try {
+      const formData = new FormData();
+      formData.append('productName', productName);
+      formData.append('shortDescription', shortDescription);
+      formData.append('longDescription', longDescription);
+      formData.append('image', image);
+      const response = await sendRequest('/api/products', 'post', formData);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleImageChange = (event) => {
@@ -52,13 +67,18 @@ function ProductForm() {
       <Label htmlFor='image'>이미지 업로드</Label>
       <Input id='image' type='file' onChange={handleImageChange} />
 
-      <Button type='submit'>등록하기</Button>
+      <Button type='submit' disabled={isLoading}>
+        {isLoading ? '등록 중...' : '등록하기'}
+      </Button>
     </Form>
   );
 }
 const Form = styled.form`
   display: flex;
+
   flex-direction: column;
+  margin: 0 auto;
+  max-width: 600px;
 `;
 
 const Label = styled.label`
@@ -67,11 +87,11 @@ const Label = styled.label`
 
 const Input = styled.input`
   padding: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const TextArea = styled.textarea`
-  padding: 5px;
+  padding: 15px;
   margin-bottom: 10px;
 `;
 

@@ -66,6 +66,7 @@ const Navbar = () => {
 const LogoBox = styled.div`
   display: flex;
   align-items: center;
+  margin-left: 30px;
 `;
 const LogoImage = styled.img`
   height: 40px;
@@ -80,8 +81,8 @@ const Nav = styled.nav`
   align-items: center;
   background-color: #fff;
   padding: 10px;
-  border-bottom: 1px solid #e5e8e7;
-  margin: 0;
+  margin: 2px;
+  min-width: 900px;
 `;
 const fadeInOut = keyframes`
   0% {
@@ -133,6 +134,7 @@ const Menu = styled.ul`
 `;
 
 const MenuItem1 = styled.li`
+  padding: 5px;
   margin-right: 20px;
   font-size: 20px;
   font-weight: 900;
