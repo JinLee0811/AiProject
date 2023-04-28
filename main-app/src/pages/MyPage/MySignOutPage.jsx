@@ -1,26 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
-import { atom, useAtom } from 'jotai';
 import ProfileForm from '../../components/MyPage/ProfileForm';
 import HeaderForm from '../../components/MyPage/HeaderForm';
 
-const Mypage = () => {
+const MySignOutPage = () => {
   return (
-    <MyPageWrapper>
+    <SingOutWrapper>
       <ProfileForm />
       <MainForm>
         <HeaderForm />
-        <MyBoardForm>
-          <Contents></Contents>
-          <Contents></Contents>
-          <Contents></Contents>
-        </MyBoardForm>
+        <SignOutForm>
+          <h2>정말로 탈퇴하시겠습니까?</h2>
+          <Contents>비밀번호</Contents>
+          <Contents>비밀번호 확인</Contents>
+        </SignOutForm>
       </MainForm>
-    </MyPageWrapper>
+    </SingOutWrapper>
   );
 };
 
-const MyPageWrapper = styled.div`
+const SingOutWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,7 +32,7 @@ const MainForm = styled.div`
   margin: 10px;
 `;
 
-const MyBoardForm = styled.div`
+const SignOutForm = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -55,4 +54,4 @@ const Contents = styled.div`
   margin: 10px;
 `;
 
-export default Mypage;
+export default MySignOutPage;

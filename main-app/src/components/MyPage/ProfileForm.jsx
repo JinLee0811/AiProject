@@ -37,7 +37,7 @@ const ProfileForm = styled.div`
   align-items: center;
   flex-direction: column;
   width: 200px;
-  height: 400px;
+  height: 470px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 
   button {

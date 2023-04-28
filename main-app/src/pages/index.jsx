@@ -6,9 +6,9 @@ import BoardFormPage from './BoardPage/BoardFormPage';
 import LoginPage from './LoginPage/Login';
 import SignUpPage from './SignUpPage/SignUpPage';
 import MyPage from './MyPage/MyPage';
-import MyPageData from './MyPage/MyPageData';
-import MyPageList from './MyPage/MyPageList';
-import MyPageSignOut from './MyPage/MyPageSignOut';
+import MyDataPage from './MyPage/MyDataPage';
+import MyListPage from './MyPage/MyListPage';
+import MySignOutPage from './MyPage/MySignOutPage';
 import NutritionPage from './ServicePage/NutritionPage';
 import NutritionPage1 from './ServicePage/NutritionSubPage/NutritionPage1';
 import ImageUpload from './ServicePage/ImageUpload';
@@ -25,9 +25,9 @@ export {
   LoginPage,
   SignUpPage,
   MyPage,
-  MyPageData,
-  MyPageList,
-  MyPageSignOut,
+  MyDataPage,
+  MyListPage,
+  MySignOutPage,
   NutritionPage,
   NutritionPage1,
   ImageUpload,
