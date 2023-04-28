@@ -1,22 +1,38 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import * as S from './BoardForm.style';
 import Dropzone from 'react-dropzone';
 import { atom, useAtom } from 'jotai';
 
-const BoardForm = ({ onAdd }) => {
-  const titleAtom = atom('');
-  const contentAtom = atom('');
-  const imageAtom = atom('');
+const titleAtom = atom('');
+const contentAtom = atom('');
+const imageAtom = atom('');
+
+const BoardForm = () => {
   const [title, setTitle] = useAtom(titleAtom);
   const [content, setContent] = useAtom(contentAtom);
   const [image, setImage] = useAtom(imageAtom);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    console.log(e);
+    //여기다 axios post요청
+    // post 요청시에는 forData를 만들어서 거기에 내가 적은것들 append해서~ 서버로 axios post요청 하는 순서.
+    // const handleSubmit = async (e) => {
+    //   e.preventDefault();
+    //   const formData = new FormData();
+    //   formData.append('title', title); //보낼 데이터 이름, 실제 데이터
+    //   formData.append('content', content);
+    //   formData.append('image', image);
+    //   try {
+    //     await axios.post('http://example.com/api/board', formData); //주소,보낼 formData
+    //     setTitle(''); //요청 성공하고나면 아래처럼 set함수들 다 초기화
+    //     setContent('');
+    //     setImage('');
+    //     navigate('/BoardPage');
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
     e.preventDefault();
-    onAdd(title, content);
     setTitle('');
     setContent('');
     setImage('');
@@ -27,10 +43,11 @@ const BoardForm = ({ onAdd }) => {
     // 파일 업로드 처리
     // 업로드된 파일 정보를 state에 저장
     setImage(acceptedFiles[0]);
+    console.log(acceptedFiles[0]);
   };
   return (
-    <Container>
-      <FormContainer>
+    <S.Container>
+      <S.FormContainer>
         <form onSubmit={handleSubmit}>
           <div>
             <label>제목</label>
@@ -53,114 +70,27 @@ const BoardForm = ({ onAdd }) => {
           <div>
             <label>사진첨부</label>
             {image ? (
-              <ImageContainer>
-                <img src={URL.createObjectURL(image)} alt='Uploaded Image' />
-              </ImageContainer>
+              <S.ImageContainer>
+                <img src={URL.createObjectURL(image)} alt='Example' />
+              </S.ImageContainer>
             ) : (
               <Dropzone onDrop={handleDrop} accept='image/*'>
                 {({ getRootProps, getInputProps }) => (
                   <div {...getRootProps()}>
                     <input {...getInputProps()} />
                     <p className='DropBorder'>
-                      Drag and drop an image or click here to select a file
+                      클릭 후 올리고 싶은 사진파일을 선택해주세요!
                     </p>
                   </div>
                 )}
               </Dropzone>
             )}
           </div>
-          <button type='submit'>완료</button>
+          <button type='submit'>성장일지 작성하기</button>
         </form>
-      </FormContainer>
-    </Container>
+      </S.FormContainer>
+    </S.Container>
   );
 };
 
 export default BoardForm;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #f5fffa;
-  padding: 2rem;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  height: 600px;
-  width: 800px;
-  overflow: auto;
-  form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .textarea {
-    height: 100px;
-    width: 600px;
-  }
-  div {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-
-    label {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-
-    input {
-      padding: 0.5rem;
-      border-radius: 3px;
-      border: none;
-      box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
-    }
-    .DropBorder {
-      height: 50px;
-      display: flex;
-      align-items: center;
-      border: 2px solid #ccc;
-      border-radius: 5px;
-      padding: 10px;
-      margin-bottom: 20px;
-      max-width: 500px;
-    }
-  }
-
-  button[type='submit'] {
-    padding: 0.5rem 1rem;
-    background-color: green;
-    color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
-    border-radius: 3px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-
-    &:hover {
-      background-color: darkgreen;
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-    }
-  }
-`;
-const ImageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  margin-bottom: 1rem;
-
-  img {
-    max-height: 100%;
-    max-width: 100%;
-  }
-`;
