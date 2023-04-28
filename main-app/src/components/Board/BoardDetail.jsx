@@ -1,25 +1,58 @@
-import { React, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import * as S from './BoardDetail.style';
 // import { useInView } from 'react-intersection-observer';
+import { atom, useAtom } from 'jotai';
+
+const commentsAtom = atom([]);
+const inputAtom = atom('');
+const replyInputAtom = atom('');
+const replyIndexAtom = atom(null);
 
 const BoardDetail = () => {
   const location = useLocation(); //list에서 해당 정보만 받아오는 부분
-  const { title, content, like, image, nickname, views, commentCount } =
+  const { title, content, like, image, nickname, views, commentCount, time } =
     location.state;
-  const [comments, setComments] = useState([
+  const [comments, setComments] = useAtom(
+    commentsAtom
     //댓글과 대댓글을 담는 comments 배열
     // { text: '첫 번째 댓글', replies: [] },
     // { text: '두 번째 댓글', replies: [] },
-  ]);
-  const [input, setInput] = useState(''); //댓글입력상태
-  const [replyInput, setReplyInput] = useState(''); //대댓글 입력상태
-  const [replyIndex, setReplyIndex] = useState(null); //대댓글 작성할 댓글의 index 담는상태
+  );
+  const [input, setInput] = useAtom(inputAtom); //댓글입력상태
+  const [replyInput, setReplyInput] = useAtom(replyInputAtom); //대댓글 입력상태
+  const [replyIndex, setReplyIndex] = useAtom(replyIndexAtom); //대댓글 작성할 댓글의 index 담는상태
+
+  // post요청한 댓글을 get하는 로직을 비동기 fetchData 함수에 담는다!
+  // useEffect(() => { 컴포넌트가 렌더링될 때 한 번만 시행하도록 useEffect 씀
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('/api/comments');
+  //       setComments(response.data)
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // fetchData(); 얘가 렌더링시 알아서 실행되면서~ comments에 response.data가 불러와짐.
+  // },[]) //두번째 인자로 빈 배열줘야 fetchData 함수가 한 번만 실행
 
   const handleSubmit = (e) => {
-    //새 댓글 배열에 추가
+    //새 댓글 배열에 추가하는 axios post요청 ㅇㅇ.
+    // const handleSubmit = async(e) => {
+    //   e.preventDefault();
+    //   try {
+    //     const response = await axios.post('/api/comments', {
+    //       text: input,
+    //       replies: [] //replies 는 해당댓글의 대댓글 배열을 의미함. input댓글값과 그 댓글의 대댓글이 들어올 배열이 보내짐.
+    //     });
+    //     setComments(...comments, response.data) //기존의 comments배열에 post의 응답데이터를 추가함
+    //     setInput('')
+    //   } catch(error) {
+    //     console.log(error);
+    //   }
+    // }
     e.preventDefault();
-    setComments([...comments, { text: input, replies: [] }]);
+    setComments([...comments, { text: input, replies: [] }]); //replies 는 해당댓글의 대댓글 배열을 의미함.
     setInput('');
   };
 
@@ -38,33 +71,60 @@ const BoardDetail = () => {
     setReplyInput(e.target.value);
     setReplyIndex(index); // 특정 인덱스로 설정
   };
+  function filterTime(time) {
+    const filter = Date.now() - new Date(time);
+    const filterSeconds = Math.floor(filter / 1000);
+    const filterMinutes = Math.floor(filter / 60000);
+    const filterHours = Math.floor(filter / 3600000);
+    const filterDays = Math.floor(filter / 86400000);
 
-  // const [ref1, inView1] = useInView({
-  //   threshold: 0.5,
-  // });
+    if (filterSeconds < 60) {
+      return `${filterSeconds}초 전`;
+    } else if (filterMinutes < 60) {
+      return `${filterMinutes}분 전`;
+    } else if (filterHours < 24) {
+      return `${filterHours}시간 전`;
+    } else {
+      return `${filterDays}일 전`;
+    }
+  }
 
-  // const [ref2, inView2] = useInView({
-  //   threshold: 0.5,
-  // });
+  const [likeCount, setLikeCount] = useAtom(atom(like || 0));
+  const [liked, setLiked] = useAtom(atom(likeCount > 0));
 
-  // const [ref3, inView3] = useInView({
-  //   threshold: 0.5,
-  // });
+  useEffect(() => {
+    setLiked(likeCount > 0);
+  }, [likeCount, setLiked]);
 
+  const handleLikeClick = () => {
+    if (liked) {
+      setLikeCount(likeCount - 1);
+      setLiked(false);
+    } else {
+      setLikeCount(likeCount + 1);
+      setLiked(true);
+    }
+  };
   return (
-    <Container>
-      <FormContainer>
+    <S.Container>
+      <S.FormContainer>
         <h1 className='title'>{title}</h1>
-        <Nickname>{nickname}</Nickname>
+        <div className='information'>
+          <span className='material-symbols-outlined'>emoji_nature</span>
+          <p className='nickname'>{nickname}</p>
+          <p className='time'>{filterTime(time)}</p>
+        </div>
         <h2 className='content'>{content}</h2>
         <h2 className='image'>{image}</h2>
-        <Section>
-          <p className='views'>조회 {views}</p>
-          <p className='like'>{like}</p>
-          <p>{commentCount}</p>
-        </Section>
-        <CommentContainer>
+        <p className='comment'>
+          조회 {views} • 댓글 {commentCount} • 관심 {like}
+          <button onClick={handleLikeClick}>
+            {likeCount} {liked ? '취소' : '추가'}
+          </button>
+        </p>
+        <S.CommentContainer>
           <form onSubmit={handleSubmit}>
+            {/* 댓글 post요청 */}
             <input
               type='text'
               placeholder='댓글을 입력하세요'
@@ -75,10 +135,10 @@ const BoardDetail = () => {
               작성
             </button>
           </form>
-          <ReplyContainer>
+          <S.ReplyContainer>
             {comments.map((comment, index) => (
-              <Comment key={index}>
-                <p>{comment.text}</p>
+              <S.Comment key={index}>
+                <p id='commentText'>{comment.text}</p>
                 <button
                   onClick={() => setReplyIndex(index)} //replyIndex 상태를 해당 댓글의 index로 변경
                   disabled={replyIndex === index}>
@@ -102,123 +162,18 @@ const BoardDetail = () => {
                     reply,
                     index // Reply는 댓글의 대댓글임
                   ) => (
-                    <Reply key={index}>
+                    <S.Reply key={index}>
                       <p>{reply}</p>
-                    </Reply>
+                    </S.Reply>
                   )
                 )}
-              </Comment>
+              </S.Comment>
             ))}
-          </ReplyContainer>
-        </CommentContainer>
-      </FormContainer>
-    </Container>
+          </S.ReplyContainer>
+        </S.CommentContainer>
+      </S.FormContainer>
+    </S.Container>
   );
 };
 
 export default BoardDetail;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  background-color: #f5fffa;
-  padding: 2rem;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  height: 750px;
-  overflow: auto;
-  h1.title {
-    width: 200px;
-    padding: 12px 25px;
-  }
-  h2 {
-    padding: 12px 25px;
-    margin-bottom: 14px;
-    width: 800px;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-  }
-  h2.content {
-    width: 800px;
-    height: 200px;
-  }
-  h2.image {
-    height: 300px;
-  }
-`;
-const Nickname = styled.div`
-  width: 45px;
-  background-color: green;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-`;
-const Section = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 1.2rem;
-  color: #333;
-  margin-top: 10px;
-  p {
-    dispaly: block;
-  }
-  // p.views {
-  //   padding: 0 50px 0 0;
-  //   margin-right: 25px;
-  //   background-color: green;
-  //   color: white;
-  //   border: none;
-  //   border-radius: 4px;
-  //   padding: 8px 16px;
-  //   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  // }
-  // p.like {
-  //   background-color: green;
-  //   color: white;
-  //   border: none;
-  //   border-radius: 4px;
-  //   padding: 8px 16px;
-  //   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  // }
-`;
-const CommentContainer = styled.div`
-  form {
-    display: flex;
-    flex-direction: column;
-  }
-  form input {
-    padding: 12px 25px;
-    margin-bottom: 14px;
-    width: 800px;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
-    border: grey;
-    border-radius: 8px;
-  }
-  form button {
-    width: 60px;
-    margin-left: 92%;
-  }
-`;
-const Reply = styled.div`
-  p {
-    padding: 12px 25px;
-    margin-bottom: 14px;
-    width: 800px;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
-    border: grey;
-    border-radius: 8px;
-  }
-`;
-const ReplyContainer = styled.div``;
-const Comment = styled.div``;
