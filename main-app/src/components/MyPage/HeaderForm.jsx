@@ -24,12 +24,12 @@ const HeaderForm = () => {
 };
 
 const Nav = styled.nav`
-  padding: 10px;
+  padding-bottom: 20px;
 `;
 
 const Menu = styled.nav`
   display: flex;
-  flex-direction: row;
+
   justify-content: center;
   align-items: center;
   width: 500px;
