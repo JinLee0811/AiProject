@@ -68,6 +68,26 @@ const router = createBrowserRouter([
         element: <NutritionPage1 />,
       },
       {
+        path: '/nutrition2',
+        element: <NutritionPage1 />,
+      },
+      {
+        path: '/nutrition3',
+        element: <NutritionPage1 />,
+      },
+      {
+        path: '/nutrition4',
+        element: <NutritionPage1 />,
+      },
+      {
+        path: '/nutrition5',
+        element: <NutritionPage1 />,
+      },
+      {
+        path: '/nutrition6',
+        element: <NutritionPage1 />,
+      },
+      {
         path: '/boardForm',
         element: <BoardFormPage />,
       },

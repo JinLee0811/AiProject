@@ -19,35 +19,35 @@ const Nutrition = () => {
         </Box>
         <Box>
                 <NutritionImage src="../components/image/Nutrition1.png" alt="asd" />
-                <StyledLink to='/'>
+                <StyledLink to='/nutrition2'>
                     <H1>🪴그린이 친환경 식물영양제 </H1>
                 </StyledLink>
                 <H3>천연의 물질로 구성되어 있어 사용 후 완전 분해되기 때문에 사용후의 수질, 토양환경 오염이 전무하며 인체 및 가축에 무해한 친환경 성분으로 구성되어 있습니다.</H3>
         </Box>
         <Box>
                 <NutritionImage src="../components/image/Nutrition1.png" alt="asd" />
-                <StyledLink to='/'>
+                <StyledLink to='/nutrition3'>
                     <H1>🌿그린이 친환경 식물영양제 </H1>
                 </StyledLink>
                 <H3>천연의 물질로 구성되어 있어 사용 후 완전 분해되기 때문에 사용후의 수질, 토양환경 오염이 전무하며 인체 및 가축에 무해한 친환경 성분으로 구성되어 있습니다.</H3>
         </Box>
         <Box>
                 <NutritionImage src="../components/image/Nutrition1.png" alt="asd" />
-                <StyledLink to='/'>
+                <StyledLink to='/nutrition4'>
                     <H1>💪그린이 친환경 식물영양제 </H1>
                 </StyledLink>
                 <H3>천연의 물질로 구성되어 있어 사용 후 완전 분해되기 때문에 사용후의 수질, 토양환경 오염이 전무하며 인체 및 가축에 무해한 친환경 성분으로 구성되어 있습니다.</H3>
         </Box>
         <Box>
                 <NutritionImage src="../components/image/Nutrition1.png" alt="asd"/>
-                <StyledLink to='/'>
+                <StyledLink to='/nutrition5'>
                     <H1>🪴그린이 친환경 식물영양제 </H1>
                 </StyledLink>
                 <H3>천연의 물질로 구성되어 있어 사용 후 완전 분해되기 때문에 사용후의 수질, 토양환경 오염이 전무하며 인체 및 가축에 무해한 친환경 성분으로 구성되어 있습니다.</H3>
         </Box>
         <Box>
                 <NutritionImage src="../components/image/Nutrition1.png" alt="asd"/>
-                <StyledLink to='/'>
+                <StyledLink to='/nutrition6'>
                     <H1>🌿그린이 친환경 식물영양제 </H1>
                 </StyledLink>
                 <H3>천연의 물질로 구성되어 있어 사용 후 완전 분해되기 때문에 사용후의 수질, 토양환경 오염이 전무하며 인체 및 가축에 무해한 친환경 성분으로 구성되어 있습니다.</H3>
@@ -61,7 +61,7 @@ const Nutrition = () => {
 const Form = styled.div`
 float : center;
 align-items: center;
-margin: 0px 60px;
+margin:40px 60px;
 `;
 
 
