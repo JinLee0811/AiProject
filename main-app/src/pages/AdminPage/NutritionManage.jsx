@@ -1,47 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import {
+  useGetNutrition,
+  useDeleteNutrition,
+  nutritionAtom,
+} from '../../API/NutritionApi';
+import { useAtom } from 'jotai';
 
 function NutritionMange() {
-  const [users, setUsers] = useState([]);
-  const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [nutrition, setNutrition] = useAtom(nutritionAtom);
+  const { data: fetchedNutrition, isLoading, error } = useGetNutrition();
+  const deleteNutritionMutation = useDeleteNutrition();
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await sendRequest('/admin/users', 'get');
-  //       setUsers(response);
-  //     } catch (err) {
-  //       console.log(err.message);
-  //     }
-  //   };
+  const handleDelete = async (id) => {
+    try {
+      await deleteNutritionMutation.mutateAsync(id);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
-  //   fetchData();
-  // }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  // const handleDelete = async () => {
-  //   try {
-  //     const response = await sendRequest(
-  //       `/admin/users/${userIdToDelete}`,
-  //       'delete',
-  //       {}
-  //     );
-  //     const newUsers = users.map((user) => {
-  //       if (user.id === userIdToDelete) {
-  //         return {
-  //           ...user,
-  //           deletedAt: new Date(),
-  //         };
-  //       }
-  //       return user;
-  //     });
-
-  //     setUsers(newUsers);
-  //     alert(response.message);
-  //     setUserIdToDelete(null);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   return (
     <Table>
@@ -55,30 +40,41 @@ function NutritionMange() {
           <TableHeader>관리</TableHeader>
         </tr>
       </thead>
-      <thead>
-        <tr>
-          <TableData>사진</TableData>
-          <TableData>살균제</TableData>
-          <TableData>살균을 위한 약품입니다.</TableData>
-          <TableData>긴설명 살균을 위한 약품입니다.</TableData>
-          <TableData>2023.03.03</TableData>
-          <TableData>
-            <DeleteButton>수정</DeleteButton>
-            <DeleteButton>삭제</DeleteButton>
-          </TableData>
-        </tr>
-      </thead>
+      <tbody>
+        {fetchedNutrition.map((nut) => (
+          <tr key={nut.id}>
+            <TableData>
+              <SmallImage src={nut.image} />
+            </TableData>
+            <TableData>{nut.name}</TableData>
+            <TableData>{nut.shortDescription}</TableData>
+            <TableData>{nut.longDescription}</TableData>
+            <TableData>{nut.createdAt}</TableData>
+            <TableData>
+              <StatusButton onClick={() => handleDelete(nut.id)}>
+                수정
+              </StatusButton>
+              <StatusButton onClick={() => handleDelete(nut.id)}>
+                삭제
+              </StatusButton>
+            </TableData>
+          </tr>
+        ))}
+      </tbody>
     </Table>
   );
 }
 
-const Select = styled.select`
-  margin-bottom: 1rem;
-`;
 const Table = styled.table`
   width: 100%;
   font-size: 1rem;
   border-collapse: collapse;
+`;
+const SmallImage = styled.img`
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  object-position: center;
 `;
 
 const TableHeader = styled.th`
@@ -94,7 +90,7 @@ const TableData = styled.td`
   width: 10%;
 `;
 
-const DeleteButton = styled.button`
+const StatusButton = styled.button`
   background-color: #759683;
   border: none;
   color: #fff;

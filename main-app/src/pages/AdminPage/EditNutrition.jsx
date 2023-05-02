@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useCreateNutrition } from '../../API/NutritionApi';
+import useApiRequest from '../../API/useApi';
+import axios from 'axios';
+import { useAtom } from 'jotai';
 
-function ProductForm() {
+function EditForm() {
   const [productName, setProductName] = useState('');
   const [shortDescription, setShortDescription] = useState('');
   const [longDescription, setLongDescription] = useState('');
   const [image, setImage] = useState(null);
-  const [category, setCategory] = useState('');
 
-  const { mutate, isLoading } = useCreateNutrition();
+  const { isLoading, sendRequest } = useApiRequest();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,7 +21,8 @@ function ProductForm() {
       formData.append('shortDescription', shortDescription);
       formData.append('longDescription', longDescription);
       formData.append('image', image);
-      await mutate(formData);
+      const response = await sendRequest('/api/products', 'post', formData);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -33,13 +35,6 @@ function ProductForm() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Label htmlFor='Category'>카테고리</Label>
-      <Input
-        id='Category'
-        type='text'
-        value={category}
-        onChange={(event) => setProductName(event.target.value)}
-      />
       <Label htmlFor='product-name'>영양제 이름</Label>
       <Input
         id='product-name'
@@ -53,7 +48,7 @@ function ProductForm() {
         id='short-description'
         type='text'
         value={shortDescription}
-        onChange={(event) => setCategory(event.target.value)}
+        onChange={(event) => setShortDescription(event.target.value)}
       />
 
       <Label htmlFor='long-description'>긴글 소개</Label>
@@ -68,7 +63,7 @@ function ProductForm() {
       <Input id='image' type='file' onChange={handleImageChange} />
 
       <Button type='submit' disabled={isLoading}>
-        {isLoading ? '등록 중...' : '등록하기'}
+        {isLoading ? '수정 중...' : '수정하기'}
       </Button>
     </Form>
   );
@@ -108,4 +103,4 @@ const Button = styled.button`
   }
 `;
 
-export default ProductForm;
+export default EditForm;

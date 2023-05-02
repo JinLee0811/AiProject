@@ -1,84 +1,47 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { atom } from 'jotai';
-import axios from 'axios';
+import { useGetUsers, useDeleteUser, usersAtom } from '../../API/AdminUserApi';
 import styled from 'styled-components';
-
-const dummyUsers = [
-  {
-    id: 1,
-    createdAt: '2022-03-15T10:30:00.000Z',
-    email: 'jane.doe@example.com',
-    name: 'Jane Doe',
-    nickname: 'jane',
-    type: 'customer',
-  },
-  {
-    id: 2,
-    createdAt: '2022-04-22T14:45:00.000Z',
-    email: 'john.doe@example.com',
-    name: 'John Doe',
-    nickname: 'john',
-    type: 'admin',
-  },
-  {
-    id: 3,
-    createdAt: '2022-05-10T08:15:00.000Z',
-    email: 'bob.smith@example.com',
-    name: 'Bob Smith',
-    nickname: 'bob',
-    type: 'customer',
-  },
-];
-const usersAtom = atom([]);
-const userIdToDeleteAtom = atom(null);
-
-const fetchUsers = async () => {
-  // try {
-  //   const response = await axios.get('/admin/users');
-  //   return response.data;
-  return dummyUsers;
-  // } catch (err) {
-  //   throw new Error(err.message);
-  // }
-};
 
 function UserManage() {
   const [users, setUsers] = useAtom(usersAtom);
-  const [userIdToDelete, setUserIdToDelete] = useAtom(userIdToDeleteAtom);
+  const { data: fetchedUsers, isLoading, error } = useGetUsers();
+  const { mutate: deleteUser } = useDeleteUser();
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchUsers();
-        setUsers(data);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-    fetchData();
-  }, [setUsers]);
+    if (fetchedUsers) {
+      setUsers(fetchedUsers);
+    }
+  }, [fetchedUsers, setUsers]);
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`/admin/users/${id}`);
-      const newUsers = users.map((user) => {
-        if (user.id === id) {
-          return {
-            ...user,
-            deletedAt: new Date(),
-          };
-        }
-        return user;
-      });
-
-      setUsers(newUsers);
+      const response = await deleteUser(id);
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => {
+          if (user.id === id) {
+            return {
+              ...user,
+              deletedAt: new Date(),
+            };
+          }
+          return user;
+        })
+      );
       alert(response.data.message);
-      setUserIdToDelete(null);
     } catch (err) {
       console.log(err.message);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error.message}</div>;
+  }
+
   return (
     <Table>
       <thead>
@@ -110,10 +73,6 @@ function UserManage() {
     </Table>
   );
 }
-
-const Select = styled.select`
-  margin-bottom: 1rem;
-`;
 const Table = styled.table`
   width: 100%;
   font-size: 1rem;

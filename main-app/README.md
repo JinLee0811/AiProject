@@ -29,4 +29,4 @@
 
 - [피그마](https://www.figma.com/file/a9SJvuFA0jU1xpSCKUrpZ6/Untitled?node-id=0-1&t=qK9lqRwlkgehe0IU-0)
 
-## node -v -> 18버전 사용
+## node -v -> 18버전 사용하여 npm start 하시면 실행.

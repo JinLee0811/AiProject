@@ -4,13 +4,21 @@ import { Link } from 'react-router-dom';
 import { atom, useAtom } from 'jotai';
 
 const fadeAtom = atom(true);
-
+const sentences = [
+  '👨‍🌾당신의 작물을 진단하세요👨‍🌾',
+  '👨‍🌾당신의 작물의 성장일지를 기록하세요👨‍🌾',
+  '👨‍🌾어떤 작물을 기르고 계신가요?👨‍🌾',
+  '👨‍🌾작물의 성장은 이루어지고 있나요? 성장과정을 공유하세요👨‍🌾',
+  // '작물에 필요한 영양분을 충분히 공급하고 계신가요? 작물의 건강을 위해 중요합니다👨‍🌾',
+  '👨‍🌾작물을 키우는데 궁금한 점이 있다면 언제든지 질문해주세요👨‍🌾',
+  // '당신의 작물에게 부여할 별명을 지어보는 것은 어떨까요?👨‍🌾',
+];
 const Navbar = () => {
   const [fadeToggle, setFadeToggle] = useAtom(fadeAtom);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFadeToggle((prev) => !prev);
+      setFadeToggle((prev) => (prev + 1) % sentences.length);
     }, 3000);
 
     return () => clearInterval(interval);
@@ -53,11 +61,7 @@ const Navbar = () => {
         </Menu>
       </Nav>
       <NavWrite>
-        <NavWriteTag fadeIn={fadeToggle}>
-          {fadeToggle
-            ? '당신의 작물을 진단하세요👨‍🌾'
-            : '당신의 작물의 성장일지를 기록하세요👨‍🌾'}
-        </NavWriteTag>
+        <NavWriteTag>{sentences[fadeToggle]}</NavWriteTag>
       </NavWrite>
     </>
   );

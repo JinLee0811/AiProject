@@ -75,6 +75,9 @@ const ImageUpload = () => {
               </ul>
             </Result>
           </ResultBox>
+          <Button onClick={handleSubmit} disabled={isApiRequestLoading}>
+            {isApiRequestLoading ? '진단 중...' : '저장하기'}
+          </Button>
         </RightBox>
       </Wrapper>
     </>
