@@ -1,70 +1,32 @@
-# Getting Started with Create React App
+# 서비스 설명 📝
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## **기획의도 🎯**
 
-## Available Scripts
+: 최근 작물을 키우는 사람들이 급증하면서, 작물의 질병과 해결책에 대한 정보를 찾는 것이 어렵다는 문제가 있습니다. 이러한 문제를 해결하고, 작물을 키우는 사람들의 불편을 덜어주기 위해 우리는 이 서비스를 기획하게 되었습니다.
 
-In the project directory, you can run:
+## **서비스의 메인 기능과 서브 기능 🚀**
 
-### `npm start`
+### 메인 기능
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- 사용자의 작물이 가지고 있는 질병 관련 이미지 업로드, 해당 이미지를 토대로 이미지 분석을 통해 질병을 파악한 후 해결책을 제공.
+- 사용자가 작물 성장일지를 작성하고 관리할 수 있도록 도와주며, 사용자 간 정보 공유를 통해 작물을 보다 효과적으로 관리하고 성장시키는 기능을 제공.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 서브 기능
 
-### `npm test`
+- 정보 공유 커뮤니티
+- 마이페이지
+- 작물 영양제 판매
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 사용법 📖
 
-### `npm run build`
+1. 홈페이지에 접속합니다.
+2. 사용자는 식물의 질병 관련 이미지를 업로드합니다.
+3. 해당 이미지를 분석하여 질병을 파악하고, 적절한 해결책을 제공합니다.
+4. 사용자는 작물의 성장 상황을 기록하고, 성장일지를 작성할 수 있습니다.
+5. 다른 사용자들과 작물의 성장 정보를 공유할 수 있습니다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 와이어프레임
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- [피그마](https://www.figma.com/file/a9SJvuFA0jU1xpSCKUrpZ6/Untitled?node-id=0-1&t=qK9lqRwlkgehe0IU-0)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## node -v -> 18버전 사용
