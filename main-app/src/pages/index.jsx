@@ -17,6 +17,7 @@ import BoardManage from './AdminPage/BoardManage';
 import UserManage from './AdminPage/UserManage';
 import NutritionManage from './AdminPage/NutritionManage';
 import AddNutrition from './AdminPage/AddNutrition';
+import BoardMyPage from './BoardPage/BoardMyPage';
 
 export {
   MainPage,
@@ -33,6 +34,7 @@ export {
   ImageUpload,
   BoardDetailPage,
   BoardFormPage,
+  BoardMyPage,
   AdminPage,
   BoardManage,
   UserManage,

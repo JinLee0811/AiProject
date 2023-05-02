@@ -6,6 +6,7 @@ import './index.css';
 import {
   MainPage,
   BoardPage,
+  BoardMyPage,
   ServicePage,
   BoardDetailPage,
   BoardFormPage,
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
         element: <BoardPage />,
       },
       {
+        path: '/board/My',
+        element: <BoardMyPage />,
+      },
+      {
         path: '/service',
         element: <ServicePage />,
       },
@@ -59,7 +64,7 @@ const router = createBrowserRouter([
         element: <ImageUpload />,
       },
       {
-        path: '/boardDetail',
+        path: '/board/Detail',
         element: <BoardDetailPage />,
       },
       {

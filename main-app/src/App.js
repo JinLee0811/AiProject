@@ -3,6 +3,7 @@ import Nav from './components/common/NavBar';
 import styled from 'styled-components';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { Provider } from 'jotai';
 
 const queryClient = new QueryClient();
 
@@ -10,10 +11,12 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <AllDiv className='App'>
-          <Nav />
-          <Outlet />
-        </AllDiv>
+        <Provider>
+          <AllDiv className='App'>
+            <Nav />
+            <Outlet />
+          </AllDiv>
+        </Provider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </>
