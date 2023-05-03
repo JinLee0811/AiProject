@@ -1,5 +1,5 @@
 import MainPage from './MainPage/MainPage';
-import BoardPage from './BoardPage/BoardPage';
+import BoardListPage from './BoardPage/BoardListPage';
 import ServicePage from './MainServicePage/ServicePage';
 import ImageUpload from './MainServicePage/ImageUpload';
 import BoardDetailPage from './BoardPage/BoardDetailPage';
@@ -17,10 +17,11 @@ import BoardManage from './AdminPage/BoardManagePage';
 import UserManage from './AdminPage/UserManagePage';
 import NutritionManage from './AdminPage/NutritionManagePage';
 import AddNutrition from './AdminPage/AddNutritionPage';
+import BoardMyListPage from './BoardPage/BoardMyListPage';
 
 export {
   MainPage,
-  BoardPage,
+  BoardListPage,
   ServicePage,
   LoginPage,
   SignUpPage,
@@ -33,6 +34,7 @@ export {
   ImageUpload,
   BoardDetailPage,
   BoardFormPage,
+  BoardMyListPage,
   AdminPage,
   BoardManage,
   UserManage,

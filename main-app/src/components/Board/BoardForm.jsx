@@ -1,20 +1,29 @@
-import React from 'react';
+import { React, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as S from './BoardForm.style';
 import Dropzone from 'react-dropzone';
-import { atom, useAtom } from 'jotai';
-
-const titleAtom = atom('');
-const contentAtom = atom('');
-const imageAtom = atom('');
+// import { atom, useAtom } from 'jotai';
+import { useBoardUploadMutation } from '../../API/useBoardUploadMutation';
 
 const BoardForm = () => {
-  const [title, setTitle] = useAtom(titleAtom);
-  const [content, setContent] = useAtom(contentAtom);
-  const [image, setImage] = useAtom(imageAtom);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
+  const { mutate } = useBoardUploadMutation(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
+
   const handleSubmit = (e) => {
+    //react-query사용시
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('title', title); //보낼 데이터 이름, 실제 데이터
+    formData.append('content', content);
+    formData.append('image', image);
+    // const formData = new FormData(e.target); 위 방식과 다를 게 없는 듯 한데 맞는지 근데 이럼 title 이름이랑 실제데이터 지정 못하는거아님?
+    // mutate(formData);
+    mutate(formData); //formData 설정해서 추가할거 추가한 후 mutate에 담아주기만 하면 끝??
+
     //여기다 axios post요청
     // post 요청시에는 forData를 만들어서 거기에 내가 적은것들 append해서~ 서버로 axios post요청 하는 순서.
     // const handleSubmit = async (e) => {
@@ -32,11 +41,11 @@ const BoardForm = () => {
     //   } catch (error) {
     //     console.error(error);
     //   }
-    e.preventDefault();
+    // e.preventDefault();
     setTitle('');
     setContent('');
-    setImage('');
-    navigate('/BoardPage');
+    setImage(null);
+    navigate('/BoardListPage');
   };
 
   const handleDrop = (acceptedFiles) => {

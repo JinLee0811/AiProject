@@ -5,7 +5,8 @@ import App from './App';
 import './index.css';
 import {
   MainPage,
-  BoardPage,
+  BoardListPage,
+  BoardMyListPage,
   ServicePage,
   BoardDetailPage,
   BoardFormPage,
@@ -48,7 +49,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/board',
-        element: <BoardPage />,
+        element: <BoardListPage />,
+      },
+      {
+        path: '/board/My',
+        element: <BoardMyListPage />,
       },
       {
         path: '/service',
@@ -59,7 +64,7 @@ const router = createBrowserRouter([
         element: <ImageUpload />,
       },
       {
-        path: '/boardDetail',
+        path: '/board/Detail',
         element: <BoardDetailPage />,
       },
       {

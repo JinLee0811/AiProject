@@ -10,6 +10,14 @@ export const Container = styled.div`
   padding: 20px;
   font-family: 'Spoqa Han Sans Neo';
   color: #555555;
+  .buttons {
+    display: flex;
+    margin-top: 25px;
+    margin-left: 50%;
+    button {
+      margin-right: 10px;
+    }
+  }
   button {
     padding: 10px 20px;
     background-color: #4ba888;
@@ -27,9 +35,6 @@ export const Container = styled.div`
   .banner {
     width: 850px;
     margin-left: 30px;
-  }
-  .write {
-    margin: 25px 0px 0px 65%;
   }
 `;
 export const FormContainer = styled.div`
