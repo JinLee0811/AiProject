@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
-// import { useLocation } from 'react-router-dom';
 import * as S from './BoardDetail.style';
 // import { useInView } from 'react-intersection-observer';
-import { useAtom } from 'jotai';
-import { useAddCommentMutation } from '../../API/CommentApi';
-import { selectedPostAtom, commentsAtom } from '../../API/AtomManage'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
+import { useAtom, useAtomValue } from 'jotai';
+import { useAddCommentMutation } from '../../API/useAddCommentMutation';
+import { selectedPostAtom, commentsAtom } from './atom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 
 const BoardDetail = () => {
   // const location = useLocation(); //list에서 해당 정보만 받아오는 부분
 
   // const { title, content, like, image, nickname, views, commentCount, time } =
   //   location.state;
-  const [selectedPost] = useAtom(selectedPostAtom); // 저장된 selectedPost 상태를 가져옴
+  const selectedPost = useAtomValue(selectedPostAtom); // useAtomValue를 사용하면 저장된 selectedPost 상태값을 바로가져옴
   // const { title, content, like, image, nickname, views, commentCount, time } =
   //   selectedPost || {};
 
   const [comments, setComments] = useAtom(
+    //comments와 setComments 모두 써야해서 useAtom 씀.
     commentsAtom
     //댓글과 대댓글을 담는 comments 배열
-    // { text: '첫 번째 댓글', replies: [] },
-    // { text: '두 번째 댓글', replies: [] },
+    // { text: '첫 번째 댓글', replies: [] }
   );
 
   const [input, setInput] = useState(''); //댓글입력상태
@@ -39,20 +38,21 @@ const BoardDetail = () => {
   // fetchData(); 얘가 렌더링시 알아서 실행되면서~ comments에 response.data가 불러와짐.
   // },[]) //두번째 인자로 빈 배열줘야 fetchData 함수가 한 번만 실행
 
-  const [addCommentMutation] = useAddCommentMutation();
+  const { mutate } = useAddCommentMutation({
+    onSuccess: (data) => {
+      //data = 서버로부터 반환된 새 댓글 객체
+      setComments([...comments, data]); //댓글 작성 후에 새로운댓글 목록에 추가됨!
+      setInput('');
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  }); // 내가 만든 훅은 mutate를 통해 반환한다! 기억하기~!
   const handleSubmit = (e) => {
     // react-query훅
     e.preventDefault();
-    addCommentMutation(
-      { text: input, replies: [] },
-      {
-        onSuccess: () => {
-          setInput('');
-        },
-        onError: (error) => {
-          console.log(error);
-        },
-      }
+    mutate(
+      { text: input, replies: [] } //첫번째 매개변수는 오롯이 요청에 필요한 데이터만! setComments등의 함수는 무조건 option에서.
     );
   };
 
@@ -72,10 +72,11 @@ const BoardDetail = () => {
   //       console.log(error);
   //     }
   //   }
-  // e.preventDefault();
-  // setComments([...comments, { text: input, replies: [] }]); //replies 는 해당댓글의 대댓글 배열을 의미함.
-  // setInput('');
-
+  //   e.preventDefault();
+  //   setComments([...comments, { text: input, replies: [] }]); //replies 는 해당댓글의 대댓글 배열을 의미함.
+  //   setInput('');
+  //   //댓글 대댓글 기능작동함 but 이건 프엔딴에서만 처리하는 로직, 서버통신안됨
+  // };
   const handleReplySubmit = (e, index) => {
     //해당 index가 들어오면 comments의 replies배열에 인풋값 추가.
     e.preventDefault();

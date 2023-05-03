@@ -1,8 +1,8 @@
 import React from 'react';
 import BoardMyList from '../../components/Board/BoardMyList';
 
-const BoardMyPage = () => {
+const BoardMyListPage = () => {
   return <BoardMyList />;
 };
 
-export default BoardMyPage;
+export default BoardMyListPage;

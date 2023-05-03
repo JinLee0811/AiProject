@@ -1,7 +1,7 @@
 import { React } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as S from './BoardList.style';
-import useMyBoardListQuery from '../../API/BoardApi';
+import useMyBoardListQuery from '../../API/useMyBoardListQuery';
 
 const BoardMyList = () => {
   const navigate = useNavigate();

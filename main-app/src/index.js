@@ -5,8 +5,8 @@ import App from './App';
 import './index.css';
 import {
   MainPage,
-  BoardPage,
-  BoardMyPage,
+  BoardListPage,
+  BoardMyListPage,
   ServicePage,
   BoardDetailPage,
   BoardFormPage,
@@ -49,11 +49,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/board',
-        element: <BoardPage />,
+        element: <BoardListPage />,
       },
       {
         path: '/board/My',
-        element: <BoardMyPage />,
+        element: <BoardMyListPage />,
       },
       {
         path: '/service',

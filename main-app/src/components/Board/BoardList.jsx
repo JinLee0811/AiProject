@@ -3,8 +3,9 @@ import { useAtom } from 'jotai';
 import { useNavigate } from 'react-router-dom';
 import * as S from './BoardList.style';
 import axios from 'axios';
-// import { useBoardListQuery } from '../../API/BoardApi';
-import { postsAtom, selectedPostAtom } from '../../API/AtomManage'; //전역으로 관리 초기값들을 저장해둔 곳
+// import { useBoardListQuery } from '../../API/useBoardListQuery';
+import { postsAtom, selectedPostAtom } from './atom'; //전역으로 관리 초기값들을 저장해둔 곳
+// import { onPageChange } from '../../pages/BoardPage/BoardListPage';
 
 const BoardList = () => {
   const navigate = useNavigate();
@@ -39,18 +40,6 @@ const BoardList = () => {
     const post = posts.find((post) => post.id === id);
     setSelectedPost(post); //해당 id의 게시글 정보를 selectedPostAtom에 저장 (selectedPostAtom에을 Detail에서 쓸거임)
     navigate('/board/Detail');
-    // navigate('/board/Detail', {
-    //   state: {
-    //     title: post.title,
-    //     content: post.content,
-    //     like: post.like,
-    //     nickname: post.nickname,
-    //     image: post.image,
-    //     views: post.views,
-    //     commentCount: post.commentCount,
-    //     time: post.time,
-    //   },
-    // });
   };
   const boardClick = () => {
     navigate('/board');

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import * as S from './BoardForm.style';
 import Dropzone from 'react-dropzone';
 // import { atom, useAtom } from 'jotai';
-import { useBoardUploadMutation } from '../../API/BoardApi';
+import { useBoardUploadMutation } from '../../API/useBoardUploadMutation';
 
 const BoardForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
+
   const { mutate } = useBoardUploadMutation(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
 
   const handleSubmit = (e) => {
@@ -44,7 +45,7 @@ const BoardForm = () => {
     setTitle('');
     setContent('');
     setImage(null);
-    navigate('/BoardPage');
+    navigate('/BoardListPage');
   };
 
   const handleDrop = (acceptedFiles) => {
