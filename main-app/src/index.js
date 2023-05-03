@@ -23,7 +23,6 @@ import {
   UserManage,
   NutritionManage,
   AddNutrition,
-  EditNutrition,
 } from './pages';
 
 const router = createBrowserRouter([
@@ -106,10 +105,6 @@ const router = createBrowserRouter([
           {
             path: 'AddNutrition',
             element: <AddNutrition />,
-          },
-          {
-            path: 'EditNutrition',
-            element: <EditNutrition />,
           },
         ],
       },

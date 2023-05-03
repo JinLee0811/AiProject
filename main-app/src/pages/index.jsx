@@ -13,11 +13,10 @@ import MySignOutPage from './MyPage/MySignOutPage';
 import NutritionPage from './ServicePage/NutritionPage';
 import NutritionPage1 from './ServicePage/NutritionSubPage/NutritionPage1';
 import AdminPage from './AdminPage/AdminPage';
-import BoardManage from './AdminPage/BoardManage';
-import UserManage from './AdminPage/UserManage';
-import NutritionManage from './AdminPage/NutritionManage';
-import AddNutrition from './AdminPage/AddNutrition';
-import EditNutrition from './AdminPage/EditNutrition';
+import BoardManage from './AdminPage/BoardManagePage';
+import UserManage from './AdminPage/UserManagePage';
+import NutritionManage from './AdminPage/NutritionManagePage';
+import AddNutrition from './AdminPage/AddNutritionPage';
 
 export {
   MainPage,
@@ -39,5 +38,4 @@ export {
   UserManage,
   NutritionManage,
   AddNutrition,
-  EditNutrition,
 };

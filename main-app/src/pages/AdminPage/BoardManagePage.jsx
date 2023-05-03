@@ -54,8 +54,6 @@ function BoardMange() {
           <TableHeader>게시글 상태</TableHeader>
           <TableHeader>관리</TableHeader>
         </tr>
-      </thead>
-      <thead>
         <tr>
           <TableData>2023.04.04</TableData>
           <TableData>asd@asd.com</TableData>

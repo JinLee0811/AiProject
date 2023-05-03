@@ -1,14 +1,13 @@
-import React from 'react';
-import { useAtom } from 'jotai';
-import { useGetUsers, useDeleteUser, usersAtom } from '../../API/AdminUserApi';
+import React, { useState, useEffect } from 'react';
+import { useGetUsers, useDeleteUser } from '../../API/AdminUserApi';
 import styled from 'styled-components';
 
 function UserManage() {
-  const [users, setUsers] = useAtom(usersAtom);
+  const [users, setUsers] = useState([]);
   const { data: fetchedUsers, isLoading, error } = useGetUsers();
   const { mutate: deleteUser } = useDeleteUser();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (fetchedUsers) {
       setUsers(fetchedUsers);
     }
@@ -54,22 +53,25 @@ function UserManage() {
           <TableHeader>관리</TableHeader>
         </tr>
       </thead>
-      <thead>
-        {users.map((user) => (
-          <tr key={user.id}>
-            <TableData>{user.createdAt}</TableData>
-            <TableData>{user.email}</TableData>
-            <TableData>{user.name}</TableData>
-            <TableData>{user.nickname}</TableData>
-            <TableData>{user.type}</TableData>
-            <TableData>
-              <DeleteButton onClick={() => handleDelete(user.id)}>
-                삭제
-              </DeleteButton>
-            </TableData>
-          </tr>
-        ))}
-      </thead>
+      <tbody>
+        {users &&
+          users.map((user) => (
+            <tr key={user.id}>
+              <TableData>{user.createdAt}</TableData>
+              <TableData>{user.email}</TableData>
+              <TableData>{user.name}</TableData>
+              <TableData>{user.nickname}</TableData>
+              <TableData>{user.type}</TableData>
+              <TableData>
+                <DeleteButton
+                  key={user.id}
+                  onClick={() => handleDelete(user.id)}>
+                  삭제
+                </DeleteButton>
+              </TableData>
+            </tr>
+          ))}
+      </tbody>
     </Table>
   );
 }

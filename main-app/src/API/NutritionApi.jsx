@@ -1,15 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
-import { atom, useAtom } from 'jotai';
-
-export const nutritionAtom = atom([]);
 
 // GET Hook
-export const useGetNutrition = () => {
-  return useQuery('nutrition', async () => {
-    const { data } = await axios.get('/admin/nutrition');
-    return data;
-  });
+export const useGetNutrition = (options) => {
+  return useQuery(
+    'nutrition',
+    async () => {
+      const { data } = await axios.get('/admin/nutrition');
+      return data;
+    },
+    { ...options }
+  );
 };
 
 // POST Hook
@@ -29,34 +30,39 @@ export const useCreateNutrition = () => {
   );
 };
 
-// DELETE Hook
-export const useDeleteNutrition = () => {
+// PUT Hook
+export const useUpdateNutrition = () => {
   const queryClient = useQueryClient();
-  const [nutrition, setNutrition] = useAtom(nutritionAtom);
 
-  const deleteNutritionMutation = useMutation(
-    async (id) => {
-      const { data } = await axios.delete(`/admin/nutrition/${id}`);
+  return useMutation(
+    async (updatedNutrition) => {
+      const { data } = await axios.put(
+        `/admin/nutrition/${updatedNutrition.id}`,
+        updatedNutrition
+      );
       return data;
     },
     {
-      onSuccess: (data, variables) => {
-        setNutrition(
-          nutrition.map((nutri) => {
-            if (nutri.id === variables[0]) {
-              return {
-                ...nutri,
-                deletedAt: new Date(),
-              };
-            }
-            return nutri;
-          })
-        );
+      onSuccess: () => {
         queryClient.invalidateQueries('nutrition');
-        alert(data.message);
       },
     }
   );
+};
 
-  return deleteNutritionMutation;
+// DELETE Hook
+export const useDeleteNutrition = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (id) => {
+      const { data } = await axios.delete(`/admin/nutrition${id}`);
+      return data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('nutrition');
+      },
+    }
+  );
 };

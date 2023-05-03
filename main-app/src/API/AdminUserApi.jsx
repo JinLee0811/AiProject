@@ -1,8 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
-import { atom } from 'jotai';
-
-export const usersAtom = atom([]);
 
 export const useGetUsers = () => {
   return useQuery('users', async () => {

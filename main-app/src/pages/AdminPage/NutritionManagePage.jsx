@@ -1,23 +1,57 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useGetNutrition, useDeleteNutrition } from '../../API/NutritionApi';
+import { useAtom, useSetAtom } from 'jotai';
 import {
-  useGetNutrition,
-  useDeleteNutrition,
   nutritionAtom,
-} from '../../API/NutritionApi';
-import { useAtom } from 'jotai';
+  selectedNutritionAtom,
+} from '../../Atoms/NutritionAtom';
+import { useNavigate } from 'react-router-dom';
 
 function NutritionMange() {
-  const [nutrition, setNutrition] = useAtom(nutritionAtom);
-  const { data: fetchedNutrition, isLoading, error } = useGetNutrition();
-  const deleteNutritionMutation = useDeleteNutrition();
+  const [nutritionList, setNutritionList] = useAtom(nutritionAtom);
+  const setSelectedNutrition = useSetAtom(selectedNutritionAtom);
+  const {
+    isLoading,
+    error,
+    data: fetchedNutrition,
+  } = useGetNutrition({
+    onError: (error) => console.log(error.message),
+  }); // 데이터 get
 
+  const { mutate: deleteNutrition } = useDeleteNutrition(); //데이터 delete
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (fetchedNutrition) {
+      setNutritionList(fetchedNutrition);
+    }
+  }, [fetchedNutrition, setNutritionList]);
+
+  // 삭제 버튼 클릭시 로직
   const handleDelete = async (id) => {
     try {
-      await deleteNutritionMutation.mutateAsync(id);
+      const response = await deleteNutrition(id);
+      setNutritionList((prevNutritions) =>
+        prevNutritions.map((nutrition) => {
+          if (nutrition.id === id) {
+            return {
+              ...nutrition,
+              deletedAt: new Date(),
+            };
+          }
+          return nutrition;
+        })
+      );
+      alert(response.data.message);
     } catch (err) {
       console.log(err.message);
     }
+  };
+  // 수정 버튼을 클릭 시 setSelectedNutrition에 nutrition을 담아서 링크를 이동시킴.
+  const handleEdit = (nutrition) => {
+    setSelectedNutrition(nutrition);
+    navigate('/admin/AddNutrition');
   };
 
   if (isLoading) {
@@ -41,20 +75,20 @@ function NutritionMange() {
         </tr>
       </thead>
       <tbody>
-        {fetchedNutrition.map((nut) => (
-          <tr key={nut.id}>
+        {nutritionList.map((nutrition) => (
+          <tr key={nutrition.id}>
             <TableData>
-              <SmallImage src={nut.image} />
+              <SmallImage src={nutrition.image} />
             </TableData>
-            <TableData>{nut.name}</TableData>
-            <TableData>{nut.shortDescription}</TableData>
-            <TableData>{nut.longDescription}</TableData>
-            <TableData>{nut.createdAt}</TableData>
+            <TableData>{nutrition.name}</TableData>
+            <TableData>{nutrition.shortDescription}</TableData>
+            <TableData>{nutrition.longDescription}</TableData>
+            <TableData>{nutrition.createdAt}</TableData>
             <TableData>
-              <StatusButton onClick={() => handleDelete(nut.id)}>
+              <StatusButton onClick={() => handleEdit(nutrition)}>
                 수정
               </StatusButton>
-              <StatusButton onClick={() => handleDelete(nut.id)}>
+              <StatusButton onClick={() => handleDelete(nutrition.id)}>
                 삭제
               </StatusButton>
             </TableData>
