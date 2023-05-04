@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
 import { Link } from 'react-scroll';
-import { atom, useAtom } from 'jotai';
 
 const MainPage = () => {
   const [ref1, inView1] = useInView({

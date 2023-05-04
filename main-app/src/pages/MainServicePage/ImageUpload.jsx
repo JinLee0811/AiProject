@@ -1,47 +1,78 @@
-import { useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Dropzone from 'react-dropzone';
-import { atom, useAtom } from 'jotai';
-import useApiRequest from '../../API/useApi';
-import axios from 'axios';
-
-const fileAtom = atom(null);
-const resultAtom = atom('진단 내용이 없습니다');
-
-const uploadFile = async (formData) => {
-  const response = await axios.post('/api/upload', formData);
-  return response.data.result;
-};
+import { useAtom } from 'jotai';
+import { fileAtom, resultAtom } from '../../Atoms/MainServiceAtom';
+import { useCreateImage, useCreateSolution } from '../../API/MainServiceApi';
 
 const ImageUpload = () => {
   const [file, setFile] = useAtom(fileAtom);
   const [result, setResult] = useAtom(resultAtom);
-  const [error, setError] = useState(null);
-
-  const { isLoading: isApiRequestLoading, sendRequest } = useApiRequest();
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const result = await sendRequest('/api/upload', 'post', formData);
-      setResult(result);
-    } catch (error) {
-      setError(error);
-    }
-  };
+  const { mutate: createImage, isLoading: isImageUploading } = useCreateImage();
+  const { mutate: createSolution, isLoading: isSolutionCreating } =
+    useCreateSolution();
 
   const handleDrop = (acceptedFiles) => {
     setFile(acceptedFiles[0]);
   };
+
+  // 이미지 업로드 로직
+  const handleImageUpload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const data = await createImage(formData);
+      setResult({
+        title: data.title,
+        items: data.items,
+        imageUrl: URL.createObjectURL(file),
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 데이터 저장 로직 (저장을 한번만 시키기)
+  const handleSolutionCreate = async () => {
+    if (!result || isSolutionCreating) {
+      return;
+    }
+    try {
+      const solution = {
+        title: result.title,
+        items: result.items,
+      };
+      const data = await createSolution(solution);
+      console.log('Created solution:', data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 초기화 로직
+  const handleReset = () => {
+    setFile(null);
+    setResult(null);
+  };
+  // 초기화 버튼과 저장 버튼 활성화/비활성화 조건
+  const isResetDisabled = !file && !result;
+  const isSaveDisabled = !result || isSolutionCreating;
+
+  // 업로드 된 파일이나 결과값이 바뀌면 초기화
+  useEffect(() => {
+    if (!file && !result) {
+      return;
+    }
+    setFile(null);
+    setResult(null);
+  }, [result, setResult]);
 
   return (
     <>
       <Wrapper>
         <LeftBox>
           <Title>아픈 작물의 이미지를 올려주세요.</Title>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleImageUpload}>
             <Dropzone onDrop={handleDrop} accept='image/*' multiple={false}>
               {({ getRootProps, getInputProps }) => (
                 <FileUploader {...getRootProps()}>
@@ -57,32 +88,62 @@ const ImageUpload = () => {
                 </FileUploader>
               )}
             </Dropzone>
-            <Button onClick={handleSubmit} disabled={isApiRequestLoading}>
-              {isApiRequestLoading ? '진단 중...' : '진단하기'}
+
+            <Button
+              onClick={handleImageUpload}
+              disabled={!file || isImageUploading}>
+              {isImageUploading ? '진단 중...' : '진단하기'}
             </Button>
           </form>
         </LeftBox>
         <Arrow>➡</Arrow>
         <RightBox>
           <Title>진단을 확인하세요.</Title>
-          <ResultBox>
-            <ResultTitle>{result.title}</ResultTitle>
-            <Result>
-              <ul>
-                {result &&
-                  result.items &&
-                  result.items.map((item) => <li key={item}>{item}</li>)}
-              </ul>
-            </Result>
-          </ResultBox>
-          <Button onClick={handleSubmit} disabled={isApiRequestLoading}>
-            {isApiRequestLoading ? '진단 중...' : '저장하기'}
-          </Button>
+          <form onSubmit={handleSolutionCreate}>
+            {/* <ResultBox>
+              <ResultTitle> 예측 작물 : {result.crop_name}</ResultTitle>
+              <Result>질병 이름: {result.disease_name}</Result>
+              <Result>해결책: {result.disease_solution}</Result>
+            </ResultBox> */}
+            <ResultBox>
+              <ResultTitle> 예측 작물 :asdasd</ResultTitle>
+              <ResultTitle>질병 이름: asdasd</ResultTitle>
+
+              <Result>
+                "감염된 식물 부분은 즉시 제거하고 폐기해야 합니다.", "물을 뿌릴
+                때 잎에 직접 물이 닿지 않도록 하고, 대신 뿌리 부근에 물을
+                주세요.", "예방을 위해 식물을 심기 전에 씨앗을 잠시 물에
+                담갔다가 건조시키는 방법이 효과적입니다."
+              </Result>
+            </ResultBox>
+            <Button onClick={handleReset} disabled={isResetDisabled}>
+              초기화
+            </Button>
+            <Button onClick={handleSolutionCreate} disabled={isSaveDisabled}>
+              {isSolutionCreating ? '저장 중...' : '저장하기'}
+            </Button>
+          </form>
         </RightBox>
       </Wrapper>
     </>
   );
 };
+
+const Wrapper = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: 968px) {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 350px;
+    height: 100vh;
+  }
+`;
 
 const LeftBox = styled.div`
   display: flex;
@@ -93,7 +154,6 @@ const RightBox = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 60px;
 `;
 const Arrow = styled.div`
   margin: 50px;
@@ -106,17 +166,10 @@ const Title = styled.div`
   font-weight: 900;
   margin: 10px;
 `;
-const Wrapper = styled.div`
-  position: relative;
-  width: 100vw;
-  height: 80vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 const Button = styled.button`
   padding: 10px 20px;
+  margin-right: 10px;
   background-color: #4ba888;
   color: white;
   border: none;
@@ -128,35 +181,29 @@ const Button = styled.button`
   }
 `;
 const ResultBox = styled.div`
-  background-color: white;
   display: flex;
   align-items: center;
   flex-direction: column;
   width: 400px;
   height: 500px;
-  border: 1px solid #4ba888;
+  margin-bottom: 20px;
+  border: 1px solid #759783;
+  border-radius: 5px;
+  background-color: #d8dddb98;
 `;
 const ResultTitle = styled.div`
-  margin: 20px;
+  align-items: center;
+  justify-content: center;
   font-size: 20px;
   font-weight: 700;
 `;
 const Result = styled.div`
-  margin: 20px;
-  font-size: 18px;
-  background-color: #d8dddb98;
-
-  ul {
-    text-decoration: none;
-    list-style: none;
-    margin-right: 30px;
-
-    & li {
-      text-decoration: none;
-      font-size: 1rem;
-      margin-top: 20px;
-    }
-  }
+  margin: 10px;
+  font-size: 3px;
+  align-items: center;
+  font-size: 15px;
+  background-color: white;
+  border: 1px solid black;
 `;
 
 const FileUploader = styled.div`
@@ -176,6 +223,11 @@ const Image = styled.img`
   height: 100%;
   object-fit: cover;
   border-radius: 5px;
+`;
+
+const Message = styled.div`
+  font-size: 18px;
+  font-weight: 600;
 `;
 
 export default ImageUpload;
