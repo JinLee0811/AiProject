@@ -76,7 +76,7 @@ const router = createBrowserRouter([
         element: <NutritionPage1 />,
       },
       {
-        path: '/boardForm',
+        path: '/board/Form',
         element: <BoardFormPage />,
       },
       {

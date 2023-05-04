@@ -21,7 +21,24 @@ export const FormContainer = styled.div`
   font-family: 'Spoqa Han Sans Neo';
   color: #555555;
   font-weight: bold;
-
+  .buttons {
+    margin-left: 80%;
+    button {
+      margin-right: 10px;
+      padding: 10px 20px;
+      background-color: #4ba888;
+      color: white;
+      font-family: 'Spoqa Han Sans Neo';
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      :hover {
+        background-color: #759783;
+      }
+    }
+  }
   h1.title {
     font-size: 20px;
     width: 800px;

@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
-import * as S from './BoardDetail.style';
+import * as S from '../BoardDetail.style';
 // import { useInView } from 'react-intersection-observer';
-import { useAtom } from 'jotai';
-import { useAddCommentMutation } from '../../API/useAddCommentMutation';
-import { selectedBoardAtom, commentsAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
-import { useNavigate } from 'react-router-dom';
+import { useAtom, useAtomValue } from 'jotai';
+import { useAddCommentMutation } from '../../../API/useAddCommentMutation';
+import { selectedPostAtom, commentsAtom } from './atom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 
 const BoardDetail = () => {
-  const [selectedBoard, setSelectedBoard] = useAtom(selectedBoardAtom); // useAtomValue를 사용하면 저장된 selectedPost 상태값을 바로가져옴
-  //list에서 setSelectedPost(post) 로 받아온거를 한번 더 보내줘야하니까 selectedPost를 board/Form으로 보내준다.
-  const navigate = useNavigate();
-  const handleEdit = (selectedBoard) => {
-    //수정버튼
-    setSelectedBoard(selectedBoard);
-    navigate('/board/Form');
-  };
+  // const location = useLocation(); //list에서 해당 정보만 받아오는 부분
+
+  // const { title, content, like, image, nickname, views, commentCount, time } =
+  //   location.state;
+  const selectedPost = useAtomValue(selectedPostAtom); // useAtomValue를 사용하면 저장된 selectedPost 상태값을 바로가져옴
+  // const { title, content, like, image, nickname, views, commentCount, time } =
+  //   selectedPost || {};
+
   const [comments, setComments] = useAtom(
     //comments와 setComments 모두 써야해서 useAtom 씀.
     commentsAtom
+    //댓글과 대댓글을 담는 comments 배열
+    // { text: '첫 번째 댓글', replies: [] }
   );
 
   const [input, setInput] = useState(''); //댓글입력상태
@@ -55,6 +56,27 @@ const BoardDetail = () => {
     );
   };
 
+  // 일반적인 axios 요청
+  // const handleSubmit = (e) => {
+  //   //새 댓글 배열에 추가하는 axios post요청 ㅇㅇ.
+  //   const handleSubmit = async(e) => {
+  //     e.preventDefault();
+  //     try {
+  //       const response = await axios.post('/api/comments', {
+  //         text: input,
+  //         replies: [] //replies 는 해당댓글의 대댓글 배열을 의미함. input댓글값과 그 댓글의 대댓글이 들어올 배열이 보내짐.
+  //       });
+  //       setComments(...comments, response.data) //기존의 comments배열에 post의 응답데이터를 추가함
+  //       setInput('')
+  //     } catch(error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   e.preventDefault();
+  //   setComments([...comments, { text: input, replies: [] }]); //replies 는 해당댓글의 대댓글 배열을 의미함.
+  //   setInput('');
+  //   //댓글 대댓글 기능작동함 but 이건 프엔딴에서만 처리하는 로직, 서버통신안됨
+  // };
   const handleReplySubmit = (e, index) => {
     //해당 index가 들어오면 comments의 replies배열에 인풋값 추가.
     e.preventDefault();
@@ -87,26 +109,44 @@ const BoardDetail = () => {
     }
   }
 
+  // const [likeCount, setLikeCount] = useAtom(atom(selectedPost.like || 0));
+  // const [liked, setLiked] = useAtom(atom(likeCount > 0));
+
+  // useEffect(() => {
+  //   setLiked(likeCount > 0);
+  // }, [likeCount, setLiked]);
+
+  // const handleLikeClick = () => {
+  //   if (liked) {
+  //     setLikeCount(likeCount - 1);
+  //     setLiked(false);
+  //   } else {
+  //     setLikeCount(likeCount + 1);
+  //     setLiked(true);
+  //   }
+  // };
   return (
     <S.Container>
       <S.FormContainer>
         <div className='buttons'>
-          <button onClick={() => handleEdit(selectedBoard)}>수정</button>
+          <button type='submit' disabled={!input}>
+            수정
+          </button>
           <button type='submit' disabled={!input}>
             삭제
           </button>
         </div>
-        <h1 className='title'>{selectedBoard.title}</h1>
+        <h1 className='title'>{selectedPost.title}</h1>
         <div className='information'>
           <span className='material-symbols-outlined'>emoji_nature</span>
-          <p className='nickname'>{selectedBoard.nickname}</p>
-          <p className='time'>{filterTime(selectedBoard.time)}</p>
+          <p className='nickname'>{selectedPost.nickname}</p>
+          <p className='time'>{filterTime(selectedPost.time)}</p>
         </div>
-        <h2 className='content'>{selectedBoard.content}</h2>
-        <h2 className='image'>{selectedBoard.image}</h2>
+        <h2 className='content'>{selectedPost.content}</h2>
+        <h2 className='image'>{selectedPost.image}</h2>
         <p className='comment'>
-          조회 {selectedBoard.views} • 댓글 {selectedBoard.commentCount} • 관심{' '}
-          {selectedBoard.like}
+          조회 {selectedPost.views} • 댓글 {selectedPost.commentCount} • 관심{' '}
+          {selectedPost.like}
           {/* <button onClick={handleLikeClick}>
             {likeCount} {liked ? '취소' : '추가'}
           </button> */}

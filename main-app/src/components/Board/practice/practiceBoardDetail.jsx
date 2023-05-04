@@ -1,60 +1,64 @@
 import React, { useState } from 'react';
-import * as S from './BoardDetail.style';
+import * as S from '../BoardDetail.style';
 // import { useInView } from 'react-intersection-observer';
 import { useAtom } from 'jotai';
-import { useAddCommentMutation } from '../../API/useAddCommentMutation';
-import { selectedBoardAtom, commentsAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
+import { useDeleteBoard } from '../../../API/BoardAPi';
+import { useCreateComment } from '../../../API/CommentApi';
+import { selectedBoardAtom, commentsAtom } from '../../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 import { useNavigate } from 'react-router-dom';
 
 const BoardDetail = () => {
   const [selectedBoard, setSelectedBoard] = useAtom(selectedBoardAtom); // useAtomValue를 사용하면 저장된 selectedPost 상태값을 바로가져옴
-  //list에서 setSelectedPost(post) 로 받아온거를 한번 더 보내줘야하니까 selectedPost를 board/Form으로 보내준다.
   const navigate = useNavigate();
   const handleEdit = (selectedBoard) => {
-    //수정버튼
-    setSelectedBoard(selectedBoard);
+    //수정하기 버튼 클릭시 Form으로 이동
+    setSelectedBoard(selectedBoard); //selectedBoard 한 번 더넣어서 Form으로 보내
     navigate('/board/Form');
   };
+  const { mutate: deleteBoard } = useDeleteBoard();
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteBoard(id);
+      setSelectedBoard((prevBoards) =>
+        prevBoards.map((board) => {
+          if (board.id === id) {
+            return {
+              ...board,
+              deleteAt: new Date(),
+            };
+          }
+          return board;
+        })
+      );
+      alert(response.data.message);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   const [comments, setComments] = useAtom(
     //comments와 setComments 모두 써야해서 useAtom 씀.
     commentsAtom
   );
-
   const [input, setInput] = useState(''); //댓글입력상태
   const [replyInput, setReplyInput] = useState(''); //대댓글 입력상태
   const [replyIndex, setReplyIndex] = useState(null); //대댓글 작성할 댓글의 index 담는상태
 
-  // post요청한 댓글을 get하는 로직을 비동기 fetchData 함수에 담는다!
-  // useEffect(() => { 컴포넌트가 렌더링될 때 한 번만 시행하도록 useEffect 씀
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('/api/comments');
-  //       setComments(response.data)
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // fetchData(); 얘가 렌더링시 알아서 실행되면서~ comments에 response.data가 불러와짐.
-  // },[]) //두번째 인자로 빈 배열줘야 fetchData 함수가 한 번만 실행
+  const { mutate: createComment } = useCreateComment();
+  // 내가 만든 훅은 mutate를 통해 반환한다!
 
-  const { mutate } = useAddCommentMutation({
-    onSuccess: (data) => {
-      //data = 서버로부터 반환된 새 댓글 객체
-      setComments([...comments, data]); //댓글 작성 후에 새로운댓글 목록에 추가됨!
-      setInput('');
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  }); // 내가 만든 훅은 mutate를 통해 반환한다! 기억하기~!
-  const handleSubmit = (e) => {
-    // react-query훅
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    mutate(
-      { text: input, replies: [] } //첫번째 매개변수는 오롯이 요청에 필요한 데이터만! setComments등의 함수는 무조건 option에서.
-    );
+    try {
+      const data = await createComment({ text: input }); //댓글 작성 후에 새로운댓글 목록에 추가됨!
+      //data = 서버로부터 반환된 새 댓글 객체
+      setComments(data);
+      setInput('');
+    } catch (err) {
+      console.log(err);
+    }
   };
-
   const handleReplySubmit = (e, index) => {
     //해당 index가 들어오면 comments의 replies배열에 인풋값 추가.
     e.preventDefault();
@@ -92,9 +96,7 @@ const BoardDetail = () => {
       <S.FormContainer>
         <div className='buttons'>
           <button onClick={() => handleEdit(selectedBoard)}>수정</button>
-          <button type='submit' disabled={!input}>
-            삭제
-          </button>
+          <button onClick={() => handleDelete(selectedBoard.id)}>삭제</button>
         </div>
         <h1 className='title'>{selectedBoard.title}</h1>
         <div className='information'>
