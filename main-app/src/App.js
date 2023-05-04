@@ -27,8 +27,9 @@ const AllDiv = styled.div`
   /* 반응형 스타일 */
 
   @media (min-width: 768px) {
-    flex-direction: row;
-    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 `;
 

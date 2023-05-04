@@ -56,6 +56,7 @@ const Container = styled.section`
   display: flex;
   flex-direction: row;
   height: 100vh;
+  width: 100vh;
   margin-top: 2rem;
   @media (max-width: 768px) {
     flex-direction: column;

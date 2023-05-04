@@ -26,15 +26,19 @@ const Navbar = () => {
 
   return (
     <>
-      <Nav>
+      <NavLogo>
         <StyledLink to='/'>
           <LogoBox>
             <LogoImage src='https://cdn-icons-png.flaticon.com/512/5186/5186886.png' />
             <Logo>CropDoctor</Logo>
           </LogoBox>
         </StyledLink>
-
+      </NavLogo>
+      <Nav>
         <Menu>
+          <StyledLink to='/'>
+            <MenuItem>홈</MenuItem>
+          </StyledLink>
           <StyledLink to='/service'>
             <MenuItem1>진단하기</MenuItem1>
           </StyledLink>
@@ -58,6 +62,7 @@ const Navbar = () => {
           <StyledLink to='/signup'>
             <MenuItem>회원가입</MenuItem>
           </StyledLink>
+          {/* <SearchInput placeholder={'Crop을 검색하세요.'} /> */}
         </Menu>
       </Nav>
       <NavWrite>
@@ -66,7 +71,20 @@ const Navbar = () => {
     </>
   );
 };
-
+const NavLogo = styled.div`
+  width: 100%;
+  height: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 700;
+  background-color: white;
+  padding: 10px;
+  margin-bottom: 0px;
+  margin-top: 15px;
+  font-size: 17px;
+`;
 const LogoBox = styled.div`
   display: flex;
   align-items: center;
@@ -85,7 +103,7 @@ const Nav = styled.nav`
   align-items: center;
   background-color: #fff;
   padding: 10px;
-  margin: 2px;
+  margin: 0px;
   min-width: 900px;
 `;
 const fadeInOut = keyframes`
@@ -140,7 +158,7 @@ const Menu = styled.ul`
 const MenuItem1 = styled.li`
   padding: 5px;
   margin-right: 20px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 900;
   line-height: 24px;
   color: #4ba888;
@@ -151,7 +169,7 @@ const MenuItem1 = styled.li`
 `;
 const MenuItem = styled.li`
   margin-right: 20px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 24px;
   color: black;
@@ -162,14 +180,25 @@ const MenuItem = styled.li`
 `;
 
 const SearchInput = styled.input`
-  border: none;
-  border-bottom: 1px solid #ccc;
-  font-size: 1rem;
-  padding: 5px;
-  margin: 0 10px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+  letter-spacing: -0.6px;
+  line-height: 14.4px;
+  text-decoration: none solid rgb(77, 77, 77);
+  word-spacing: 0px;
+  padding: 3px;
+  width: 100px;
+  margin: 0 5px;
+  background-color: #f2f2f2;
+  background-position: 0% 0%;
+  color: #4d4d4d;
   &:focus {
     outline: none;
     border-bottom: 1px solid #000;
+  }
+  &::placeholder {
+    font-size: 5px;
+    color: #999;
   }
 `;
 
