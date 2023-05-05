@@ -9,7 +9,7 @@ export const useGetComment = (boardId) => {
 };
 
 //댓글 post
-export const useCreateComment = (boardId) => {
+export const useCreateComment = (boardId, pId) => {
   // postman으로 endPoint 보내는 거 보고 맞추기.
   const queryClient = useQueryClient();
 

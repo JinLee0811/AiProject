@@ -1,17 +1,16 @@
 import { React, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as S from './BoardForm.style';
 import Dropzone from 'react-dropzone';
 import { useCreateBoard, useUpdateBoard } from '../../../API/BoardAPi';
 import { selectedBoardAtom } from '../../../Atoms/BoardAtom';
 import { useAtomValue } from 'jotai';
+import { BOARD_PATH } from '../../common/path';
 
-const BoardForm = () => {
+const BoardForm = ({ onPageChange }) => {
   const selectedBoard = useAtomValue(selectedBoardAtom); //detail에서 넘어온 값들이 곧 selectedBoard임
   const [title, setTitle] = useState(selectedBoard?.title || '');
   const [content, setContent] = useState(selectedBoard?.content || '');
   const [image, setImage] = useState(null);
-  const navigate = useNavigate();
 
   const { mutate: createPost, isLoading: isCreating } = useCreateBoard(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
   const { mutate: updatePost, isLoading: isUpdating } = useUpdateBoard();
@@ -38,7 +37,7 @@ const BoardForm = () => {
     } catch (error) {
       console.log(error);
     }
-    navigate('/BoardListPage');
+    onPageChange(BOARD_PATH);
   };
 
   const handleDrop = (acceptedFiles) => {
