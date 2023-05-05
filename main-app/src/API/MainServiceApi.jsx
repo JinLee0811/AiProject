@@ -30,7 +30,7 @@ export const useGetSolutions = (options) => {
   );
 };
 
-// POST Hook: 해결책 등록
+// POST Hook: 해결책 저장
 export const useCreateSolution = () => {
   const queryClient = useQueryClient();
 

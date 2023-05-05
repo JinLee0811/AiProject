@@ -62,7 +62,7 @@ const Navbar = () => {
           <StyledLink to='/signup'>
             <MenuItem>회원가입</MenuItem>
           </StyledLink>
-          {/* <SearchInput placeholder={'Crop을 검색하세요.'} /> */}
+          <SearchInput placeholder={'Crop을 검색하세요.'} />
         </Menu>
       </Nav>
       <NavWrite>
@@ -88,7 +88,6 @@ const NavLogo = styled.div`
 const LogoBox = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 30px;
 `;
 const LogoImage = styled.img`
   height: 40px;
