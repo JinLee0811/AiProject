@@ -1,64 +1,197 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../../API/authApi';
+import LogoPng from '../../../components/image/Logo.png';
 
-const Login = () => {
+const LoginForm = () => {
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await login(email, password);
+      console.log('로그인 성공!');
+    } catch (error) {
+      console.error('로그인 실패:', error.message);
+    }
+  };
+
   return (
-    <LoginWrapper>
-      <Loginform>
-        <h1>로그인</h1>
-        <InputWrapper>
-          <label>이메일</label>
-          <br />
-          <input
-            type='email'
-            // required
-            // value={email}
-            placeholder='이메일을 입력하세요'
-          />
-        </InputWrapper>
-        <InputWrapper>
-          <label>비밀번호</label>
-          <br />
-          <input
-            type='password'
-            // required
-            // value={password}
-            placeholder='비밀번호를 입력하세요'
-          />
-        </InputWrapper>
-        <button>로그인</button>
-        <GotoSignup>회원가입</GotoSignup>
-      </Loginform>
-    </LoginWrapper>
+    <LoginFormContainer>
+      <StyledLink to='/'>
+        <LogoContainer>
+          <LogoImage src={LogoPng} />
+          <Logo>CropDoctor</Logo>
+        </LogoContainer>
+      </StyledLink>
+      <Form onSubmit={handleSubmit}>
+        <Label htmlFor='email'>이메일:</Label>
+        <Input
+          type='email'
+          id='email'
+          name='email'
+          value={email}
+          placeholder='이메일'
+          onChange={handleEmailChange}
+        />
+
+        <Label htmlFor='password'>비밀번호:</Label>
+        <Input
+          type='password'
+          id='password'
+          name='password'
+          placeholder='비밀번호 4자 이상'
+          value={password}
+          onChange={handlePasswordChange}
+        />
+        <Button type='submit'>로그인</Button>
+        <LastDiv>
+          <CheckboxLabel>
+            <input type='checkbox' id='remember-me' name='remember-me' />
+            이메일 저장
+          </CheckboxLabel>
+          <SignupLink href='/signup'>회원가입</SignupLink>
+        </LastDiv>
+      </Form>
+    </LoginFormContainer>
   );
 };
 
-const LoginWrapper = styled.div`
+const LoginFormContainer = styled.div`
+  height: 85vh;
+  margin: 0 auto;
+  max-width: 400px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const Loginform = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-size: 16px;
   flex-direction: column;
-  width: 300px;
-  height: 600px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  button {
-    background-color: green;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
-    margin-top: 40px;
-  }
-`;
-const InputWrapper = styled.div``;
-const GotoSignup = styled.div`
-  color: green;
-  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
 `;
 
-export default Login;
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+`;
+const LogoImage = styled.img`
+  height: 55px;
+  width: 55px;
+  margin-right: 0px;
+`;
+const Logo = styled.h1`
+  font-size: 2.3rem;
+  font-weight: bold;
+  color: #759683;
+  margin: 0;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const Label = styled.label`
+  margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const Input = styled.input`
+  font-size: 17px;
+  letter-spacing: -0.6px;
+  line-height: 18px;
+  text-indent: 18px;
+  color: #808080;
+  text-decoration: none solid rgb(128, 128, 128);
+  background-color: white;
+  display: inline-block;
+  height: 50px;
+  width: 400px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #d9d9d9;
+  cursor: text;
+`;
+
+const CheckboxLabel = styled.label`
+  margin-top: 5px;
+  font-weight: 500;
+  display: inline;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: left;
+  word-spacing: 0px;
+  color: #222624;
+  height: auto;
+  width: auto;
+  cursor: pointer;
+`;
+
+const Button = styled.button`
+  display: inline-block;
+  height: 50px;
+  width: 400px;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0 0;
+  background-color: #759783;
+  font-size: 15px;
+  letter-spacing: -0.6px;
+  text-decoration: none solid rgb(128, 128, 128);
+  vertical-align: middle;
+  word-spacing: 0px;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  :hover {
+    background-color: #4ba888;
+  }
+`;
+
+const SignupLink = styled.a`
+  margin-left: 230px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  height: 22px;
+  width: 400px;
+  color: #808080;
+  text-decoration: none solid rgb(77, 77, 77);
+  position: relative;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+`;
+
+const LastDiv = styled.div`
+  font-size: 12px;
+  text-align: left;
+  height: 22px;
+  width: 400px;
+  margin: 10px 0 0;
+  color: #4d4d4d;
+  text-decoration: none solid rgb(77, 77, 77);
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
+
+export default LoginForm;
