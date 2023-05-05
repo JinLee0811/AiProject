@@ -33,7 +33,7 @@ const Navbar = () => {
           <StyledLink to='/board'>
             <MenuItem>크롭토크</MenuItem>
           </StyledLink>
-          <StyledLink to='/nutrition'>
+          <StyledLink to='/nutritionpage'>
             <MenuItem>크롭영양제</MenuItem>
           </StyledLink>
           <StyledLink to='/admin/user'>

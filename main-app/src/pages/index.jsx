@@ -10,8 +10,11 @@ import MyPage from './MyPage/MyPage';
 import MyDataPage from './MyPage/MyDataPage';
 import MyListPage from './MyPage/MyListPage';
 import MySignOutPage from './MyPage/MySignOutPage';
-import NutritionPage from './ServicePage/NutritionPage';
-import NutritionPage1 from './ServicePage/NutritionSubPage/NutritionPage1';
+import NutritionPage from './NutritionPage/NutritionPage';
+import NutritionPage1 from './NutritionPage/NutritionPage1';
+import NCategory1 from './NutritionPage/NCategory1';
+import NCategory2 from './NutritionPage/NCategory2';
+import NCategory3 from './NutritionPage/NCategory3';
 import AdminPage from './AdminPage/AdminPage';
 import BoardManage from './AdminPage/BoardManage';
 import UserManage from './AdminPage/UserManage';
@@ -30,6 +33,9 @@ export {
   MySignOutPage,
   NutritionPage,
   NutritionPage1,
+  NCategory1,
+  NCategory2,
+  NCategory3,
   ImageUpload,
   BoardDetailPage,
   BoardFormPage,
