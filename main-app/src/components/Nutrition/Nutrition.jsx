@@ -1,6 +1,6 @@
 import { React, useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
-import * as S from './BorardNutrition.style';
+import * as S from './Nutrition.style';
 import axios from 'axios';
 import { nutritionsAtom, selectedNutritionAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
 import { useNavigate } from 'react-router-dom';
