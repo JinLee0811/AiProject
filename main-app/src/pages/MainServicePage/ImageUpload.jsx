@@ -4,6 +4,7 @@ import Dropzone from 'react-dropzone';
 import { useAtom } from 'jotai';
 import { fileAtom, resultAtom } from '../../Atoms/MainServiceAtom';
 import { useCreateImage, useCreateSolution } from '../../API/MainServiceApi';
+// 이미지 url 받기
 
 const ImageUpload = () => {
   const [file, setFile] = useAtom(fileAtom);
@@ -54,7 +55,7 @@ const ImageUpload = () => {
     setFile(null);
     setResult(null);
   };
-  // 초기화 버튼과 저장 버튼 활성화/비활성화 조건
+  // 초기화 버튼과 저장 버튼 활성화 / 비활성화 조건
   const isResetDisabled = !file && !result;
   const isSaveDisabled = !result || isSolutionCreating;
 
@@ -106,6 +107,7 @@ const ImageUpload = () => {
               <Result>해결책: {result.disease_solution}</Result>
             </ResultBox> */}
             <ResultBox>
+              <ResultImage src='' />
               <ResultTitle> 예측 작물 :asdasd</ResultTitle>
               <ResultTitle>질병 이름: asdasd</ResultTitle>
 
@@ -187,7 +189,7 @@ const ResultBox = styled.div`
   width: 400px;
   height: 500px;
   margin-bottom: 20px;
-  border: 1px solid #759783;
+  border: 2px solid #759783;
   border-radius: 5px;
   background-color: #d8dddb98;
 `;
@@ -203,6 +205,12 @@ const Result = styled.div`
   align-items: center;
   font-size: 15px;
   background-color: white;
+  border: 1px solid black;
+`;
+const ResultImage = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
   border: 1px solid black;
 `;
 

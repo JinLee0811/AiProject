@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import LogoPng from '../../../components/image/Logo.png';
 
 const SignUpForm = () => {
   // 각 입력 필드의 상태를 관리하는 state를 정의합니다.
@@ -28,7 +29,7 @@ const SignUpForm = () => {
     <Container>
       <StyledLink to='/'>
         <LogoContainer>
-          <LogoImage src='https://cdn-icons-png.flaticon.com/512/5186/5186886.png' />
+          <LogoImage src={LogoPng} />
           <Logo>CropDoctor</Logo>
           <Logo1>회원가입</Logo1>
         </LogoContainer>
@@ -112,7 +113,7 @@ const Container = styled.div`
 const LogoContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 `;
 const LogoImage = styled.img`
   height: 55px;
@@ -141,10 +142,10 @@ const Form = styled.form`
   align-items: flex-start;
 `;
 const Label = styled.label`
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 5px;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 const Input = styled.input`

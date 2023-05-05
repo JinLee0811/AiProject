@@ -28,20 +28,20 @@ import {
 
 const router = createBrowserRouter([
   {
-    path: '/login',
-    element: <LoginPage />,
-  },
-  {
-    path: '/signup',
-    element: <SignUpPage />,
-  },
-  {
     path: '/',
     element: <App />,
     children: [
       {
         path: '/',
         element: <MainPage />,
+      },
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
+      {
+        path: '/signup',
+        element: <SignUpPage />,
       },
       {
         path: '/mypage',

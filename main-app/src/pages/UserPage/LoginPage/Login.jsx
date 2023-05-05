@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../../API/authApi';
+import LogoPng from '../../../components/image/Logo.png';
 
 const LoginForm = () => {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -15,22 +17,21 @@ const LoginForm = () => {
     setPassword(event.target.value);
   };
 
-  const handleRememberMeChange = () => {
-    setRememberMe(!rememberMe);
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
-    console.log('Remember me:', rememberMe);
+    try {
+      await login(email, password);
+      console.log('로그인 성공!');
+    } catch (error) {
+      console.error('로그인 실패:', error.message);
+    }
   };
 
   return (
     <LoginFormContainer>
       <StyledLink to='/'>
         <LogoContainer>
-          <LogoImage src='https://cdn-icons-png.flaticon.com/512/5186/5186886.png' />
+          <LogoImage src={LogoPng} />
           <Logo>CropDoctor</Logo>
         </LogoContainer>
       </StyledLink>
@@ -57,13 +58,7 @@ const LoginForm = () => {
         <Button type='submit'>로그인</Button>
         <LastDiv>
           <CheckboxLabel>
-            <input
-              type='checkbox'
-              id='remember-me'
-              name='remember-me'
-              checked={rememberMe}
-              onChange={handleRememberMeChange}
-            />
+            <input type='checkbox' id='remember-me' name='remember-me' />
             이메일 저장
           </CheckboxLabel>
           <SignupLink href='/signup'>회원가입</SignupLink>
@@ -109,6 +104,8 @@ const Form = styled.form`
 
 const Label = styled.label`
   margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: 600;
 `;
 
 const Input = styled.input`
