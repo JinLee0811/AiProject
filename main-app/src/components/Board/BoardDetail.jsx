@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import * as S from './BoardDetail.style';
 // import { useInView } from 'react-intersection-observer';
 import { useAtom } from 'jotai';
-import { useAddCommentMutation } from '../../API/useAddCommentMutation';
+import { useCreateComment } from '../../API/CommentApi';
 import { selectedBoardAtom, commentsAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 import { useNavigate } from 'react-router-dom';
+import { BOARD_FORM_PATH } from '../common/path';
 
 const BoardDetail = () => {
   const [selectedBoard, setSelectedBoard] = useAtom(selectedBoardAtom); // useAtomValue를 사용하면 저장된 selectedPost 상태값을 바로가져옴
@@ -13,7 +14,7 @@ const BoardDetail = () => {
   const handleEdit = (selectedBoard) => {
     //수정버튼
     setSelectedBoard(selectedBoard);
-    navigate('/board/Form');
+    navigate(BOARD_FORM_PATH);
   };
   const [comments, setComments] = useAtom(
     //comments와 setComments 모두 써야해서 useAtom 씀.
@@ -37,7 +38,7 @@ const BoardDetail = () => {
   // fetchData(); 얘가 렌더링시 알아서 실행되면서~ comments에 response.data가 불러와짐.
   // },[]) //두번째 인자로 빈 배열줘야 fetchData 함수가 한 번만 실행
 
-  const { mutate } = useAddCommentMutation({
+  const { mutate } = useCreateComment({
     onSuccess: (data) => {
       //data = 서버로부터 반환된 새 댓글 객체
       setComments([...comments, data]); //댓글 작성 후에 새로운댓글 목록에 추가됨!

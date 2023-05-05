@@ -1,32 +1,43 @@
 import { React, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as S from './BoardForm.style';
 import Dropzone from 'react-dropzone';
-// import { atom, useAtom } from 'jotai';
-// import { useBoardUploadMutation } from '../../API/useBoardUploadMutation';
+import { useCreateBoard, useUpdateBoard } from '../../API/BoardAPi';
+import { selectedBoardAtom } from '../../Atoms/BoardAtom';
+import { useAtomValue } from 'jotai';
+import { BOARD_PATH } from '../common/path';
 
-const BoardForm = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const BoardForm = ({ onPageChange }) => {
+  const selectedBoard = useAtomValue(selectedBoardAtom); //detail에서 넘어온 값들이 곧 selectedBoard임
+  const [title, setTitle] = useState(selectedBoard?.title || '');
+  const [content, setContent] = useState(selectedBoard?.content || '');
   const [image, setImage] = useState(null);
-  const navigate = useNavigate();
 
-  // const { mutate } = useBoardUploadMutation(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
-
-  const handleSubmit = (e) => {
+  const { mutate: createPost, isLoading: isCreating } = useCreateBoard(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
+  const { mutate: updatePost, isLoading: isUpdating } = useUpdateBoard();
+  // 여기서 mutate: createPost 는 mutate써먹을 함수명을 정하는 거겠죠?
+  const handleSubmit = async (e) => {
     //react-query사용시
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('title', title); //보낼 데이터 이름, 실제 데이터
-    formData.append('content', content);
-    formData.append('image', image);
-    // const formData = new FormData(e.target); 위 방식과 다를 게 없는 듯 한데 맞는지 근데 이럼 title 이름이랑 실제데이터 지정 못하는거아님?
-    // mutate(formData);
-    // mutate(formData); //formData 설정해서 추가할거 추가한 후 mutate에 담아주기만 하면 끝??
-    setTitle('');
-    setContent('');
-    setImage(null);
-    navigate('/BoardListPage');
+    try {
+      const formData = new FormData();
+      formData.append('title', title); //보낼 데이터 이름, 실제 데이터
+      formData.append('content', content);
+      formData.append('image', image);
+      // const formData = new FormData(e.target); 위 방식과 다를 게 없는 듯 한데 맞는지 근데 이럼 title 이름이랑 실제데이터 지정 못하는거아님?
+      // mutate(formData);
+      if (selectedBoard) {
+        //selectedPost 있으면 update 없으면 create
+        await updatePost({ id: selectedBoard.id, data: formData });
+      } else {
+        await createPost(formData);
+        // setTitle('');
+        // setContent('');
+        // setImage(null); //요렇게 작동 안될 시 useEffect 쓰기!
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    onPageChange(BOARD_PATH);
   };
 
   const handleDrop = (acceptedFiles) => {
@@ -76,7 +87,10 @@ const BoardForm = () => {
               </Dropzone>
             )}
           </div>
-          <button type='submit'>성장일지 작성하기</button>
+          <button type='submit' disabled={isCreating || isUpdating}>
+            {isCreating || isUpdating ? '작성 중...' : '작성하기'}
+          </button>
+          {/* 게시글 등록 혹은 업데이트가 진행중이면 중... 아니면 작성하기 + 추가적인 로직 생각해보기*/}
         </form>
       </S.FormContainer>
     </S.Container>

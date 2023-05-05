@@ -6,6 +6,7 @@ import { useDeleteBoard } from '../../../API/BoardAPi';
 import { useCreateComment } from '../../../API/CommentApi';
 import { selectedBoardAtom, commentsAtom } from '../../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 import { useNavigate } from 'react-router-dom';
+import { BOARD_FORM_PATH } from '../../common/path';
 
 const BoardDetail = () => {
   const [selectedBoard, setSelectedBoard] = useAtom(selectedBoardAtom); // useAtomValue를 사용하면 저장된 selectedPost 상태값을 바로가져옴
@@ -13,7 +14,7 @@ const BoardDetail = () => {
   const handleEdit = (selectedBoard) => {
     //수정하기 버튼 클릭시 Form으로 이동
     setSelectedBoard(selectedBoard); //selectedBoard 한 번 더넣어서 Form으로 보내
-    navigate('/board/Form');
+    navigate(BOARD_FORM_PATH);
   };
   const { mutate: deleteBoard } = useDeleteBoard();
 

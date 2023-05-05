@@ -1,14 +1,17 @@
 import { React, useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
-import { useNavigate } from 'react-router-dom';
 import * as S from './BoardList.style';
 import axios from 'axios';
 import { useGetBoard } from '../../API/BoardAPi';
 import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
-// import { onPageChange } from '../../pages/BoardPage/BoardListPage';
+import {
+  BOARD_PATH,
+  BOARD_DETAIL_PATH,
+  BOARD_MY_PATH,
+  BOARD_FORM_PATH,
+} from '../common/path';
 
-const BoardList = () => {
-  const navigate = useNavigate();
+const BoardList = ({ onPageChange }) => {
   const [boards, setBoards] = useAtom(boardsAtom); //axois.get을 통해 불러올 게시글 목록 표시
   const setSelectedBoard = useSetAtom(selectedBoardAtom); //클릭한 게시글의 정보를 저장하는 상태
   // const {
@@ -33,16 +36,16 @@ const BoardList = () => {
   const detailClick = (id) => {
     const board = boards.find((board) => board.id === id);
     setSelectedBoard(board); //해당 id의 게시글 정보를 selectedPostAtom에 저장 (selectedPostAtom에을 Detail에서 쓸거임)
-    navigate('/board/Detail');
+    onPageChange(BOARD_DETAIL_PATH);
   };
   const boardClick = () => {
-    navigate('/board');
+    onPageChange(BOARD_PATH);
   };
   const myBoardClick = () => {
-    navigate('/board/My');
+    onPageChange(BOARD_MY_PATH);
   };
   const formClick = () => {
-    navigate('/board/Form');
+    onPageChange(BOARD_FORM_PATH);
   };
   const shortenContent = (content) => {
     //5글자 이상인 경우 뒤는 ... 으로 요약처리!
