@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import * as S from './BoardForm.style';
 import Dropzone from 'react-dropzone';
 import { useCreateBoard, useUpdateBoard } from '../../API/BoardAPi';
@@ -8,12 +8,12 @@ import { BOARD_PATH } from '../common/path';
 
 const BoardForm = ({ onPageChange }) => {
   const selectedBoard = useAtomValue(selectedBoardAtom); //detail에서 넘어온 값들이 곧 selectedBoard임
-  const [title, setTitle] = useState(selectedBoard?.title || '');
-  const [content, setContent] = useState(selectedBoard?.content || '');
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
 
-  const { mutate: createPost, isLoading: isCreating } = useCreateBoard(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
-  const { mutate: updatePost, isLoading: isUpdating } = useUpdateBoard();
+  const { mutateAsync: createPost, isLoading: isCreating } = useCreateBoard(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
+  const { mutateAsync: updatePost, isLoading: isUpdating } = useUpdateBoard();
   // 여기서 mutate: createPost 는 mutate써먹을 함수명을 정하는 거겠죠?
   const handleSubmit = async (e) => {
     //react-query사용시
@@ -22,7 +22,7 @@ const BoardForm = ({ onPageChange }) => {
       const formData = new FormData();
       formData.append('title', title); //보낼 데이터 이름, 실제 데이터
       formData.append('content', content);
-      formData.append('image', image);
+      // formData.append('image', image); 이미지 부분 작동이 제대로 안됨..
       // const formData = new FormData(e.target); 위 방식과 다를 게 없는 듯 한데 맞는지 근데 이럼 title 이름이랑 실제데이터 지정 못하는거아님?
       // mutate(formData);
       if (selectedBoard) {
@@ -37,6 +37,7 @@ const BoardForm = ({ onPageChange }) => {
     } catch (error) {
       console.log(error);
     }
+    alert('작성이 완료되었습니다!');
     onPageChange(BOARD_PATH);
   };
 
@@ -46,6 +47,19 @@ const BoardForm = ({ onPageChange }) => {
     setImage(acceptedFiles[0]);
     console.log(acceptedFiles[0]);
   };
+
+  useEffect(() => {
+    if (selectedBoard) {
+      setTitle(selectedBoard.title);
+      setContent(selectedBoard.content);
+      // if (selectedBoard.image) {
+      //   setImage(selectedBoard.image);
+      // } else {
+      //   setImage(null);
+      // }
+    }
+  }, [selectedBoard]); //selectedBoard가 변경 될 때마다 실행한다 (3항연산자를 초기값으로 쓰는게 아니라 useEffect!)
+
   return (
     <S.Container>
       <S.FormContainer>

@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import * as S from './BoardForm.style';
 import Dropzone from 'react-dropzone';
 import { useCreateBoard, useUpdateBoard } from '../../../API/BoardAPi';
@@ -8,12 +8,12 @@ import { BOARD_PATH } from '../../common/path';
 
 const BoardForm = ({ onPageChange }) => {
   const selectedBoard = useAtomValue(selectedBoardAtom); //detail에서 넘어온 값들이 곧 selectedBoard임
-  const [title, setTitle] = useState(selectedBoard?.title || '');
-  const [content, setContent] = useState(selectedBoard?.content || '');
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
 
-  const { mutate: createPost, isLoading: isCreating } = useCreateBoard(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
-  const { mutate: updatePost, isLoading: isUpdating } = useUpdateBoard();
+  const { mutateAsync: createPost, isLoading: isCreating } = useCreateBoard(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
+  const { mutateAsync: updatePost, isLoading: isUpdating } = useUpdateBoard();
   // 여기서 mutate: createPost 는 mutate써먹을 함수명을 정하는 거겠죠?
   const handleSubmit = async (e) => {
     //react-query사용시
@@ -28,8 +28,10 @@ const BoardForm = ({ onPageChange }) => {
       if (selectedBoard) {
         //selectedPost 있으면 update 없으면 create
         await updatePost({ id: selectedBoard.id, data: formData });
+        alert('작성이 완료되었습니다!');
       } else {
         await createPost(formData);
+        alert('작성이 완료되었습니다!');
         // setTitle('');
         // setContent('');
         // setImage(null); //요렇게 작동 안될 시 useEffect 쓰기!
@@ -46,6 +48,16 @@ const BoardForm = ({ onPageChange }) => {
     setImage(acceptedFiles[0]);
     console.log(acceptedFiles[0]);
   };
+
+  //selectedBoard가 변경 될 때마다 실행한다 (3항연산자를 초기값으로 쓰는게 아니라 useEffect!)
+  useEffect(() => {
+    if (selectedBoard) {
+      setTitle(selectedBoard.title);
+      setContent(selectedBoard.content);
+      setImage(selectedBoard.image);
+    }
+  }, [selectedBoard]);
+
   return (
     <S.Container>
       <S.FormContainer>

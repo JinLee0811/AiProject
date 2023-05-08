@@ -113,9 +113,6 @@ export const CommentContainer = styled.div`
     border: grey;
     border-radius: 8px;
   }
-  form button {
-    margin-left: 92%;
-  }
 `;
 export const Reply = styled.div`
   p {
@@ -140,5 +137,27 @@ export const Comment = styled.div`
     border-radius: 6px;
   }
   .commentText {
+  }
+`;
+export const CommentManage = styled.div`
+  .write {
+    margin-left: 92%;
+  }
+`;
+export const CommentEdit = styled.div`
+  display: flex;
+  button {
+    background-color: white;
+    color: grey;
+    font-family: 'Spoqa Han Sans Neo';
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 5px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    :hover {
+      background-color: #4ba888;
+      color: white;
+    }
   }
 `;

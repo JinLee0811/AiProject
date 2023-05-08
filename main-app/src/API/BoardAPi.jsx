@@ -16,7 +16,7 @@ export const useGetBoard = (options) => {
 // 내 게시물 get
 export const useGetMyBoard = (userId) => {
   return useQuery(
-    ['myBoardList', userId], //query-key
+    'myBoardList', //query-key
     async () => {
       const { data } = await axios.get(`/board/${userId}`); // myList 만 가져올거라 :id
       return data;
