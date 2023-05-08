@@ -1,8 +1,7 @@
 import { React, useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import * as S from './BoardList.style';
-import axios from 'axios';
-import { useGetBoard } from '../../API/BoardAPi';
+import { useGetMyBoard } from '../../API/BoardAPi';
 import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
 import {
   BOARD_PATH,
@@ -11,33 +10,30 @@ import {
   BOARD_FORM_PATH,
 } from '../common/path';
 
-const BoardList = ({ onPageChange }) => {
+const BoardMyList = ({ onPageChange }) => {
   const [boards, setBoards] = useAtom(boardsAtom); //axois.get을 통해 불러올 게시글 목록 표시
   const setSelectedBoard = useSetAtom(selectedBoardAtom); //클릭한 게시글의 정보를 저장하는 상태
-  // const {
-  //   data: fetchedBoard,
-  //   isLoading,
-  //   isError,
-  // } = useGetBoard({
-  //   onError: (error) => console.log(error.message),
-  // }); //get
+  const { data: fetchedBoard, isLoading, isError } = useGetMyBoard(); //get
 
   useEffect(() => {
-    axios
-      .get('/BoardList.json')
-      .then((response) => {
-        setBoards(response.data); //가져온 data가 비어있던 postAtom에 업데이트 됨
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [setBoards]); //두번째 매개변수로 setPosts 박아둠으로써 상태가 업데이트될 때마다 데이터를 가져오고 컴포넌트를 업데이트
+    //fetchedBoard 상태 값이 변경될 때마다 useEffect 훅 호출
+    if (fetchedBoard) {
+      setBoards(fetchedBoard); //setBoards 에 변경된 상태값 담아서 boards 변경
+    }
+  }, [fetchedBoard, setBoards]);
 
   const detailClick = (id) => {
     const board = boards.find((board) => board.id === id);
     setSelectedBoard(board); //해당 id의 게시글 정보를 selectedPostAtom에 저장 (selectedPostAtom에을 Detail에서 쓸거임)
     onPageChange(BOARD_DETAIL_PATH);
   };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (isError) {
+    return <div>Error: {isError.message}</div>; // 서버에서 반환된 에러메세지 보여줌
+  }
+
   const boardClick = () => {
     onPageChange(BOARD_PATH);
   };
@@ -71,7 +67,6 @@ const BoardList = ({ onPageChange }) => {
       return `${filterDays}일 전`;
     }
   };
-
   return (
     <>
       <S.Container>
@@ -114,4 +109,5 @@ const BoardList = ({ onPageChange }) => {
     </>
   );
 };
-export default BoardList;
+
+export default BoardMyList;

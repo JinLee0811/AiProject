@@ -1,10 +1,10 @@
 import { React, useState } from 'react';
 import * as S from './BoardForm.style';
 import Dropzone from 'react-dropzone';
-import { useCreateBoard, useUpdateBoard } from '../../API/BoardAPi';
-import { selectedBoardAtom } from '../../Atoms/BoardAtom';
+import { useCreateBoard, useUpdateBoard } from '../../../API/BoardAPi';
+import { selectedBoardAtom } from '../../../Atoms/BoardAtom';
 import { useAtomValue } from 'jotai';
-import { BOARD_PATH } from '../common/path';
+import { BOARD_PATH } from '../../common/path';
 
 const BoardForm = ({ onPageChange }) => {
   const selectedBoard = useAtomValue(selectedBoardAtom); //detail에서 넘어온 값들이 곧 selectedBoard임

@@ -85,6 +85,12 @@ export const FormContainer = styled.div`
     }
   }
 `;
+export const Dropzone = styled.div`
+  div {
+    width: 100px;
+    height: 50px;
+  }
+`;
 export const ImageContainer = styled.div`
   display: flex;
   justify-content: center;

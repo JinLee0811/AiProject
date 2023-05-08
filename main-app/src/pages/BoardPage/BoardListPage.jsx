@@ -1,14 +1,13 @@
 import React from 'react';
-import BoardForm from '../../components/Board/BoardForm';
+import BoardList from '../../components/Board/BoardList';
 import { useNavigate } from 'react-router-dom';
 
-const BoardFormPage = () => {
+const BoardListPage = () => {
   const navigate = useNavigate();
 
   const handlePageChange = (path) => {
     navigate(path);
   };
-  return <BoardForm onPageChange={handlePageChange} />;
+  return <BoardList onPageChange={handlePageChange} />;
 };
-
-export default BoardFormPage;
+export default BoardListPage;

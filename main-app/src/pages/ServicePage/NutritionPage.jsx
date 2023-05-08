@@ -22,7 +22,7 @@ const Nutrition = () => {
         </Box>
         <Box>
           <NutritionImage src='../components/image/Nutrition1.png' alt='asd' />
-          <StyledLink to='/nutrition2'>
+          <StyledLink to='/'>
             <H1>🪴그린이 친환경 식물영양제 </H1>
           </StyledLink>
           <H3>
@@ -33,7 +33,7 @@ const Nutrition = () => {
         </Box>
         <Box>
           <NutritionImage src='../components/image/Nutrition1.png' alt='asd' />
-          <StyledLink to='/nutrition3'>
+          <StyledLink to='/'>
             <H1>🌿그린이 친환경 식물영양제 </H1>
           </StyledLink>
           <H3>
@@ -44,7 +44,7 @@ const Nutrition = () => {
         </Box>
         <Box>
           <NutritionImage src='../components/image/Nutrition1.png' alt='asd' />
-          <StyledLink to='/nutrition4'>
+          <StyledLink to='/'>
             <H1>💪그린이 친환경 식물영양제 </H1>
           </StyledLink>
           <H3>
@@ -55,7 +55,7 @@ const Nutrition = () => {
         </Box>
         <Box>
           <NutritionImage src='../components/image/Nutrition1.png' alt='asd' />
-          <StyledLink to='/nutrition5'>
+          <StyledLink to='/'>
             <H1>🪴그린이 친환경 식물영양제 </H1>
           </StyledLink>
           <H3>
@@ -66,7 +66,7 @@ const Nutrition = () => {
         </Box>
         <Box>
           <NutritionImage src='../components/image/Nutrition1.png' alt='asd' />
-          <StyledLink to='/nutrition6'>
+          <StyledLink to='/'>
             <H1>🌿그린이 친환경 식물영양제 </H1>
           </StyledLink>
           <H3>
@@ -83,7 +83,7 @@ const Nutrition = () => {
 const Form = styled.div`
   float: center;
   align-items: center;
-  margin: 40px 60px;
+  margin: 0px 60px;
 `;
 
 const Box = styled.div`

@@ -4,32 +4,30 @@ import { Outlet, NavLink } from 'react-router-dom';
 import { Link, useLocation } from 'react-router-dom';
 
 function Sidebar() {
+  //카테고리 api 불러서 카테고리 리스트 주고
   const location = useLocation();
   return (
     <Aside>
       <ul>
         <li>
-          <StyledLink to='user' active={location.pathname === '/admin/user'}>
-            사용자 관리
-          </StyledLink>
-        </li>
-        <li>
-          <StyledLink to='Board' active={location.pathname === '/admin/Board'}>
-            게시판 관리
+          <StyledLink
+            to='NCategory1'
+            active={location.pathname === '/nutritionpage/ncategory1'}>
+            광합성 촉진제
           </StyledLink>
         </li>
         <li>
           <StyledLink
-            to='Nutrition'
-            active={location.pathname === '/admin/Nutrition'}>
-            영양제 관리
+            to='NCategory2'
+            active={location.pathname === '/nutritionpage/ncategory2'}>
+            칼슘제
           </StyledLink>
         </li>
         <li>
           <StyledLink
-            to='AddNutrition'
-            active={location.pathname === '/admin/AddNutrition'}>
-            영양제 등록
+            to='NCategory3'
+            active={location.pathname === '/nutritionpage/ncategory3'}>
+            아미노산제
           </StyledLink>
         </li>
       </ul>
@@ -37,7 +35,7 @@ function Sidebar() {
   );
 }
 
-function AdminPage() {
+function NutritionPage() {
   return (
     <Container>
       <Sidebar />
@@ -56,7 +54,6 @@ const Container = styled.section`
   display: flex;
   flex-direction: row;
   height: 100vh;
-  width: 100vh;
   margin-top: 2rem;
   @media (max-width: 768px) {
     flex-direction: column;
@@ -70,7 +67,6 @@ const MainContainer = styled.section`
 `;
 
 const Aside = styled.aside`
-  width: 150px;
   position: relative;
   top: 0;
   left: 0;
@@ -105,4 +101,4 @@ const Aside = styled.aside`
   }
 `;
 
-export default AdminPage;
+export default NutritionPage;

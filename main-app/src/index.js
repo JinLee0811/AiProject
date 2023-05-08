@@ -5,7 +5,8 @@ import App from './App';
 import './index.css';
 import {
   MainPage,
-  BoardPage,
+  BoardListPage,
+  BoardMyListPage,
   ServicePage,
   BoardDetailPage,
   BoardFormPage,
@@ -15,14 +16,17 @@ import {
   MySignOutPage,
   MyDataPage,
   MyListPage,
-  NutritionPage,
-  NutritionPage1,
   ImageUpload,
   AdminPage,
   BoardManage,
   UserManage,
   NutritionManage,
   AddNutrition,
+  NutritionPage,
+  NCategory1,
+  NCategory2,
+  NCategory3,
+  NutritionPage1,
 } from './pages';
 
 const router = createBrowserRouter([
@@ -48,7 +52,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/board',
-        element: <BoardPage />,
+        element: <BoardListPage />,
+      },
+      {
+        path: '/board/My',
+        element: <BoardMyListPage />,
       },
       {
         path: '/service',
@@ -59,7 +67,7 @@ const router = createBrowserRouter([
         element: <ImageUpload />,
       },
       {
-        path: '/boardDetail',
+        path: '/board/Detail',
         element: <BoardDetailPage />,
       },
       {
@@ -71,7 +79,7 @@ const router = createBrowserRouter([
         element: <NutritionPage1 />,
       },
       {
-        path: '/boardForm',
+        path: '/board/Form',
         element: <BoardFormPage />,
       },
       {
@@ -85,6 +93,29 @@ const router = createBrowserRouter([
       {
         path: '/mylist',
         element: <MyListPage />,
+
+        path: '/nutrition2',
+        element: <NutritionPage1 />,
+      },
+      {
+        path: '/nutrition3',
+        element: <NutritionPage1 />,
+      },
+      {
+        path: '/nutrition4',
+        element: <NutritionPage1 />,
+      },
+      {
+        path: '/nutrition5',
+        element: <NutritionPage1 />,
+      },
+      {
+        path: '/nutrition6',
+        element: <NutritionPage1 />,
+      },
+      {
+        path: '/boardForm',
+        element: <BoardFormPage />,
       },
       {
         path: '/admin',
@@ -107,6 +138,28 @@ const router = createBrowserRouter([
             element: <AddNutrition />,
           },
         ],
+      },
+      {
+        path: '/nutritionpage',
+        element: <NutritionPage />,
+        children: [
+          {
+            path: 'ncategory1',
+            element: <NCategory1 />,
+          },
+          {
+            path: 'ncategory2',
+            element: <NCategory2 />,
+          },
+          {
+            path: 'ncategory3',
+            element: <NCategory3 />,
+          },
+        ],
+      },
+      {
+        path: '/nutritionpage1',
+        element: <NutritionPage1 />,
       },
     ],
   },

@@ -1,21 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { atom, useAtom } from 'jotai';
-import useApiRequest from '../../API/useApi';
-import axios from 'axios';
-
-const productNameAtom = atom('');
-const shortDescriptionAtom = atom('');
-const longDescriptionAtom = atom('');
-const imageAtom = atom(null);
+import { useCreateNutrition, useUpdateNutrition } from '../../API/NutritionApi';
+import { useAtomValue } from 'jotai';
+import { selectedNutritionAtom } from '../../Atoms/NutritionAtom';
 
 function ProductForm() {
-  const [productName, setProductName] = useAtom(productNameAtom);
-  const [shortDescription, setShortDescription] = useAtom(shortDescriptionAtom);
-  const [longDescription, setLongDescription] = useAtom(longDescriptionAtom);
-  const [image, setImage] = useAtom(imageAtom);
+  const selectedNutrition = useAtomValue(selectedNutritionAtom);
+  const [productName, setProductName] = useState(
+    selectedNutrition?.productName || ''
+  );
+  const [shortDescription, setShortDescription] = useState(
+    selectedNutrition?.shortDescription || ''
+  );
+  const [longDescription, setLongDescription] = useState(
+    selectedNutrition?.longDescription || ''
+  );
+  const [image, setImage] = useState(null);
+  const [category, setCategory] = useState(selectedNutrition?.category || '');
+  const [previewImage, setPreviewImage] = useState(
+    selectedNutrition?.imageUrl || ''
+  );
 
-  const { isLoading, sendRequest } = useApiRequest();
+  const { mutate: createNutrition, isLoading: isCreating } =
+    useCreateNutrition();
+  const { mutate: updateNutrition, isLoading: isUpdating } =
+    useUpdateNutrition();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -26,8 +35,13 @@ function ProductForm() {
       formData.append('shortDescription', shortDescription);
       formData.append('longDescription', longDescription);
       formData.append('image', image);
-      const response = await sendRequest('/api/products', 'post', formData);
-      console.log(response.data);
+      formData.append('category', category);
+
+      if (selectedNutrition) {
+        await updateNutrition({ id: selectedNutrition.id, data: formData });
+      } else {
+        await createNutrition(formData);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -36,10 +50,19 @@ function ProductForm() {
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     setImage(file);
+    setPreviewImage(URL.createObjectURL(file));
   };
 
   return (
     <Form onSubmit={handleSubmit}>
+      <Label htmlFor='category'>카테고리</Label>
+      <Input
+        id='category'
+        type='text'
+        value={category}
+        onChange={(event) => setCategory(event.target.value)}
+      />
+
       <Label htmlFor='product-name'>영양제 이름</Label>
       <Input
         id='product-name'
@@ -66,13 +89,14 @@ function ProductForm() {
 
       <Label htmlFor='image'>이미지 업로드</Label>
       <Input id='image' type='file' onChange={handleImageChange} />
-
-      <Button type='submit' disabled={isLoading}>
-        {isLoading ? '등록 중...' : '등록하기'}
+      {previewImage && <PreviewImage src={previewImage} alt='uploaded image' />}
+      <Button type='submit' disabled={isCreating || isUpdating}>
+        {isCreating || isUpdating ? '등록 중...' : '등록하기'}
       </Button>
     </Form>
   );
 }
+
 const Form = styled.form`
   display: flex;
 
@@ -106,6 +130,16 @@ const Button = styled.button`
   &:hover {
     background-color: green;
   }
+`;
+
+const PreviewImage = styled.img`
+  width: 200px;
+  height: 200px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  object-position: center;
+  box-shadow: 0 0 10px #759683;
 `;
 
 export default ProductForm;

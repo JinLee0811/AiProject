@@ -6,7 +6,7 @@ const HeaderForm = () => {
   return (
     <Nav>
       <Menu>
-        <StyledLink to='/(진단목록)'>
+        <StyledLink to='/service'>
           <MenuBar>진단 목록</MenuBar>
         </StyledLink>
         <StyledLink to=''>
