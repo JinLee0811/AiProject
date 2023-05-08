@@ -1,11 +1,21 @@
 import { useAtom } from 'jotai';
 import { useQuery, useMutation } from 'react-query';
 import axios from 'axios';
-import { accessTokenAtom, refreshTokenAtom } from '../Atoms/TokenAtom';
+import {
+  accessTokenAtom,
+  refreshTokenAtom,
+  userAtom,
+} from '../Atoms/TokenAtom';
+import { useNavigate } from 'react-router-dom';
+
+//토큰 api 추가 해야함 2개? (access token refresh 요청,토큰 유효성 검사 부분)
+//어세스 리프레시 동시만료 시에는 로그인이고
+//어세스만 만료시 다시 어세스 요청 (리프레시를 가지고)
+// api 3개 -> 로그인, 회원가입, 토큰
 
 // 사용자 로그인 요청
-const login = async (username, password) => {
-  const response = await axios.post('/api/auth/login', { username, password });
+const login = async (email, password) => {
+  const response = await axios.post('/signin', { email, password });
   const { accessToken, refreshToken } = response.data;
   localStorage.setItem('accessToken', accessToken);
   localStorage.setItem('refreshToken', refreshToken);
@@ -13,7 +23,7 @@ const login = async (username, password) => {
 };
 
 // access token refresh 요청
-const refreshAccessToken = async () => {
+const getRefreshAccessToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
   const response = await axios.post('/api/auth/refresh', { refreshToken });
   const { accessToken } = response.data;
@@ -25,6 +35,8 @@ const refreshAccessToken = async () => {
 export const useAuth = () => {
   const [accessToken, setAccessToken] = useAtom(accessTokenAtom);
   const [refreshToken, setRefreshToken] = useAtom(refreshTokenAtom);
+  const [user, setUser] = useAtom(userAtom); // 유저 정보를 담는 Atom
+  const navigate = useNavigate();
 
   // 로그인을 위한 useMutation Hook
   const loginMutation = useMutation(login, {
@@ -32,31 +44,41 @@ export const useAuth = () => {
   });
 
   // 로그아웃 함수
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await axios.post('/signout', null, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     setAccessToken(null);
     setRefreshToken(null);
+    setUser(null); // 로그아웃 시 유저 정보도 초기화
   };
 
+  // 토큰 유효성 검사 부분
   useQuery(
-    'accessToken', // 쿼리 이름
+    'accessToken',
     async () => {
-      const token = localStorage.getItem('accessToken'); // local storage에서 access token 가져옴
+      const token = localStorage.getItem('accessToken');
       if (token) {
         try {
-          await axios.get('/api/protected', {
-            // access token이 유효한지 API 요청으로 확인
+          const response = await axios.get('/api/protected', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
+          setUserData(response.data); // 유저 정보 업데이트
           return token;
         } catch (error) {
           if (error.response.status === 401) {
-            // access token이 만료되었다면
-            const newToken = await refreshAccessToken(); // refresh token으로 새로운 access token을 가져옴
-            return newToken; // 새로운 access token 반환
+            const newToken = await getRefreshAccessToken();
+            return newToken;
           }
         }
       }
@@ -71,9 +93,30 @@ export const useAuth = () => {
       },
     }
   );
+
+  // setUser 함수 정의
+  const setUserData = (data) => {
+    setUser(data);
+  };
+
+  // isAdmin 상태 계산
+  const isAdmin = user?.role === 'admin';
+
   return {
     accessToken,
+    user,
     login: loginMutation.mutate,
     logout,
+    isAdmin,
   };
 };
+
+// 회원가입 hook
+const registerUser = async (userData) => {
+  const { data } = await axios.post('/signup', userData);
+  return data;
+};
+
+export function useRegister() {
+  return useMutation(registerUser);
+}

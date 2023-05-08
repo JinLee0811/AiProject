@@ -113,13 +113,14 @@ const Button = styled.button`
   width: 200px;
   height: 40px;
   font-weight: 700;
-  font-size: 20px;
-  margin-top: 0px;
+  font-size: 17px;
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  letter-spacing: -0.6px;
+  border: 2px;
   border-radius: 100px;
-  border: none;
   color: white;
   :hover {
     background-color: green;
@@ -133,7 +134,7 @@ const Button1 = styled.button`
   height: 40px;
   font-weight: 700;
   font-size: 20px;
-  margin-top: 30px;
+  margin-top: 20px;
   margin-bottom: 60px;
   display: flex;
   justify-content: center;

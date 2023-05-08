@@ -4,16 +4,14 @@ import { useCreateNutrition, useUpdateNutrition } from '../../API/NutritionApi';
 import { useAtomValue } from 'jotai';
 import { selectedNutritionAtom } from '../../Atoms/NutritionAtom';
 
-function ProductForm() {
+function TonicForm() {
   const selectedNutrition = useAtomValue(selectedNutritionAtom);
-  const [productName, setProductName] = useState(
-    selectedNutrition?.productName || ''
-  );
+  const [name, setName] = useState(selectedNutrition?.name || '');
   const [shortDescription, setShortDescription] = useState(
     selectedNutrition?.shortDescription || ''
   );
-  const [longDescription, setLongDescription] = useState(
-    selectedNutrition?.longDescription || ''
+  const [description, setDescription] = useState(
+    selectedNutrition?.description || ''
   );
   const [image, setImage] = useState(null);
   const [category, setCategory] = useState(selectedNutrition?.category || '');
@@ -26,14 +24,23 @@ function ProductForm() {
   const { mutate: updateNutrition, isLoading: isUpdating } =
     useUpdateNutrition();
 
+  const handleReset = () => {
+    setName('');
+    setShortDescription('');
+    setDescription('');
+    setImage(null);
+    setCategory('');
+    setPreviewImage('');
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const formData = new FormData();
-      formData.append('productName', productName);
+      formData.append('name', name);
       formData.append('shortDescription', shortDescription);
-      formData.append('longDescription', longDescription);
+      formData.append('description', description);
       formData.append('image', image);
       formData.append('category', category);
 
@@ -42,6 +49,8 @@ function ProductForm() {
       } else {
         await createNutrition(formData);
       }
+
+      handleReset();
     } catch (error) {
       console.log(error);
     }
@@ -67,8 +76,8 @@ function ProductForm() {
       <Input
         id='product-name'
         type='text'
-        value={productName}
-        onChange={(event) => setProductName(event.target.value)}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
       />
 
       <Label htmlFor='short-description'>짧은 글 소개</Label>
@@ -83,8 +92,8 @@ function ProductForm() {
       <TextArea
         id='long-description'
         rows='5'
-        value={longDescription}
-        onChange={(event) => setLongDescription(event.target.value)}
+        value={description}
+        onChange={(event) => setDescription(event.target.value)}
       />
 
       <Label htmlFor='image'>이미지 업로드</Label>
@@ -142,4 +151,4 @@ const PreviewImage = styled.img`
   box-shadow: 0 0 10px #759683;
 `;
 
-export default ProductForm;
+export default TonicForm;

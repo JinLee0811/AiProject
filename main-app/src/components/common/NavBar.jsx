@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { atom, useAtom } from 'jotai';
+import { useAuth } from '../../API/authApi';
+import { useNavigate } from 'react-router-dom';
 
 const fadeAtom = atom(true);
 const sentences = [
@@ -15,6 +17,8 @@ const sentences = [
 ];
 const Navbar = () => {
   const [fadeToggle, setFadeToggle] = useAtom(fadeAtom);
+  const { accessToken, logout, isAdmin } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,6 +27,15 @@ const Navbar = () => {
 
     return () => clearInterval(interval);
   }, [setFadeToggle]);
+
+  function handleLogoutClick() {
+    logout();
+    navigate('/login');
+  }
+
+  function onClickSearch() {
+    alert('폼으로 달아놨어요');
+  }
 
   return (
     <>
@@ -35,35 +48,68 @@ const Navbar = () => {
         </StyledLink>
       </NavLogo>
       <Nav>
-        <Menu>
+        <LeftMenu>
           <StyledLink to='/'>
-            <MenuItem>홈</MenuItem>
+            <MenuItem>
+              <span class='material-symbols-outlined'>home</span>
+            </MenuItem>
           </StyledLink>
           <StyledLink to='/service'>
-            <MenuItem1>진단하기</MenuItem1>
+            <MenuItem1>
+              {/* <span class='material-symbols-outlined'>image_search</span> */}
+              <span>진단하기</span>
+            </MenuItem1>
           </StyledLink>
           <StyledLink to='/board'>
-            <MenuItem>크롭토크</MenuItem>
+            <MenuItem>
+              {/* <span class='material-symbols-outlined'>chat</span> */}
+              <span>크롭토크</span>
+            </MenuItem>
           </StyledLink>
-          <StyledLink to='/nutritionpage'>
-            <MenuItem>크롭영양제</MenuItem>
+          <StyledLink to='/nutritionpage/NCategory1'>
+            <MenuItem>
+              {/* <span class='material-symbols-outlined'>medication</span> */}
+              <span>크롭영양제</span>
+            </MenuItem>
           </StyledLink>
-          <StyledLink to='/admin/user'>
-            <MenuItem>admin</MenuItem>
-          </StyledLink>
-        </Menu>
-        <Menu>
-          <StyledLink to='/mypage'>
-            <MenuItem>마이페이지</MenuItem>
-          </StyledLink>
-          <StyledLink to='/login'>
-            <MenuItem>로그인</MenuItem>
-          </StyledLink>
-          <StyledLink to='/signup'>
-            <MenuItem>회원가입</MenuItem>
-          </StyledLink>
-          <SearchInput placeholder={'Crop을 검색하세요.'} />
-        </Menu>
+        </LeftMenu>
+        <RightMenu>
+          {!isAdmin && (
+            <StyledLink to='/admin/user'>
+              <MenuItem>
+                <span class='material-symbols-outlined'>manage_accounts</span>
+              </MenuItem>
+            </StyledLink>
+          )}
+          {!accessToken ? (
+            <>
+              <StyledLink to='/mypage/info'>
+                <MenuItem>
+                  <span class='material-symbols-outlined'>person</span>
+                </MenuItem>
+              </StyledLink>
+              <MenuItem onClick={handleLogoutClick}>
+                <span class='material-symbols-outlined'>logout</span>
+              </MenuItem>
+            </>
+          ) : (
+            <>
+              <StyledLink to='/login'>
+                <MenuItem>
+                  <span class='material-symbols-outlined'>person</span>
+                </MenuItem>
+              </StyledLink>
+            </>
+          )}
+          <MenuItem>
+            <SearchBox>
+              <SearchInput type='text' placeholder='Crop을 검색하세요' />
+              <SearchButton onClick={onClickSearch}>
+                <span class='material-symbols-outlined'>search</span>
+              </SearchButton>
+            </SearchBox>
+          </MenuItem>
+        </RightMenu>
       </Nav>
       <NavWrite>
         <NavWriteTag>{sentences[fadeToggle]}</NavWriteTag>
@@ -98,12 +144,16 @@ const LogoImage = styled.img`
 const Nav = styled.nav`
   height: 3rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   background-color: #fff;
   padding: 10px;
   margin: 0px;
-  min-width: 900px;
+  @media (max-width: 968px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 const fadeInOut = keyframes`
   0% {
@@ -118,6 +168,7 @@ const fadeInOut = keyframes`
     opacity: 0;
     transform: translateY(10px);
   }
+  
 `;
 const NavWrite = styled.div`
   width: 100%;
@@ -142,31 +193,45 @@ const NavWriteTag = styled.p`
 const Logo = styled.h1`
   font-size: 1.5rem;
   font-weight: bold;
-  color: #759683;
+  color: green;
   margin: 0;
 `;
 
-const Menu = styled.ul`
+const LeftMenu = styled.ul`
   list-style: none;
   display: flex;
   align-items: center;
   margin: 0;
   padding: 0;
 `;
+const RightMenu = styled.ul`
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin-left: 200px;
+  padding: 0;
+  @media (max-width: 998px) {
+    display: none;
+  }
+`;
 
 const MenuItem1 = styled.li`
+  display: flex;
+  align-items: center;
   padding: 5px;
   margin-right: 20px;
   font-size: 18px;
   font-weight: 900;
   line-height: 24px;
-  color: #4ba888;
+  color: green;
   cursor: pointer;
   &:hover {
-    color: red;
+    color: #589873;
   }
 `;
 const MenuItem = styled.li`
+  display: flex;
+  align-items: center;
   margin-right: 20px;
   font-size: 18px;
   font-weight: 700;
@@ -174,31 +239,37 @@ const MenuItem = styled.li`
   color: black;
   cursor: pointer;
   &:hover {
-    color: red;
+    color: green;
   }
 `;
 
+const SearchBox = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  height: 20px;
+  padding: 8px;
+`;
+
 const SearchInput = styled.input`
-  border: 1px solid #ccc;
+  border: none;
+  flex: 1;
   font-size: 12px;
-  letter-spacing: -0.6px;
-  line-height: 14.4px;
-  text-decoration: none solid rgb(77, 77, 77);
-  word-spacing: 0px;
-  padding: 3px;
-  width: 100px;
-  margin: 0 5px;
-  background-color: #f2f2f2;
-  background-position: 0% 0%;
-  color: #4d4d4d;
-  &:focus {
-    outline: none;
-    border-bottom: 1px solid #000;
-  }
+  color: #333;
   &::placeholder {
-    font-size: 5px;
-    color: #999;
+    color: #bbb;
   }
+`;
+
+const SearchButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 8px;
+  cursor: pointer;
 `;
 
 const StyledLink = styled(Link)`

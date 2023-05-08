@@ -4,9 +4,9 @@ import axios from 'axios';
 // GET Hook
 export const useGetNutrition = (options) => {
   return useQuery(
-    'nutrition',
+    ['nutrition'],
     async () => {
-      const { data } = await axios.get('/admin/nutrition');
+      const { data } = await axios.get('/tonics');
       return data;
     },
     { ...options }
@@ -19,12 +19,12 @@ export const useCreateNutrition = () => {
 
   return useMutation(
     async (newNutrition) => {
-      const { data } = await axios.post('/admin/nutrition', newNutrition);
+      const { data } = await axios.post('/admin/tonics/', newNutrition);
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('nutrition');
+        queryClient.invalidateQueries(['nutrition']);
       },
     }
   );
@@ -35,16 +35,13 @@ export const useUpdateNutrition = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (updatedNutrition) => {
-      const { data } = await axios.put(
-        `/admin/nutrition/${updatedNutrition.id}`,
-        updatedNutrition
-      );
+    async (id, updatedNutrition) => {
+      const { data } = await axios.put(`/admin/tonics/${id}`, updatedNutrition);
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('nutrition');
+        queryClient.invalidateQueries(['nutrition']);
       },
     }
   );
@@ -56,12 +53,12 @@ export const useDeleteNutrition = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await axios.delete(`/admin/nutrition${id}`);
+      const { data } = await axios.delete(`/admin/tonics/${id}`);
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('nutrition');
+        queryClient.invalidateQueries(['nutrition']);
       },
     }
   );

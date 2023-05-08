@@ -92,7 +92,7 @@ const LogoImage = styled.img`
 const Logo = styled.h1`
   font-size: 2.3rem;
   font-weight: bold;
-  color: #759683;
+  color: green;
   margin: 0;
 `;
 
@@ -160,7 +160,7 @@ const Button = styled.button`
   border-radius: 5px;
   cursor: pointer;
   :hover {
-    background-color: #4ba888;
+    background-color: green;
   }
 `;
 

@@ -13,9 +13,6 @@ import {
   LoginPage,
   SignUpPage,
   MyPage,
-  MySignOutPage,
-  MyDataPage,
-  MyListPage,
   ImageUpload,
   AdminPage,
   BoardManage,
@@ -27,6 +24,11 @@ import {
   NCategory2,
   NCategory3,
   NutritionPage1,
+  CategoryPage,
+  InfoPage,
+  SignOutPage,
+  SolutionListPage,
+  SolutionDetail,
 } from './pages';
 
 const router = createBrowserRouter([
@@ -49,6 +51,24 @@ const router = createBrowserRouter([
       {
         path: '/mypage',
         element: <MyPage />,
+        children: [
+          {
+            path: 'info',
+            element: <InfoPage />,
+          },
+          {
+            path: 'solutionList',
+            element: <SolutionListPage />,
+          },
+          {
+            path: 'signout',
+            element: <SignOutPage />,
+          },
+          {
+            path: 'solutionDetail',
+            element: <SolutionDetail />,
+          },
+        ],
       },
       {
         path: '/board',
@@ -83,17 +103,6 @@ const router = createBrowserRouter([
         element: <BoardFormPage />,
       },
       {
-        path: '/signout',
-        element: <MySignOutPage />,
-      },
-      {
-        path: '/mydata',
-        element: <MyDataPage />,
-      },
-      {
-        path: '/mylist',
-        element: <MyListPage />,
-
         path: '/nutrition2',
         element: <NutritionPage1 />,
       },
@@ -136,6 +145,10 @@ const router = createBrowserRouter([
           {
             path: 'AddNutrition',
             element: <AddNutrition />,
+          },
+          {
+            path: 'Category',
+            element: <CategoryPage />,
           },
         ],
       },

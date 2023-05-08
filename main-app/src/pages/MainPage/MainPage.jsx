@@ -68,6 +68,8 @@ const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  letter-spacing: -0.6px;
   border: 2px;
   border-radius: 100px;
   color: white;
@@ -111,9 +113,10 @@ const Image = styled.img`
   width: 500px;
   height: 500px;
   border-radius: 22px;
-  @media (max-width: 968px) {
-    width: 350px;
-    height: 350px;
+  @media (max-width: 998px) {
+    display: none;
+    width: 300px;
+    height: 300px;
   }
 `;
 const Container = styled.section`
