@@ -45,7 +45,7 @@ function UserManage() {
     <Table>
       <thead>
         <tr>
-          <TableHeader>Created At</TableHeader>
+          <TableHeader>가입일</TableHeader>
           <TableHeader>이메일</TableHeader>
           <TableHeader>이름</TableHeader>
           <TableHeader>닉네임</TableHeader>
@@ -60,8 +60,8 @@ function UserManage() {
               <TableData>{user.createdAt}</TableData>
               <TableData>{user.email}</TableData>
               <TableData>{user.name}</TableData>
-              <TableData>{user.nickname}</TableData>
-              <TableData>{user.type}</TableData>
+              <TableData>{user.nick_name}</TableData>
+              <TableData>{user.role}</TableData>
               <TableData>
                 <DeleteButton
                   key={user.id}

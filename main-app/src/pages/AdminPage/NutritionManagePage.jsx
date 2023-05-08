@@ -82,7 +82,7 @@ function NutritionMange() {
             </TableData>
             <TableData>{nutrition.name}</TableData>
             <TableData>{nutrition.shortDescription}</TableData>
-            <TableData>{nutrition.longDescription}</TableData>
+            <TableData>{nutrition.description}</TableData>
             <TableData>{nutrition.createdAt}</TableData>
             <TableData>
               <StatusButton onClick={() => handleEdit(nutrition)}>

@@ -1,28 +1,81 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import LogoPng from '../../../components/image/Logo.png';
+import { useRegister } from '../../../API/authApi';
 
 const SignUpForm = () => {
+  const navigate = useNavigate();
   // 각 입력 필드의 상태를 관리하는 state를 정의합니다.
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [nickname, setNickname] = useState('');
+  const [inputs, setInputs] = useState({
+    name: '',
+    nickname: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
   // 입력 필드의 값을 업데이트하는 함수를 정의합니다.
-  const handleEmailChange = (event) => setEmail(event.target.value);
-  const handleNameChange = (event) => setName(event.target.value);
-  const handlePasswordChange = (event) => setPassword(event.target.value);
-  const handleConfirmPasswordChange = (event) =>
-    setConfirmPassword(event.target.value);
-  const handleNicknameChange = (event) => setNickname(event.target.value);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputs({
+      ...inputs,
+      [name]: value,
+    });
+  };
+  // 이메일 벨리데이션
+  function emailCheck(email) {
+    const regex =
+      /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
+    return email.match(regex) !== null;
+  }
 
-  // 회원가입 버튼을 눌렀을 때 실행되는 함수를 정의합니다.
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // 입력된 데이터를 서버에 전송하는 로직을 구현합니다.
+  const validateForm = ({
+    name,
+    nickname,
+    email,
+    password,
+    confirmPassword,
+  }) => {
+    if (emailCheck(email) === false) {
+      return '이메일 형식이 올바르지 않습니다.';
+    }
+    if (name.length < 2) {
+      return '두글자 이상의 이름을 설정해주세요.';
+    }
+    if (nickname.length < 2) {
+      return '두글자 이상의 닉네임을 설정해주세요.';
+    }
+    if (password.length < 4) {
+      return '비밀번호는 4글자 이상이어야합니다.';
+    }
+    if (password !== confirmPassword) {
+      return '비밀번호가 일치하지 않습니다.';
+    }
+    return true;
+  };
+
+  // useMutation hook을 사용하여 회원가입 API를 호출하는 mutation을 생성
+  const registerMutation = useRegister();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const validated = validateForm(inputs);
+    if (typeof validated === 'string') {
+      alert(validated);
+      return;
+    }
+    registerMutation.mutate(inputs, {
+      onSuccess: () => {
+        navigate('/login');
+        alert('회원가입에 성공했습니다!');
+      },
+      onError: (error) => {
+        console.log(error);
+        alert(error.response.data.message);
+      },
+    });
   };
 
   return (
@@ -38,45 +91,45 @@ const SignUpForm = () => {
         <Label htmlFor='email'>이메일</Label>
         <Input
           type='email'
-          id='email'
-          value={email}
+          name='email'
+          value={inputs.email}
           placeholder='이메일'
-          onChange={handleEmailChange}
+          onChange={handleChange}
           required
         />
         <Label htmlFor='name'>이름</Label>
         <Input
           type='text'
-          id='name'
-          value={name}
+          name='name'
+          value={inputs.name}
           placeholder='이름'
-          onChange={handleNameChange}
+          onChange={handleChange}
           required
         />
         <Label htmlFor='password'>비밀번호</Label>
         <Input
           type='password'
-          id='password'
-          value={password}
-          onChange={handlePasswordChange}
+          name='password'
+          value={inputs.password}
+          onChange={handleChange}
           placeholder='비밀번호'
           required
         />
         <Input
           type='password'
-          id='confirm-password'
-          value={confirmPassword}
+          name='confirmPassword'
+          value={inputs.confirmPassword}
           placeholder='비밀번호 확인'
-          onChange={handleConfirmPasswordChange}
+          onChange={handleChange}
           required
         />
         <Label htmlFor='nickname'>닉네임</Label>
         <Input
           type='text'
-          id='nickname'
-          value={nickname}
+          name='nickname'
+          value={inputs.nickname}
           placeholder='별명을 정해보세요'
-          onChange={handleNicknameChange}
+          onChange={handleChange}
           required
         />
         <LastDiv>
@@ -124,7 +177,7 @@ const LogoImage = styled.img`
 const Logo = styled.h1`
   font-size: 2.3rem;
   font-weight: bold;
-  color: #759683;
+  color: green;
   margin: 0;
 `;
 const Logo1 = styled.h1`
@@ -209,7 +262,7 @@ const Button = styled.button`
   border-radius: 5px;
   cursor: pointer;
   :hover {
-    background-color: #4ba888;
+    background-color: green;
   }
 `;
 const SignupLink = styled.a`

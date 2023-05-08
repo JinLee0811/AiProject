@@ -1,70 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useAtom, useSetAtom } from 'jotai';
+import { boardsAtom } from '../../Atoms/BoardAtom';
+import { useGetBoard, useDeleteBoard } from '../../API/BoardAPi';
 
-function BoardMange() {
-  const [users, setUsers] = useState([]);
-  const [userIdToDelete, setUserIdToDelete] = useState(null);
+function BoardManage() {
+  const [Boards, setBoards] = useAtom(boardsAtom);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await sendRequest('/admin/users', 'get');
-  //       setUsers(response);
-  //     } catch (err) {
-  //       console.log(err.message);
-  //     }
-  //   };
+  const {
+    isLoading,
+    error,
+    data: fetchedBoards,
+  } = useGetBoard({
+    onError: (error) => console.log(error.message),
+  }); // 데이터 get
 
-  //   fetchData();
-  // }, []);
+  const { mutate: deleteBoard } = useDeleteBoard(); //데이터 delete
 
-  // const handleDelete = async () => {
-  //   try {
-  //     const response = await sendRequest(
-  //       `/admin/users/${userIdToDelete}`,
-  //       'delete',
-  //       {}
-  //     );
-  //     const newUsers = users.map((user) => {
-  //       if (user.id === userIdToDelete) {
-  //         return {
-  //           ...user,
-  //           deletedAt: new Date(),
-  //         };
-  //       }
-  //       return user;
-  //     });
+  useEffect(() => {
+    if (fetchedBoards) {
+      setBoards(fetchedBoards);
+    }
+  }, [fetchedBoards, setBoards]);
 
-  //     setUsers(newUsers);
-  //     alert(response.message);
-  //     setUserIdToDelete(null);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  // 삭제 버튼 클릭시 로직
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteBoard(id);
+      setBoards((prevBoards) => prevBoards.filter((board) => board.id !== id));
+      alert(response.data.message);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   return (
     <Table>
       <thead>
         <tr>
-          <TableHeader>Created At</TableHeader>
-          <TableHeader>이메일</TableHeader>
-          <TableHeader>닉네임</TableHeader>
+          <TableHeader>작성일자</TableHeader>
+          <TableHeader>작성자ID</TableHeader>
           <TableHeader>제목</TableHeader>
-          <TableHeader>게시글 상태</TableHeader>
+          <TableHeader>공개/비공개</TableHeader>
+          <TableHeader>좋아요</TableHeader>
+          <TableHeader>조회수</TableHeader>
           <TableHeader>관리</TableHeader>
         </tr>
-        <tr>
-          <TableData>2023.04.04</TableData>
-          <TableData>asd@asd.com</TableData>
-          <TableData>에스파</TableData>
-          <TableData>제 식물좀 봐주세요!</TableData>
-          <TableData>공개</TableData>
-          <TableData>
-            <DeleteButton>삭제</DeleteButton>
-          </TableData>
-        </tr>
       </thead>
+      <tbody>
+        {Boards &&
+          Boards.map((Board) => (
+            <tr key={Board.id}>
+              <TableData>{Board.createdAt}</TableData>
+              <TableData>{Board.user_id}</TableData>
+              <TableData>{Board.board_title}</TableData>
+              <TableData>{Board.status}</TableData>
+              <TableData>{Board.like_number}</TableData>
+              <TableData>{Board.view_number}</TableData>
+              <TableData>
+                <DeleteButton
+                  key={Board.id}
+                  onClick={() => handleDelete(Board.id)}>
+                  삭제
+                </DeleteButton>
+              </TableData>
+            </tr>
+          ))}
+      </tbody>
     </Table>
   );
 }
@@ -80,7 +90,7 @@ const Table = styled.table`
 
 const TableHeader = styled.th`
   background-color: white;
-  padding: 0.5rem 0.5px;
+  padding: 5px;
   text-align: left;
   font-weight: bold;
 `;
@@ -88,7 +98,7 @@ const TableHeader = styled.th`
 const TableData = styled.td`
   border-bottom: 1px solid #ddd;
   height: 2rem;
-  width: 10%;
+  width: 15%;
 `;
 
 const DeleteButton = styled.button`
@@ -141,4 +151,4 @@ const PaginationContainer = styled.div`
   }
 `;
 
-export default BoardMange;
+export default BoardManage;

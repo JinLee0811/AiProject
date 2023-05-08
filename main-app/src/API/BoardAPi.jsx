@@ -4,7 +4,7 @@ import axios from 'axios';
 // 전체 get
 export const useGetBoard = (options) => {
   return useQuery(
-    'BoardList', //query-key
+    ['BoardList'], //query-key
     async () => {
       const { data } = await axios.get('/board');
       return data;
@@ -35,7 +35,7 @@ export const useCreateBoard = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('BoardList'); //여기서 말하는 BoardList는 useQuery의 key?
+        queryClient.invalidateQueries(['BoardList']); //여기서 말하는 BoardList는 useQuery의 key?
       }, //식별자를 가진 쿼리 결과를 무효화(invalidate)하여, 해당 쿼리를 다시 실행하도록 유도하는 역할을 한다라..
     }
   );
@@ -52,7 +52,7 @@ export const useUpdateBoard = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('BoardList');
+        queryClient.invalidateQueries(['BoardList']);
       },
     }
   );
@@ -69,7 +69,7 @@ export const useDeleteBoard = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('BoardList');
+        queryClient.invalidateQueries(['BoardList']);
       },
     }
   );
