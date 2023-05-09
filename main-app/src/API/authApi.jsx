@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { useQuery, useMutation } from 'react-query';
-import axios from 'axios';
+import { SERVER } from './AxiosApi';
 import {
   accessTokenAtom,
   refreshTokenAtom,
@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 // 사용자 로그인 요청
 const login = async (email, password) => {
-  const response = await axios.post('/signin', { email, password });
+  const response = await SERVER.post('/signin', { email, password });
   const { accessToken, refreshToken } = response.data;
   localStorage.setItem('accessToken', accessToken);
   localStorage.setItem('refreshToken', refreshToken);
@@ -25,7 +25,7 @@ const login = async (email, password) => {
 // access token refresh 요청
 const getRefreshAccessToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
-  const response = await axios.post('/api/auth/refresh', { refreshToken });
+  const response = await SERVER.post('/api/auth/refresh', { refreshToken });
   const { accessToken } = response.data;
   localStorage.setItem('accessToken', accessToken);
   return accessToken;
@@ -46,7 +46,7 @@ export const useAuth = () => {
   // 로그아웃 함수
   const logout = async () => {
     try {
-      await axios.post('/signout', null, {
+      await SERVER.post('/signout', null, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -68,7 +68,7 @@ export const useAuth = () => {
       const token = localStorage.getItem('accessToken');
       if (token) {
         try {
-          const response = await axios.get('/api/protected', {
+          const response = await SERVER.get('/api/protected', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -113,7 +113,7 @@ export const useAuth = () => {
 
 // 회원가입 hook
 const registerUser = async (userData) => {
-  const { data } = await axios.post('/signup', userData);
+  const { data } = await SERVER.post('/signup', userData);
   return data;
 };
 

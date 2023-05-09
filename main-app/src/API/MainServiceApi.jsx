@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
+import { SERVER } from './AxiosApi';
 
 // POST Hook: 질병 진단 이미지 업로드 후 결과물 반환
 export const useCreateImage = () => {
@@ -7,7 +7,7 @@ export const useCreateImage = () => {
 
   return useMutation(
     async (newImage) => {
-      const { data } = await axios.post('/solutions/predict', newImage);
+      const { data } = await SERVER.post('/solutions/predict', newImage);
       return data;
     },
     {
@@ -23,7 +23,7 @@ export const useGetSolutions = (options) => {
   return useQuery(
     ['solutions'],
     async () => {
-      const { data } = await axios.get('/solutions');
+      const { data } = await SERVER.get('/solutions');
       return data;
     },
     { ...options }
@@ -36,7 +36,7 @@ export const useCreateSolution = () => {
 
   return useMutation(
     async (newSolution) => {
-      const { data } = await axios.post('/solutions', newSolution);
+      const { data } = await SERVER.post('/solutions', newSolution);
       return data;
     },
     {
@@ -54,7 +54,7 @@ export const useDeleteSolution = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await axios.delete(`/solutions/${id}`);
+      const { data } = await SERVER.delete(`/solutions/${id}`);
       return data;
     },
     {

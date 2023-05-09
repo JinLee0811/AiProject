@@ -1,59 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useGetCategories } from '../../API/CategoryApi';
+import { SERVER } from '../../API/AxiosApi';
 
-const products = [
-  {
-    id: 1,
-    name: 'Product 1',
-    category: 'Category 1',
-    imageUrl: 'https://via.placeholder.com/150',
-    price: 10,
-  },
-  {
-    id: 2,
-    name: 'Product 2',
-    category: 'Category 2',
-    imageUrl: 'https://via.placeholder.com/150',
-    price: 20,
-  },
-  {
-    id: 3,
-    name: 'Product 3',
-    category: 'Category 3',
-    imageUrl: 'https://via.placeholder.com/150',
-    price: 30,
-  },
-  {
-    id: 4,
-    name: 'Product 4',
-    category: 'Category 1',
-    imageUrl: 'https://via.placeholder.com/150',
-    price: 40,
-  },
-  {
-    id: 5,
-    name: 'Product 5',
-    category: 'Category 2',
-    imageUrl: 'https://via.placeholder.com/150',
-    price: 50,
-  },
-  {
-    id: 6,
-    name: 'Product 6',
-    category: 'Category 3',
-    imageUrl: 'https://via.placeholder.com/150',
-    price: '영양제와 관련된 성분',
-  },
-];
-
-function NutritionList() {
+const NutritionList = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categories, setCategories] = useState(null);
+  const [nutritions, setNutritions] = useState(null);
 
-  const filteredProducts = selectedCategory
-    ? products.filter((product) => product.category === selectedCategory)
-    : products;
+  // Fetch categories and nutritions on component mount
+  useEffect(() => {
+    async function fetchCategories() {
+      const { data } = await SERVER.get('/tonics/categories');
+      setCategories(data);
+    }
+
+    async function fetchNutritions() {
+      const { data } = await SERVER.get('/tonics');
+      setNutritions(data);
+    }
+
+    fetchCategories();
+    fetchNutritions();
+  }, []);
+
+  const filteredNutritions = selectedCategory
+    ? nutritions?.filter((nutrition) => nutrition.category === selectedCategory)
+    : nutritions;
 
   return (
     <Container>
@@ -61,24 +34,27 @@ function NutritionList() {
         value={selectedCategory}
         onChange={(event) => setSelectedCategory(event.target.value)}>
         <option value=''>전체 조회</option>
-        <option value='Category 1'>Category 1</option>
-        <option value='Category 2'>Category 2</option>
-        <option value='Category 3'>Category 3</option>
+        {categories &&
+          categories.map((category) => (
+            <option key={category.id} value={category.name}>
+              {category.name}
+            </option>
+          ))}
       </CategorySelector>
       <ProductsContainer>
-        {filteredProducts.map((product) => (
-          <Product key={product.id}>
-            <StyledLink to={`/products/${product.id}`}>
-              <ProductImage src={product.imageUrl} alt={product.name} />
-              <ProductName>{product.name}</ProductName>
-              <ProduceShortText>{product.price}</ProduceShortText>
+        {filteredNutritions?.map((nutrition) => (
+          <Product key={nutrition.id}>
+            <StyledLink to={`/products/${nutrition.id}`}>
+              <ProductImage src={nutrition.imageUrl} alt={nutrition.name} />
+              <ProductName>{nutrition.name}</ProductName>
+              <ProduceShortText>{nutrition.description}</ProduceShortText>
             </StyledLink>
           </Product>
         ))}
       </ProductsContainer>
     </Container>
   );
-}
+};
 
 const Container = styled.div`
   width: 80%;

@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
+import { SERVER } from './AxiosApi';
 
 //댓글 get
 export const useGetComment = (boardId) => {
   return useQuery('comment', async () => {
-    const { data } = axios.get(`/comment/${boardId}`);
+    const { data } = SERVER.get(`/comment/${boardId}`);
     return data;
   });
 };
@@ -16,7 +16,7 @@ export const useCreateComment = (boardId) => {
 
   return useMutation(
     async (newComment) => {
-      const { data } = await axios.post(`/comment/${boardId}`, newComment);
+      const { data } = await SERVER.post(`/comment/${boardId}`, newComment);
       return data;
     },
     {
@@ -35,7 +35,7 @@ export const useUpdateComment = () => {
 
   return useMutation(
     async (updateComment) => {
-      const { data } = await axios.put(
+      const { data } = await SERVER.put(
         `/comment/${updateComment.id}`,
         updateComment
       );
@@ -55,7 +55,7 @@ export const useDeleteComment = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await axios.delete(`/comment/${id}`);
+      const { data } = await SERVER.delete(`/comment/${id}`);
       return data;
     },
     {

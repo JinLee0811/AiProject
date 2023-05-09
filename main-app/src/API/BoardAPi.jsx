@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
+import { SERVER } from './AxiosApi';
 
 // 전체 get
 export const useGetBoard = (options) => {
   return useQuery(
     ['BoardList'], //query-key
     async () => {
-      const { data } = await axios.get('/board');
+      const { data } = await SERVER.get('/board');
       return data;
     },
     { ...options }
@@ -18,7 +18,7 @@ export const useGetMyBoard = (userId) => {
   return useQuery(
     'myBoardList', //query-key
     async () => {
-      const { data } = await axios.get(`/board/${userId}`); // myList 만 가져올거라 :id
+      const { data } = await SERVER.get(`/board/${userId}`); // myList 만 가져올거라 :id
       return data;
     }
   );
@@ -30,7 +30,7 @@ export const useCreateBoard = () => {
 
   return useMutation(
     async (newPost) => {
-      const { data } = await axios.post('/board', newPost);
+      const { data } = await SERVER.post('/board', newPost);
       return data;
     },
     {
@@ -47,7 +47,7 @@ export const useUpdateBoard = () => {
 
   return useMutation(
     async (updatePost) => {
-      const { data } = await axios.put(`/board/${updatePost.id}`, updatePost);
+      const { data } = await SERVER.put(`/board/${updatePost.id}`, updatePost);
       return data;
     },
     {
@@ -64,7 +64,7 @@ export const useDeleteBoard = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await axios.delete(`/board/${id}`);
+      const { data } = await SERVER.delete(`/board/${id}`);
       return data;
     },
     {
