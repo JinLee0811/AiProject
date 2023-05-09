@@ -20,10 +20,6 @@ import {
   NutritionManage,
   AddNutrition,
   NutritionPage,
-  NCategory1,
-  NCategory2,
-  NCategory3,
-  NutritionPage1,
   CategoryPage,
   InfoPage,
   SignOutPage,
@@ -95,32 +91,8 @@ const router = createBrowserRouter([
         element: <NutritionPage />,
       },
       {
-        path: '/nutrition1',
-        element: <NutritionPage1 />,
-      },
-      {
         path: '/board/Form',
         element: <BoardFormPage />,
-      },
-      {
-        path: '/nutrition2',
-        element: <NutritionPage1 />,
-      },
-      {
-        path: '/nutrition3',
-        element: <NutritionPage1 />,
-      },
-      {
-        path: '/nutrition4',
-        element: <NutritionPage1 />,
-      },
-      {
-        path: '/nutrition5',
-        element: <NutritionPage1 />,
-      },
-      {
-        path: '/nutrition6',
-        element: <NutritionPage1 />,
       },
       {
         path: '/boardForm',
@@ -151,28 +123,6 @@ const router = createBrowserRouter([
             element: <CategoryPage />,
           },
         ],
-      },
-      {
-        path: '/nutritionpage',
-        element: <NutritionPage />,
-        children: [
-          {
-            path: 'ncategory1',
-            element: <NCategory1 />,
-          },
-          {
-            path: 'ncategory2',
-            element: <NCategory2 />,
-          },
-          {
-            path: 'ncategory3',
-            element: <NCategory3 />,
-          },
-        ],
-      },
-      {
-        path: '/nutritionpage1',
-        element: <NutritionPage1 />,
       },
     ],
   },

@@ -12,7 +12,7 @@ export const useCreateImage = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('solutions');
+        queryClient.invalidateQueries(['solutions']);
       },
     }
   );
@@ -21,7 +21,7 @@ export const useCreateImage = () => {
 // GET Hook: 등록된 해결책 조회
 export const useGetSolutions = (options) => {
   return useQuery(
-    'solutions',
+    ['solutions'],
     async () => {
       const { data } = await axios.get('/solutions');
       return data;
@@ -41,7 +41,7 @@ export const useCreateSolution = () => {
     },
     {
       onSuccess: (newSolution) => {
-        queryClient.invalidateQueries('solutions');
+        queryClient.invalidateQueries(['solutions']);
         console.log('New solution created:', newSolution);
       },
     }
@@ -59,7 +59,7 @@ export const useDeleteSolution = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('solutions');
+        queryClient.invalidateQueries(['solutions']);
       },
     }
   );

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 
 // GET Hook
-export const useGetNutrition = (options) => {
+export const useGetNutrition = (input, options) => {
   return useQuery(
     ['nutrition'],
     async () => {

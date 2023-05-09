@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useCreateNutrition, useUpdateNutrition } from '../../API/NutritionApi';
 import { useAtomValue } from 'jotai';
@@ -14,7 +14,10 @@ function TonicForm() {
     selectedNutrition?.description || ''
   );
   const [image, setImage] = useState(null);
-  const [category, setCategory] = useState(selectedNutrition?.category || '');
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState(
+    selectedNutrition?.categories || []
+  );
   const [previewImage, setPreviewImage] = useState(
     selectedNutrition?.imageUrl || ''
   );
@@ -24,12 +27,19 @@ function TonicForm() {
   const { mutate: updateNutrition, isLoading: isUpdating } =
     useUpdateNutrition();
 
+  useEffect(() => {
+    // API로부터 카테고리를 가져옵니다.
+    fetch('/tonics/categories')
+      .then((response) => response.json())
+      .then((data) => setCategories(data));
+  }, []);
+
   const handleReset = () => {
     setName('');
     setShortDescription('');
     setDescription('');
     setImage(null);
-    setCategory('');
+    setSelectedCategories([]);
     setPreviewImage('');
   };
 
@@ -42,7 +52,7 @@ function TonicForm() {
       formData.append('shortDescription', shortDescription);
       formData.append('description', description);
       formData.append('image', image);
-      formData.append('category', category);
+      formData.append('categories', selectedCategories.join(','));
 
       if (selectedNutrition) {
         await updateNutrition({ id: selectedNutrition.id, data: formData });
@@ -62,19 +72,37 @@ function TonicForm() {
     setPreviewImage(URL.createObjectURL(file));
   };
 
+  const handleCategoryChange = (event) => {
+    const category = event.target.value;
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter((c) => c !== category));
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
+  };
+
   return (
     <Form onSubmit={handleSubmit}>
       <Label htmlFor='category'>카테고리</Label>
-      <Input
-        id='category'
-        type='text'
-        value={category}
-        onChange={(event) => setCategory(event.target.value)}
-      />
+      <CategoryBox>
+        {categories.map((category) => (
+          <CategoryLabel key={category}>
+            <CategoryInput
+              type='checkbox'
+              id={category}
+              name={category}
+              value={category}
+              checked={selectedCategories.includes(category)}
+              onChange={handleCategoryChange}
+            />
+            <CategoryText htmlFor={category}>{category}</CategoryText>
+          </CategoryLabel>
+        ))}
+      </CategoryBox>
 
-      <Label htmlFor='product-name'>영양제 이름</Label>
+      <Label htmlFor='tonic-name'>영양제 이름</Label>
       <Input
-        id='product-name'
+        id='tonic-name'
         type='text'
         value={name}
         onChange={(event) => setName(event.target.value)}
@@ -97,7 +125,7 @@ function TonicForm() {
       />
 
       <Label htmlFor='image'>이미지 업로드</Label>
-      <Input id='image' type='file' onChange={handleImageChange} />
+      <Input1 id='image' type='file' onChange={handleImageChange} />
       {previewImage && <PreviewImage src={previewImage} alt='uploaded image' />}
       <Button type='submit' disabled={isCreating || isUpdating}>
         {isCreating || isUpdating ? '등록 중...' : '등록하기'}
@@ -111,44 +139,107 @@ const Form = styled.form`
 
   flex-direction: column;
   margin: 0 auto;
-  max-width: 600px;
+  max-width: 400px;
 `;
 
 const Label = styled.label`
   margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: 600;
 `;
 
 const Input = styled.input`
+  font-size: 17px;
+  letter-spacing: -0.6px;
+  line-height: 18px;
+  text-indent: 18px;
+  color: #808080;
+  text-decoration: none solid rgb(128, 128, 128);
+  background-color: white;
+  display: inline-block;
+  height: 25px;
+  width: 400px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #d9d9d9;
+  cursor: text;
+`;
+const Input1 = styled.input`
+  background-color: white;
+  display: inline-block;
   padding: 5px;
-  margin-bottom: 20px;
+  height: 20px;
+  width: 200px;
+  margin-bottom: 15px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  cursor: text;
 `;
 
 const TextArea = styled.textarea`
   padding: 15px;
   margin-bottom: 10px;
+  text-decoration: none solid rgb(128, 128, 128);
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
 `;
 
 const Button = styled.button`
-  padding: 10px;
-  background-color: #759683;
+  display: inline-block;
+  height: 40px;
+  width: 400px;
+  font-weight: bold;
+  text-align: center;
+  background-color: #759783;
+  font-size: 15px;
+  letter-spacing: -0.6px;
+  text-decoration: none solid rgb(128, 128, 128);
+  vertical-align: middle;
+  word-spacing: 0px;
   color: #fff;
+  padding: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-
-  &:hover {
+  :hover {
     background-color: green;
   }
 `;
 
 const PreviewImage = styled.img`
-  width: 200px;
+  width: 400px;
   height: 200px;
   border-radius: 5px;
   margin-bottom: 10px;
   margin-top: 10px;
   object-position: center;
   box-shadow: 0 0 10px #759683;
+  border-radius: 5px;
+`;
+const CategoryBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  padding: 10px;
+  width: auto;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  height: 40px;
+`;
+
+const CategoryLabel = styled.label`
+  display: flex;
+  margin: 3px;
+  align-items: center;
+  flex-direction: center;
+`;
+
+const CategoryInput = styled.input`
+  margin-right: 5px;
+`;
+
+const CategoryText = styled.span`
+  font-size: 14px;
 `;
 
 export default TonicForm;

@@ -66,7 +66,7 @@ const Navbar = () => {
               <span>크롭토크</span>
             </MenuItem>
           </StyledLink>
-          <StyledLink to='/nutritionpage/NCategory1'>
+          <StyledLink to='/nutrition'>
             <MenuItem>
               {/* <span class='material-symbols-outlined'>medication</span> */}
               <span>크롭영양제</span>
@@ -83,7 +83,7 @@ const Navbar = () => {
           )}
           {!accessToken ? (
             <>
-              <StyledLink to='/mypage/info'>
+              <StyledLink to='/mypage/solutionList'>
                 <MenuItem>
                   <span class='material-symbols-outlined'>person</span>
                 </MenuItem>
