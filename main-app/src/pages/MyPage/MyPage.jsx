@@ -10,19 +10,19 @@ function Sidebar() {
       <ul>
         <SideBarProfile>
           <Profile src='https://via.placeholder.com/150' />
-          <ProfileText>닉네임</ProfileText>
+          <ProfileText>돼지감자</ProfileText>
         </SideBarProfile>
 
-        <li>
-          <StyledLink to='info' active={location.pathname === '/mypage/info'}>
-            내 정보
-          </StyledLink>
-        </li>
         <li>
           <StyledLink
             to='solutionList'
             active={location.pathname === '/mypage/solutionList'}>
             진단 목록
+          </StyledLink>
+        </li>
+        <li>
+          <StyledLink to='info' active={location.pathname === '/mypage/info'}>
+            나의 정보
           </StyledLink>
         </li>
         <li>
@@ -60,8 +60,10 @@ const Profile = styled.img`
 
 const ProfileText = styled.div`
   font-size: 17px;
+  width: 700px;
   font-weight: bold;
   margin-bottom: 70px;
+  text-align: center;
 `;
 
 const Container = styled.section`
@@ -89,7 +91,12 @@ const SideBarProfile = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: center;
+  align-items: center;
+  margin-right: 100px;
+  @media (max-width: 998px) {
+    display: none;
+    background-color: #fff;
+  }
 `;
 
 const Aside = styled.aside`

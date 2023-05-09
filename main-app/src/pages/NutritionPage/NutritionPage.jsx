@@ -1,104 +1,140 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Outlet, NavLink } from 'react-router-dom';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useGetCategories } from '../../API/CategoryApi';
 
-function Sidebar() {
-  //카테고리 api 불러서 카테고리 리스트 주고
-  const location = useLocation();
-  return (
-    <Aside>
-      <ul>
-        <li>
-          <StyledLink
-            to='NCategory1'
-            active={location.pathname === '/nutritionpage/ncategory1'}>
-            광합성 촉진제
-          </StyledLink>
-        </li>
-        <li>
-          <StyledLink
-            to='NCategory2'
-            active={location.pathname === '/nutritionpage/ncategory2'}>
-            칼슘제
-          </StyledLink>
-        </li>
-        <li>
-          <StyledLink
-            to='NCategory3'
-            active={location.pathname === '/nutritionpage/ncategory3'}>
-            아미노산제
-          </StyledLink>
-        </li>
-      </ul>
-    </Aside>
-  );
-}
+const products = [
+  {
+    id: 1,
+    name: 'Product 1',
+    category: 'Category 1',
+    imageUrl: 'https://via.placeholder.com/150',
+    price: 10,
+  },
+  {
+    id: 2,
+    name: 'Product 2',
+    category: 'Category 2',
+    imageUrl: 'https://via.placeholder.com/150',
+    price: 20,
+  },
+  {
+    id: 3,
+    name: 'Product 3',
+    category: 'Category 3',
+    imageUrl: 'https://via.placeholder.com/150',
+    price: 30,
+  },
+  {
+    id: 4,
+    name: 'Product 4',
+    category: 'Category 1',
+    imageUrl: 'https://via.placeholder.com/150',
+    price: 40,
+  },
+  {
+    id: 5,
+    name: 'Product 5',
+    category: 'Category 2',
+    imageUrl: 'https://via.placeholder.com/150',
+    price: 50,
+  },
+  {
+    id: 6,
+    name: 'Product 6',
+    category: 'Category 3',
+    imageUrl: 'https://via.placeholder.com/150',
+    price: '영양제와 관련된 성분',
+  },
+];
 
-function NutritionPage() {
+function NutritionList() {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const filteredProducts = selectedCategory
+    ? products.filter((product) => product.category === selectedCategory)
+    : products;
+
   return (
     <Container>
-      <Sidebar />
-      <MainContainer>
-        <Outlet />
-      </MainContainer>
+      <CategorySelector
+        value={selectedCategory}
+        onChange={(event) => setSelectedCategory(event.target.value)}>
+        <option value=''>전체 조회</option>
+        <option value='Category 1'>Category 1</option>
+        <option value='Category 2'>Category 2</option>
+        <option value='Category 3'>Category 3</option>
+      </CategorySelector>
+      <ProductsContainer>
+        {filteredProducts.map((product) => (
+          <Product key={product.id}>
+            <StyledLink to={`/products/${product.id}`}>
+              <ProductImage src={product.imageUrl} alt={product.name} />
+              <ProductName>{product.name}</ProductName>
+              <ProduceShortText>{product.price}</ProduceShortText>
+            </StyledLink>
+          </Product>
+        ))}
+      </ProductsContainer>
     </Container>
   );
 }
+
+const Container = styled.div`
+  width: 80%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+  margin-bottom: 50px;
+`;
+
+const CategorySelector = styled.select`
+  width: 150px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+`;
+
+const ProductsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+  gap: 25px;
+`;
+
+const Product = styled.div`
+  display: flex;
+  margin: 5px;
+  flex-direction: column;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+`;
+const ProductImage = styled.img`
+  width: 200px;
+  height: 200px;
+  margin-bottom: 10px;
+`;
+
+const ProductName = styled.div`
+  font-weight: bold;
+`;
+
+const ProduceShortText = styled.div`
+  font-size: 14px;
+`;
+
 const StyledLink = styled(Link)`
   text-decoration: none;
-  color: ${(props) => (props.active ? 'red' : 'black')};
-`;
-
-const Container = styled.section`
+  color: #000;
+  flex-direction: column;
   display: flex;
-  flex-direction: row;
-  height: 100vh;
-  margin-top: 2rem;
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+  justify-content: space-between;
+  align-items: center;
 `;
 
-const MainContainer = styled.section`
-  flex: 1;
-  padding: 40px;
-  font-size: 1.2rem;
-`;
-
-const Aside = styled.aside`
-  position: relative;
-  top: 0;
-  left: 0;
-  border-right: 1px solid #ccc;
-
-  ul {
-    list-style: none;
-    text-decoration: none;
-    margin-top: 40px;
-
-    & li {
-      margin-bottom: 2rem;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    @media (max-width: 768px) {
-      display: flex;
-      padding-inline-start: 0;
-      li {
-        padding-right: 1rem;
-        margin: 0;
-      }
-    }
-  }
-
-  @media (max-width: 768px) {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    background-color: #fff;
-  }
-`;
-
-export default NutritionPage;
+export default NutritionList;

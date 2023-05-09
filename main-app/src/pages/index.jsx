@@ -11,10 +11,6 @@ import InfoPage from './MyPage/InfoPage';
 import SolutionListPage from './MyPage/SolutionListPage';
 import SignOutPage from './MyPage/SignOutPage';
 import NutritionPage from './NutritionPage/NutritionPage';
-import NutritionPage1 from './NutritionPage/NutritionPage1';
-import NCategory1 from './NutritionPage/NCategory1';
-import NCategory2 from './NutritionPage/NCategory2';
-import NCategory3 from './NutritionPage/NCategory3';
 import AdminPage from './AdminPage/AdminPage';
 import BoardManage from './AdminPage/BoardManagePage';
 import UserManage from './AdminPage/UserManagePage';
@@ -36,10 +32,6 @@ export {
   SignOutPage,
   SolutionDetail,
   NutritionPage,
-  NutritionPage1,
-  NCategory1,
-  NCategory2,
-  NCategory3,
   ImageUpload,
   BoardDetailPage,
   BoardFormPage,
