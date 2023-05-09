@@ -8,9 +8,11 @@ import {
   useDeleteComment,
   useUpdateComment,
 } from '../../API/CommentApi';
+import { useCreateLike, useDeleteLike } from '../../API/LikeAPi';
 import { selectedBoardAtom, commentsAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 import { useNavigate } from 'react-router-dom';
 import { BOARD_FORM_PATH } from '../common/path';
+import { useAuth } from '../../API/authApi';
 
 const BoardDetail = () => {
   const [selectedBoard, setSelectedBoard] = useAtom(selectedBoardAtom); // useAtomValue를 사용하면 저장된 selectedPost 상태값을 바로가져옴
@@ -147,6 +149,36 @@ const BoardDetail = () => {
       console.log(err);
     }
   };
+  //@@@@@@@@@@@@@@좋아요@@@@@@@@@@@@@@@
+
+  const { mutateAsync: createLike } = useCreateLike(selectedBoard.id);
+  const { mutateAsync: deleteLike } = useDeleteLike(selectedBoard.id);
+  const { currentUser } = useAuth();
+
+  const handleLike = async () => {
+    try {
+      if (selectedBoard.userId === currentUser.id) {
+        // 이미 좋아요를 누른 경우, 삭제
+        await deleteLike(currentUser.id);
+        setSelectedBoard((prev) => ({
+          ...prev,
+          userId: null,
+          isLiked: false,
+        }));
+      } else {
+        // 좋아요를 누르지 않은 경우, 생성
+        await createLike(currentUser.id);
+        setSelectedBoard((prev) => ({
+          //현재 setSelectedBoard 객체 가져와서 거기다 추가
+          ...prev,
+          userId: currentUser.id,
+          isLiked: true,
+        }));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   function filterTime(time) {
     const filter = Date.now() - new Date(time);
@@ -169,7 +201,7 @@ const BoardDetail = () => {
     return <div>Loading...</div>;
   }
   if (isCommentError) {
-    return <div>Error: {isCommentError?.messag}</div>; // 서버에서 반환된 에러메세지 보여줌
+    return <div>Error: {isCommentError?.message}</div>; // 서버에서 반환된 에러메세지 보여줌
   }
   return (
     <S.Container>
@@ -190,10 +222,9 @@ const BoardDetail = () => {
         <h2 className='image'>{selectedBoard.image}</h2>
         <p className='comment'>
           조회 {selectedBoard.views} • 댓글 {selectedBoard.commentCount} • 관심{' '}
+          {/* <S.HeartIcon isLiked={selectedBoard.isLiked} onClick={handleLike} /> */}
+          <p isLiked={selectedBoard.isLiked} onClick={handleLike} />
           {selectedBoard.like}
-          {/* <button onClick={handleLikeClick}>
-            {likeCount} {liked ? '취소' : '추가'}
-          </button> */}
         </p>
         <S.CommentContainer>
           <form onSubmit={handleCreateSubmit}>
