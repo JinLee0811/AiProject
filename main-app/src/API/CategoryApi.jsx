@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { SERVER } from './AxiosApi';
 
 // GET Hook
-export const useGetCategories = (options) => {
+export const useGetCategories = (input, options) => {
   return useQuery(
     ['categories'],
     async () => {

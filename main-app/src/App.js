@@ -33,7 +33,7 @@ function App() {
 }
 
 const AllDiv = styled.div`
-  /* 반응형 스타일 */
+  padding: 0px;
 
   @media (min-width: 768px) {
     display: flex;

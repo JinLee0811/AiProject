@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { atom, useAtom } from 'jotai';
-import { useAuth } from '../../API/authApi';
+import { useLogin } from '../../API/authApi';
 import { useNavigate } from 'react-router-dom';
 
 const fadeAtom = atom(true);
@@ -17,7 +17,7 @@ const sentences = [
 ];
 const Navbar = () => {
   const [fadeToggle, setFadeToggle] = useAtom(fadeAtom);
-  const { accessToken, logout, isAdmin } = useAuth();
+  const { logout, isLoggedIn, isAdmin } = useLogin();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,8 +29,10 @@ const Navbar = () => {
   }, [setFadeToggle]);
 
   function handleLogoutClick() {
-    logout();
-    navigate('/login');
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      logout();
+      navigate('/login');
+    }
   }
 
   function onClickSearch() {
@@ -60,34 +62,36 @@ const Navbar = () => {
               <span>진단하기</span>
             </MenuItem1>
           </StyledLink>
-          <StyledLink to='/board'>
-            <MenuItem>
-              {/* <span class='material-symbols-outlined'>chat</span> */}
-              <span>크롭토크</span>
-            </MenuItem>
-          </StyledLink>
           <StyledLink to='/nutrition'>
             <MenuItem>
               {/* <span class='material-symbols-outlined'>medication</span> */}
-              <span>크롭영양제</span>
+              <span>스토어</span>
+            </MenuItem>
+          </StyledLink>
+          <StyledLink to='/board'>
+            <MenuItem>
+              {/* <span class='material-symbols-outlined'>chat</span> */}
+              <span>커뮤니티</span>
             </MenuItem>
           </StyledLink>
         </LeftMenu>
         <RightMenu>
-          {!isAdmin && (
-            <StyledLink to='/admin/user'>
-              <MenuItem>
-                <span class='material-symbols-outlined'>manage_accounts</span>
-              </MenuItem>
-            </StyledLink>
-          )}
-          {!accessToken ? (
+          {isLoggedIn ? (
             <>
               <StyledLink to='/mypage/solutionList'>
                 <MenuItem>
                   <span class='material-symbols-outlined'>person</span>
                 </MenuItem>
               </StyledLink>
+              {isAdmin && (
+                <StyledLink to='/admin/user'>
+                  <MenuItem>
+                    <span class='material-symbols-outlined'>
+                      manage_accounts
+                    </span>
+                  </MenuItem>
+                </StyledLink>
+              )}
               <MenuItem onClick={handleLogoutClick}>
                 <span class='material-symbols-outlined'>logout</span>
               </MenuItem>
@@ -101,6 +105,7 @@ const Navbar = () => {
               </StyledLink>
             </>
           )}
+
           <MenuItem>
             <SearchBox>
               <SearchInput type='text' placeholder='Crop을 검색하세요' />
@@ -142,17 +147,19 @@ const LogoImage = styled.img`
 `;
 
 const Nav = styled.nav`
-  height: 3rem;
+  width: 1300px;
+  height: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #fff;
-  padding: 10px;
+  padding: 30px 0px 20px 0px;
   margin: 0px;
   @media (max-width: 968px) {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
   }
 `;
 const fadeInOut = keyframes`
@@ -201,14 +208,16 @@ const LeftMenu = styled.ul`
   list-style: none;
   display: flex;
   align-items: center;
-  margin: 0;
+  margin-right: 0;
   padding: 0;
+  @media (max-width: 998px) {
+  }
 `;
 const RightMenu = styled.ul`
   list-style: none;
   display: flex;
   align-items: center;
-  margin-left: 200px;
+  margin-left: 250px;
   padding: 0;
   @media (max-width: 998px) {
     display: none;
@@ -246,8 +255,9 @@ const MenuItem = styled.li`
 const SearchBox = styled.div`
   display: flex;
   align-items: center;
-  background-color: #fff;
+  background-color: #f2f2f2;
   border-radius: 4px;
+  border: 1px solid #f2f2f2;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 200px;
   height: 20px;
@@ -255,9 +265,13 @@ const SearchBox = styled.div`
 `;
 
 const SearchInput = styled.input`
-  border: none;
+  outline: none;
+  letter-spacing: -0.6px;
   flex: 1;
-  font-size: 12px;
+  height: 35px;
+  border: 0px;
+  font-size: 13px;
+  background-color: #f2f2f2;
   color: #333;
   &::placeholder {
     color: #bbb;

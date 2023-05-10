@@ -14,15 +14,15 @@ function Sidebar() {
         </SideBarProfile>
 
         <li>
+          <StyledLink to='info' active={location.pathname === '/mypage/info'}>
+            내 정보
+          </StyledLink>
+        </li>
+        <li>
           <StyledLink
             to='solutionList'
             active={location.pathname === '/mypage/solutionList'}>
             진단 목록
-          </StyledLink>
-        </li>
-        <li>
-          <StyledLink to='info' active={location.pathname === '/mypage/info'}>
-            나의 정보
           </StyledLink>
         </li>
         <li>
@@ -69,9 +69,7 @@ const ProfileText = styled.div`
 const Container = styled.section`
   display: flex;
   flex-direction: row;
-  height: 100vh;
   width: 100vh;
-  margin-top: 1rem;
   @media (max-width: 998px) {
     flex-direction: column;
     align-items: center;
@@ -85,6 +83,7 @@ const MainContainer = styled.section`
   flex: 1;
   padding: 20px;
   font-size: 1.2rem;
+  overflow: hidden;
 `;
 
 const SideBarProfile = styled.div`
@@ -101,9 +100,10 @@ const SideBarProfile = styled.div`
 
 const Aside = styled.aside`
   width: 200px;
-  position: relative;
-  top: 0;
+  position: fixed;
+  height: 100vh;
   left: 0;
+  margin-left: 30px;
   border-right: 1px solid #ccc;
 
   ul {
@@ -129,9 +129,14 @@ const Aside = styled.aside`
 
   @media (max-width: 998px) {
     display: flex;
+    height: 90px;
     justify-content: center;
     width: 100%;
     background-color: #fff;
+    position: relative;
+    margin-left: 0px;
+    top: 0;
+    left: 0;
   }
 `;
 

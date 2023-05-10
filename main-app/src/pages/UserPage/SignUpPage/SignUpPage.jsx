@@ -3,20 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import LogoPng from '../../../components/image/Logo.png';
-import { useRegister } from '../../../API/authApi';
+import { SERVER } from '../../../API/AxiosApi';
+import { useMutation } from 'react-query';
 
 const SignUpForm = () => {
   const navigate = useNavigate();
-  // 각 입력 필드의 상태를 관리하는 state를 정의합니다.
   const [inputs, setInputs] = useState({
-    name: '',
     nickname: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    passwordConfirm: '',
   });
 
-  // 입력 필드의 값을 업데이트하는 함수를 정의합니다.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInputs({
@@ -24,25 +22,15 @@ const SignUpForm = () => {
       [name]: value,
     });
   };
-  // 이메일 벨리데이션
+
   function emailCheck(email) {
-    const regex =
-      /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
-    return email.match(regex) !== null;
+    const regex = /^[0-9a-zA-Z]+@[0-9a-zA-Z]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
   }
 
-  const validateForm = ({
-    name,
-    nickname,
-    email,
-    password,
-    confirmPassword,
-  }) => {
+  const validateForm = ({ nickname, email, password, passwordConfirm }) => {
     if (emailCheck(email) === false) {
       return '이메일 형식이 올바르지 않습니다.';
-    }
-    if (name.length < 2) {
-      return '두글자 이상의 이름을 설정해주세요.';
     }
     if (nickname.length < 2) {
       return '두글자 이상의 닉네임을 설정해주세요.';
@@ -50,23 +38,16 @@ const SignUpForm = () => {
     if (password.length < 4) {
       return '비밀번호는 4글자 이상이어야합니다.';
     }
-    if (password !== confirmPassword) {
+    if (password !== passwordConfirm) {
       return '비밀번호가 일치하지 않습니다.';
     }
     return true;
   };
 
-  // useMutation hook을 사용하여 회원가입 API를 호출하는 mutation을 생성
-  const registerMutation = useRegister();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validated = validateForm(inputs);
-    if (typeof validated === 'string') {
-      alert(validated);
-      return;
-    }
-    registerMutation.mutate(inputs, {
+  // mutation 써서 post 하기
+  const signUpMutation = useMutation(
+    (userData) => SERVER.post('/user/signUp', userData),
+    {
       onSuccess: () => {
         navigate('/login');
         alert('회원가입에 성공했습니다!');
@@ -75,7 +56,18 @@ const SignUpForm = () => {
         console.log(error);
         alert(error.response.data.message);
       },
-    });
+    }
+  );
+
+  // 벨리데이션 후 제출
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const validated = validateForm(inputs);
+    if (typeof validated === 'string') {
+      alert(validated);
+      return;
+    }
+    signUpMutation.mutate(inputs);
   };
 
   return (
@@ -97,12 +89,13 @@ const SignUpForm = () => {
           onChange={handleChange}
           required
         />
-        <Label htmlFor='name'>이름</Label>
+
+        <Label htmlFor='nickname'>닉네임</Label>
         <Input
           type='text'
-          name='name'
-          value={inputs.name}
-          placeholder='이름'
+          name='nickname'
+          value={inputs.nickname}
+          placeholder='별명을 정해보세요'
           onChange={handleChange}
           required
         />
@@ -117,18 +110,9 @@ const SignUpForm = () => {
         />
         <Input
           type='password'
-          name='confirmPassword'
-          value={inputs.confirmPassword}
+          name='passwordConfirm'
+          value={inputs.passwordConfirm}
           placeholder='비밀번호 확인'
-          onChange={handleChange}
-          required
-        />
-        <Label htmlFor='nickname'>닉네임</Label>
-        <Input
-          type='text'
-          name='nickname'
-          value={inputs.nickname}
-          placeholder='별명을 정해보세요'
           onChange={handleChange}
           required
         />

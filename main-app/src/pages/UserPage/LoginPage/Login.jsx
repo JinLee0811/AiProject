@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../../API/authApi';
+import { useAtom } from 'jotai';
+import { useLogin } from '../../../API/authApi';
 import LogoPng from '../../../components/image/Logo.png';
+import { isLoggedInAtom, isAdminAtom } from '../../../Atoms/TokenAtom';
 
 const LoginForm = () => {
-  const { login } = useAuth();
+  const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const { login, error } = useLogin();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,8 +23,10 @@ const LoginForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await login(email, password);
+      await login({ email, password });
       console.log('로그인 성공!');
+      setIsLoggedIn(true);
+      console.log(isLoggedIn);
     } catch (error) {
       console.error('로그인 실패:', error.message);
     }

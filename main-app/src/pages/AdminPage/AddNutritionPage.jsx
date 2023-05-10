@@ -3,12 +3,15 @@ import styled from 'styled-components';
 import { useCreateNutrition, useUpdateNutrition } from '../../API/NutritionApi';
 import { useAtomValue } from 'jotai';
 import { selectedNutritionAtom } from '../../Atoms/NutritionAtom';
+// import { useGetCategories } from '../../API';
+// import { categoryAtom } from '../../Atoms/CategoryAtom';
+// 카테고리 박스에 카테고리 부르기
 
 function TonicForm() {
   const selectedNutrition = useAtomValue(selectedNutritionAtom);
   const [name, setName] = useState(selectedNutrition?.name || '');
   const [shortDescription, setShortDescription] = useState(
-    selectedNutrition?.shortDescription || ''
+    selectedNutrition?.short_description || ''
   );
   const [description, setDescription] = useState(
     selectedNutrition?.description || ''
@@ -16,7 +19,7 @@ function TonicForm() {
   const [image, setImage] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(
-    selectedNutrition?.categories || []
+    selectedNutrition?.categories.name || []
   );
   const [previewImage, setPreviewImage] = useState(
     selectedNutrition?.imageUrl || ''
@@ -49,7 +52,7 @@ function TonicForm() {
     try {
       const formData = new FormData();
       formData.append('name', name);
-      formData.append('shortDescription', shortDescription);
+      formData.append('short_description', shortDescription);
       formData.append('description', description);
       formData.append('image', image);
       formData.append('categories', selectedCategories.join(','));
@@ -90,7 +93,7 @@ function TonicForm() {
             <CategoryInput
               type='checkbox'
               id={category}
-              name={category}
+              name={category.name}
               value={category}
               checked={selectedCategories.includes(category)}
               onChange={handleCategoryChange}
@@ -149,10 +152,10 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
-  font-size: 17px;
+  font-size: 14px;
   letter-spacing: -0.6px;
   line-height: 18px;
-  text-indent: 18px;
+  text-indent: 5px;
   color: #808080;
   text-decoration: none solid rgb(128, 128, 128);
   background-color: white;
