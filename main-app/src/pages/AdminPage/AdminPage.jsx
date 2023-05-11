@@ -58,25 +58,11 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   color: ${(props) => (props.active ? 'green' : 'black')};
 `;
-const Profile = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 100%;
-  margin-bottom: 10px;
-`;
-
-const ProfileText = styled.div`
-  font-size: 17px;
-  width: 700px;
-  font-weight: bold;
-  margin-bottom: 70px;
-  text-align: center;
-`;
 
 const Container = styled.section`
   display: flex;
   flex-direction: row;
-  width: 100vh;
+  width: 150vh;
   @media (max-width: 998px) {
     flex-direction: column;
     align-items: center;
@@ -90,7 +76,7 @@ const MainContainer = styled.section`
   flex: 1;
   padding: 20px;
   font-size: 1.2rem;
-  overflow: hidden;
+  overflow: scroll;
 `;
 
 const SideBarProfile = styled.div`
@@ -107,10 +93,10 @@ const SideBarProfile = styled.div`
 
 const Aside = styled.aside`
   width: 200px;
-  position: fixed;
-  height: 100vh;
+  position: relative;
+  top: 0;
   left: 0;
-  margin-left: 30px;
+  margin-left: 0px;
 
   ul {
     list-style: none;

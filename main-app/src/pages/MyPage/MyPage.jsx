@@ -1,28 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useAtom } from 'jotai';
 import styled from 'styled-components';
 import { Outlet, NavLink } from 'react-router-dom';
 import { Link, useLocation } from 'react-router-dom';
 
 function Sidebar() {
   const location = useLocation();
+
   return (
     <Aside>
       <ul>
-        <SideBarProfile>
-          <Profile src='https://via.placeholder.com/150' />
-          <ProfileText>돼지감자</ProfileText>
-        </SideBarProfile>
-
-        <li>
-          <StyledLink to='info' active={location.pathname === '/mypage/info'}>
-            내 정보
-          </StyledLink>
-        </li>
         <li>
           <StyledLink
             to='solutionList'
             active={location.pathname === '/mypage/solutionList'}>
             진단 목록
+          </StyledLink>
+        </li>
+        <li>
+          <StyledLink to='info' active={location.pathname === '/mypage/info'}>
+            닉네임 변경
+          </StyledLink>
+        </li>
+        <li>
+          <StyledLink
+            to='changePassword'
+            active={location.pathname === '/mypage/changePassword'}>
+            비밀번호 변경
           </StyledLink>
         </li>
         <li>
@@ -47,6 +51,7 @@ function MyPage() {
     </Container>
   );
 }
+
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: ${(props) => (props.active ? 'green' : 'black')};
@@ -81,7 +86,7 @@ const Container = styled.section`
 
 const MainContainer = styled.section`
   flex: 1;
-  padding: 20px;
+  padding: 40px;
   font-size: 1.2rem;
   overflow: hidden;
 `;

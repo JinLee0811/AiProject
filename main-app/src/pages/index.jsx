@@ -20,6 +20,7 @@ import AddNutrition from './AdminPage/AddNutritionPage';
 import BoardMyListPage from './BoardPage/BoardMyListPage';
 import CategoryPage from './AdminPage/CategoryPage';
 import SolutionDetail from './MyPage/SolutionDetail';
+import ChangePassword from './MyPage/ChangePassword';
 
 export {
   MainPage,
@@ -44,4 +45,5 @@ export {
   AddNutrition,
   CategoryPage,
   NutritionDetailPage,
+  ChangePassword,
 };

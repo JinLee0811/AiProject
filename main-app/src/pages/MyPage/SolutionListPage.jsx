@@ -3,18 +3,20 @@ import styled from 'styled-components';
 import axios from 'axios';
 
 const SolutionsForm = () => {
-  const [solutionList, setSolutionList] = useState([]);
+  // const [solutionList, setSolutionList] = useState([]);
 
-  useEffect(() => {
-    // 서버에서 진단 내역 리스트를 불러오는 API 호출
-    axios.get('/api/diagnosis').then((response) => {
-      setSolutionList(response.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     // 서버에서 진단 내역 리스트를 불러오는 API 호출
+  //     const response = await axios.get('/api/diagnosis');
+  //     setSolutionList(response.data);
+  //   }
+  //   fetchData();
+  // }, []);
 
   return (
     <Wrapper>
-      <Title>나의 작물 진단 내역</Title>
+      {/* <Title>나의 작물 진단 내역</Title>
       {solutionList.length > 0 ? (
         <DiagnosisList>
           {solutionList.map((solution) => (
@@ -26,7 +28,7 @@ const SolutionsForm = () => {
         </DiagnosisList>
       ) : (
         <p>진단 내역이 없습니다.</p>
-      )}
+      )} */}
     </Wrapper>
   );
 };

@@ -14,22 +14,24 @@ function UserManage() {
   }, [fetchedUsers, setUsers]);
 
   const handleDelete = async (id) => {
-    try {
-      const response = await deleteUser(id);
-      setUsers((prevUsers) =>
-        prevUsers.map((user) => {
-          if (user.id === id) {
-            return {
-              ...user,
-              deletedAt: new Date(),
-            };
-          }
-          return user;
-        })
-      );
-      alert(response.data.message);
-    } catch (err) {
-      console.log(err.message);
+    if (window.confirm('회원을 탈퇴시키겠습니까?')) {
+      try {
+        const response = await deleteUser(id);
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => {
+            if (user.id === id) {
+              return {
+                ...user,
+                deletedAt: new Date(),
+              };
+            }
+            return user;
+          })
+        );
+        alert(response.data.message);
+      } catch (err) {
+        console.log(err.message);
+      }
     }
   };
 
@@ -46,8 +48,8 @@ function UserManage() {
       <thead>
         <tr>
           <TableHeader>가입일</TableHeader>
+          <TableHeader>탈퇴일</TableHeader>
           <TableHeader>이메일</TableHeader>
-          <TableHeader>이름</TableHeader>
           <TableHeader>닉네임</TableHeader>
           <TableHeader>유형</TableHeader>
           <TableHeader>관리</TableHeader>
@@ -57,11 +59,17 @@ function UserManage() {
         {users &&
           users.map((user) => (
             <tr key={user.id}>
-              <TableData>{user.createdAt}</TableData>
+              <TableData>
+                {new Date(user.created_at).toISOString().substring(0, 10)}
+              </TableData>
+              <TableData>
+                {user.deleted_at === null
+                  ? '가입 중'
+                  : user.deleted_at.substring(0, 10)}
+              </TableData>
               <TableData>{user.email}</TableData>
-              <TableData>{user.name}</TableData>
-              <TableData>{user.nick_name}</TableData>
-              <TableData>{user.role}</TableData>
+              <TableData>{user.nickname}</TableData>
+              <TableData>{user.is_admin === 1 ? '어드민' : '회원'}</TableData>
               <TableData>
                 <DeleteButton
                   key={user.id}

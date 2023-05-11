@@ -50,7 +50,7 @@ function CategoriesPage() {
   // }
 
   return (
-    <div>
+    <ContainerBox>
       <FormContainer>
         <form onSubmit={handleSubmit}>
           <FormLabel>
@@ -85,11 +85,18 @@ function CategoriesPage() {
           </div>
         </CategoryItem>
       </CategoryList>
-    </div>
+    </ContainerBox>
   );
 }
+const ContainerBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 0 100px;
+`;
 
 const FormContainer = styled.div`
+  display: flex;
   margin-bottom: 20px;
 `;
 

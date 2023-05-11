@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { SERVER } from './AxiosApi';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 
 // GET Hook
 export const useGetNutrition = (input, options) => {
   return useQuery(
     ['nutrition'],
     async () => {
-      const { data } = await SERVER.get('/tonics');
+      const { data } = await serverWithoutToken.get('/tonics');
       return data;
     },
     { ...options }
@@ -19,7 +19,10 @@ export const useCreateNutrition = () => {
 
   return useMutation(
     async (newNutrition) => {
-      const { data } = await SERVER.post('/admin/tonics/', newNutrition);
+      const { data } = await serverWithToken.post(
+        '/admin/tonics/',
+        newNutrition
+      );
       return data;
     },
     {
@@ -36,7 +39,7 @@ export const useUpdateNutrition = () => {
 
   return useMutation(
     async (id, updatedNutrition) => {
-      const { data } = await SERVER.put(
+      const { data } = await serverWithToken.put(
         `/admin/tonics/${id}`,
         updatedNutrition
       );
@@ -56,7 +59,7 @@ export const useDeleteNutrition = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await SERVER.delete(`/admin/tonics/${id}`);
+      const { data } = await serverWithToken.delete(`/admin/tonics/${id}`);
       return data;
     },
     {

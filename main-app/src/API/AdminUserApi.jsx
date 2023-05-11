@@ -1,9 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { SERVER } from './AxiosApi';
+import { serverWithToken } from '../config/AxiosRequest';
 
 export const useGetUsers = () => {
   return useQuery(['users'], async () => {
-    const { data } = await SERVER.get('/admin/users/${id}');
+    const { data } = await serverWithToken.get('/admin/users');
     return data;
   });
 };
@@ -13,12 +13,13 @@ export const useDeleteUser = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await SERVER.delete(`/admin/users/${id}`);
+      const { data } = await serverWithToken.delete(`/admin/users/${id}`);
       return data;
     },
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['users']);
+        alert('해당 유저가 삭제되었습니다.');
       },
     }
   );

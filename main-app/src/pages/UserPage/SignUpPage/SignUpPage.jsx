@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import LogoPng from '../../../components/image/Logo.png';
-import { SERVER } from '../../../API/AxiosApi';
+import { serverWithoutToken } from '../../../config/AxiosRequest';
 import { useMutation } from 'react-query';
 
 const SignUpForm = () => {
@@ -46,7 +46,7 @@ const SignUpForm = () => {
 
   // mutation 써서 post 하기
   const signUpMutation = useMutation(
-    (userData) => SERVER.post('/user/signUp', userData),
+    (userData) => serverWithoutToken.post('/user/signUp', userData),
     {
       onSuccess: () => {
         navigate('/login');

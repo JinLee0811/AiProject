@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { SERVER } from './AxiosApi';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 import { useAtom } from 'jotai';
 import {
   isLoggedInAtom,
@@ -12,7 +12,7 @@ import {
 
 const LOGIN_MUTATION_KEY = 'loginMutation';
 
-export const useLogin = () => {
+export const Auth = () => {
   const queryClient = useQueryClient();
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
@@ -30,20 +30,37 @@ export const useLogin = () => {
       setRefreshToken(refresh_token);
       setIsLoggedIn(true);
 
-      SERVER.get('/user/profile')
+      serverWithToken
+        .get('/user/profile')
         .then((response) => {
-          const { user } = response.data;
-          setIsAdmin(user.is_admin === 1);
+          const user = response.data;
           setUser(user);
+          setIsAdmin(user.is_admin === 1);
         })
         .catch((error) => {
           console.error(error);
+          setIsAdmin(false);
+
+          // 추가된 코드 시작
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            setIsLoggedIn(false);
+            setIsAdmin(false);
+            setUser(null);
+            window.location.href = '/login';
+          }
+          // 추가된 코드 끝
         });
+    } else {
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+      setUser(null);
     }
-  }, []);
+  }, [setUser, isLoggedIn]);
 
   const loginMutation = useMutation(
-    (data) => SERVER.post('/user/signin', data),
+    (data) => serverWithoutToken.post('/user/signin', data),
     {
       onSuccess: (response) => {
         const { access_token, refresh_token } = response.data;
@@ -58,13 +75,12 @@ export const useLogin = () => {
     }
   );
 
-  const logoutMutation = useMutation(() => SERVER.post('/user/signout'));
+  const logoutMutation = useMutation(() =>
+    serverWithToken.post('/user/signout')
+  );
 
   const refreshMutation = useMutation(
-    () =>
-      SERVER.post('/user/access', {
-        refresh_token: refreshToken,
-      }),
+    () => serverWithToken.post('/user/access'),
     {
       onSuccess: (response) => {
         const { access_token } = response.data;

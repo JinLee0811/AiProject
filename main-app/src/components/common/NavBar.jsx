@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { atom, useAtom } from 'jotai';
-import { useLogin } from '../../API/authApi';
+import { Auth } from '../../API/authApi';
 import { useNavigate } from 'react-router-dom';
 
 const fadeAtom = atom(true);
@@ -17,7 +17,7 @@ const sentences = [
 ];
 const Navbar = () => {
   const [fadeToggle, setFadeToggle] = useAtom(fadeAtom);
-  const { logout, isLoggedIn, isAdmin } = useLogin();
+  const { logout, isLoggedIn, isAdmin } = Auth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const Navbar = () => {
   }
 
   function onClickSearch() {
-    alert('폼으로 달아놨어요');
+    alert(isAdmin);
   }
 
   return (
