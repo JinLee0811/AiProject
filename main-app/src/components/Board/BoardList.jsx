@@ -1,7 +1,7 @@
 import { React, useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import * as S from './BoardList.style';
-import axios from 'axios';
+import { SERVER } from '../../API/axios';
 import { useGetBoard } from '../../API/BoardAPi';
 import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
 import {
@@ -23,10 +23,9 @@ const BoardList = ({ onPageChange }) => {
   // }); //get
 
   useEffect(() => {
-    axios
-      .get('/BoardList.json')
+    SERVER.get('/board')
       .then((response) => {
-        setBoards(response.data); //가져온 data가 비어있던 postAtom에 업데이트 됨
+        setBoards(response.data); //가져온 data가 비어있던 boardsAtom 업데이트 됨
       })
       .catch((error) => {
         console.log(error);
@@ -45,6 +44,7 @@ const BoardList = ({ onPageChange }) => {
     onPageChange(BOARD_MY_PATH);
   };
   const formClick = () => {
+    setSelectedBoard('');
     onPageChange(BOARD_FORM_PATH);
   };
   const shortenContent = (content) => {
@@ -75,7 +75,10 @@ const BoardList = ({ onPageChange }) => {
   return (
     <>
       <S.Container>
-        <img className='banner' src='/bannerImage.jpg' alt='Example' />
+        <S.BannerImage
+          src='https://img.freepik.com/free-photo/home-decor-indoor-planhttps://img.freepik.com/free-photo/picture-frame-leaning-against-white-wall_53876-133178.jpg?size=626&ext=jpg&ga=GA1.1.383630718.1678090108&semt=aist-shelf_53876-130000.jpg?w=1800&t=st=1683690318~exp=1683690918~hmac=28f5fe10fb2f0e42e923ea8ff4069705e5a82327e6f34b6521afc857a956bc93'
+          alt='Example'
+        />
         <div className='buttons'>
           <button onClick={boardClick}>전체보기</button>
           <button onClick={myBoardClick}>내 게시글 보기</button>
@@ -85,12 +88,12 @@ const BoardList = ({ onPageChange }) => {
           <ul>
             {boards.map((board) => (
               <li key={board.id}>
-                <p className='time'>{filterTime(board.time)}</p>{' '}
+                <p className='time'>{filterTime(board.created_at)}</p>{' '}
                 {/* 등록날짜 표시 */}
                 <h2>{board.title}</h2>
                 <p>{shortenContent(board.content)}</p>
                 {/* content는 미리보기식으로 첫줄만 보이고 이후엔 ... 표기 */}
-                <p className='image'>{board.image}</p>
+                <S.ListImage src={board.image} alt={board.title} />
                 <S.Infor>
                   <span className='material-symbols-outlined'>
                     emoji_nature
@@ -98,8 +101,7 @@ const BoardList = ({ onPageChange }) => {
                   <p className='nickname'>{board.nickname}</p>
                 </S.Infor>
                 <p className='comment'>
-                  조회 {board.views} • 댓글 {board.commentCount} • 관심{' '}
-                  {board.like}
+                  조회 {board.views} • 댓글 • 관심 {board.likes}
                 </p>
                 <button
                   className='Detail'

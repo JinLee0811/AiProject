@@ -1,12 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { SERVER } from './AxiosApi';
+import { useAtomValue } from 'jotai';
+import { selectedBoardAtom } from '../Atoms/BoardAtom';
 
+// const selectedBoard = useAtomValue(selectedBoardAtom);
 //댓글 get
 export const useGetComment = (boardId) => {
-  return useQuery('comment', async () => {
-    const { data } = SERVER.get(`/comment/${boardId}`);
-    return data;
-  });
+  return useQuery(
+    ['Comments', boardId], //query-key
+    async () => {
+      const { data } = await SERVER.get(`/board/${boardId}/comments`);
+      return data;
+    }
+  );
 };
 
 //댓글, 대댓글 post

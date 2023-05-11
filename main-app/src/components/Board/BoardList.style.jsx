@@ -13,14 +13,14 @@ export const Container = styled.div`
   .buttons {
     display: flex;
     margin-top: 25px;
-    margin-left: 50%;
+    margin-left: 60%;
     button {
       margin-right: 10px;
     }
   }
   button {
     padding: 10px 20px;
-    background-color: #4ba888;
+    background-color: #759783;
     color: white;
     border: none;
     border-radius: 5px;
@@ -29,13 +29,20 @@ export const Container = styled.div`
     font-family: 'Spoqa Han Sans Neo';
     font-weight: bold;
     :hover {
-      background-color: #759783;
+      background-color: green;
     }
   }
   .banner {
     width: 850px;
     margin-left: 30px;
   }
+`;
+export const BannerImage = styled.img`
+  width: 800px;
+  height: 250px;
+  margin-top: 10px;
+  margin-left: 30px;
+  border-radius: 5px;
 `;
 export const FormContainer = styled.div`
   display: flex;
@@ -66,7 +73,7 @@ export const FormContainer = styled.div`
   }
   .comment {
     font-size: 13px;
-    color: #4ba888;
+    color: #759783;
     font-weight: bold;
   }
   .Detail {
@@ -78,7 +85,7 @@ export const FormContainer = styled.div`
   }
   .nickname {
     font-size: 13px;
-    color: #4ba888;
+    color: #759783
     font-weight: bold;
     margin-bottom: 0;
   }
@@ -86,6 +93,11 @@ export const FormContainer = styled.div`
 export const Infor = styled.div`
   display: flex;
   .material-symbols-outlined {
-    color: #4ba888;
+    color: #759783;
   }
+`;
+export const ListImage = styled.img`
+  width: 80px;
+  height: 80px;
+  margin: 20px;
 `;

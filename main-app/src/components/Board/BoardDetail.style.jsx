@@ -26,7 +26,7 @@ export const FormContainer = styled.div`
     button {
       margin-right: 10px;
       padding: 10px 20px;
-      background-color: #4ba888;
+      background-color: #759783;
       color: white;
       font-family: 'Spoqa Han Sans Neo';
       font-weight: bold;
@@ -35,7 +35,7 @@ export const FormContainer = styled.div`
       box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       :hover {
-        background-color: #759783;
+        background-color: green;
       }
     }
   }
@@ -49,7 +49,7 @@ export const FormContainer = styled.div`
     padding: 0 25px 0px 25px;
     border-bottom: 1px solid rgb(210, 210, 210);
     font-size: 16px;
-    color: #4ba888;
+    color: #759783;
     font-weight: bold;
   }
   p.nickname {
@@ -80,7 +80,7 @@ export const FormContainer = styled.div`
     border-bottom: 1px solid rgb(210, 210, 210);
     border-top: 1px solid rgb(210, 210, 210);
     padding: 10px 25px;
-    color: #4ba888;
+    color: #759783;
     font-weight: bold;
   }
 `;
@@ -142,6 +142,11 @@ export const Comment = styled.div`
 export const CommentManage = styled.div`
   .write {
     margin-left: 92%;
+    background-color: #759783;
+    :hover {
+      background-color: green;
+      color: white;
+    }
   }
 `;
 export const CommentEdit = styled.div`
@@ -156,8 +161,34 @@ export const CommentEdit = styled.div`
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     :hover {
-      background-color: #4ba888;
+      background-color: green;
       color: white;
     }
   }
 `;
+export const DetailImage = styled.img`
+  height: 180px;
+  width: 180px;
+  margin: 20px;
+`;
+export const HeartIcon = styled.span`
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url(${(
+    props //${} 안에 javascript문법 넣는방식 isLiked가 뭐냐에 따라 그림바뀜
+  ) => (props.isLiked ? '/red-heart.svg' : '/empty-heart.svg')});
+  background-size: cover;
+`;
+
+export const RedHeartIcon = () => <HeartIcon isLiked={true} />;
+export const EmptyHeartIcon = () => <HeartIcon isLiked={false} />;
+export const CommentList = styled.div`
+  width: 100px;
+  height: 100px;
+`;
+export const CommentItem = styled.div``;
+export const CommentContent = styled.div`
+  color: red;
+`;
+export const CommentChildren = styled.div``;
