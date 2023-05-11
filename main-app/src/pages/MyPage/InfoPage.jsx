@@ -1,20 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useAtom } from 'jotai';
+import { userAtom } from '../../Atoms/TokenAtom';
+import { useMutation, useQueryClient } from 'react-query';
+import { serverWithToken } from '../../config/AxiosRequest';
 
 const Info = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
+  const [user, setUser] = useAtom(userAtom);
+  const [nickName, setNickName] = useState(user?.nickname || '');
+  const [profileImage, setProfileImage] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await serverWithToken.get('/user/profile');
+        setUser(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [setUser]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    if (name === 'name') {
-      setName(value);
-    } else if (name === 'email') {
-      setEmail(value);
-    } else if (name === 'password') {
-      setPassword(value);
+    if (name === 'nickName') {
+      setNickName(value);
     }
   };
 
@@ -22,69 +33,62 @@ const Info = () => {
     setProfileImage(event.target.files[0]);
   };
 
-  const handleSubmit = (event) => {
+  const queryClient = useQueryClient();
+  const updateUserNickName = useMutation(async (data) => {
+    const { nickname } = data;
+    const response = await serverWithToken.put('/user/nickname', { nickname });
+    return response.data;
+  });
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // 서버로 데이터 전송하는 로직 구현
+    if (window.confirm('정말 닉네임을 변경하시겠습니까?')) {
+      try {
+        await updateUserNickName.mutateAsync(
+          {
+            nickname: nickName,
+          },
+          {
+            onSuccess: (data) => {
+              setUser(data);
+              setNickName(data.nickname);
+              queryClient.invalidateQueries('user');
+              alert('닉네임이 변경 되었습니다');
+            },
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        alert(error.message);
+      }
+    }
   };
 
   return (
     <Form onSubmit={handleSubmit}>
       <ProfileImageWrapper>
-        <ProfileImage
-          src={
-            profileImage
-              ? URL.createObjectURL(profileImage)
-              : 'https://via.placeholder.com/150'
-          }
-        />
+        <ProfileImage src='https://img.freepik.com/premium-vector/cute-funny-camomile-flower-face-vector-doodle-line-cartoon-kawaii-character-illustration-icon-camomile-flower-cartoon-mascot-logo-concept_92289-3133.jpg' />
         <ProfileImageInput
           type='file'
           name='profileImage'
           onChange={handleImageChange}
         />
-        <ProfileImageLabel>프로필 등록 및 변경</ProfileImageLabel>
+        <ProfileImageLabel>프로필 이미지</ProfileImageLabel>
       </ProfileImageWrapper>
       <FormGroup>
         <label htmlFor='email'>이메일</label>
-        <input
-          type='email'
-          id='email'
-          name='email'
-          value={email}
-          onChange={handleInputChange}
-        />
-      </FormGroup>
-      <FormGroup>
-        <label htmlFor='name'>이름</label>
-        <input
-          type='text'
-          id='name'
-          name='name'
-          value={name}
-          onChange={handleInputChange}
-        />
+        <input type='email' name='email' value={user?.email} disabled />
       </FormGroup>
       <FormGroup>
         <label htmlFor='name'>닉네임</label>
         <input
           type='text'
-          id='name'
-          name='name'
-          value={name}
+          name='nickName'
+          value={nickName}
           onChange={handleInputChange}
         />
       </FormGroup>
-      <FormGroup>
-        <label htmlFor='password'>비밀번호</label>
-        <input
-          type='password'
-          id='password'
-          name='password'
-          value={password}
-          onChange={handleInputChange}
-        />
-      </FormGroup>
-      <Button type='submit'>수정하기</Button>
+      <Button type='submit'>닉네임 변경</Button>
     </Form>
   );
 };
@@ -100,6 +104,7 @@ const ProfileImageWrapper = styled.div`
   position: relative;
   width: 150px;
   height: 150px;
+  margin-bottom: 20px;
 `;
 
 const ProfileImage = styled.img`
@@ -141,8 +146,8 @@ const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 20px;
-  margin-bottom: 5px;
+  margin-top: 0px;
+  margin-bottom: 15px;
   label {
     margin-bottom: 5px;
     font-size: 1rem;

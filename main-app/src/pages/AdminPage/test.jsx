@@ -8,14 +8,7 @@ import { useGetCategories } from '../../API/CategoryApi';
 function TonicForm() {
   const selected = useAtomValue(selectedNutritionAtom);
   const [categories, setCategories] = useState([]);
-  const [name, setName] = useState(selected?.name || '');
-  const [shortDescription, setShortDescription] = useState(
-    selected?.short_description || ''
-  );
-  const [description, setDescription] = useState(selected?.description || '');
-  const [image, setImage] = useState(selected?.image || '');
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [previewImage, setPreviewImage] = useState(selected?.image || '');
 
   const { data: fetchedCategories } = useGetCategories({
     onError: (error) => console.log(error.message),
@@ -33,12 +26,7 @@ function TonicForm() {
     useUpdateNutrition();
 
   const handleReset = () => {
-    setName('');
-    setShortDescription('');
-    setDescription('');
-    setImage(null);
     setSelectedCategories([]);
-    setPreviewImage('');
   };
 
   const handleSubmit = async (event) => {
@@ -46,10 +34,6 @@ function TonicForm() {
 
     try {
       const formData = new FormData();
-      formData.append('name', name);
-      formData.append('short_description', shortDescription);
-      formData.append('description', description);
-      formData.append('image', image);
       formData.append('categories', selectedCategories.join(','));
 
       if (selected) {
@@ -64,20 +48,20 @@ function TonicForm() {
     }
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setImage(file);
-    setPreviewImage(URL.createObjectURL(file));
-  };
-
   const handleCategoryChange = (event) => {
-    const categoryId = event.target.value;
-    if (selected.includes(categories)) {
+    const categoryId = event.target.name;
+    if (Array.isArray(selected)) {
       setSelectedCategories(
-        selected.categories.filter((c) => c !== categoryId)
+        selected.includes(categoryId)
+          ? selectedCategories.filter((c) => c !== categoryId)
+          : [...selectedCategories, categoryId]
       );
     } else {
-      setSelectedCategories([...selectedCategories, categoryId]);
+      setSelectedCategories(
+        selected.categories.includes(categoryId)
+          ? selected.categories.filter((c) => c !== categoryId)
+          : [...selected.categories, categoryId]
+      );
     }
   };
 
@@ -91,8 +75,8 @@ function TonicForm() {
               type='checkbox'
               id={category}
               name={category}
-              value={category.id}
-              checked={selectedCategories.includes(category.id)}
+              value={category}
+              checked={selectedCategories.includes(category)}
               onChange={handleCategoryChange}
             />
             <CategoryText htmlFor={category}>{category}</CategoryText>
@@ -100,33 +84,6 @@ function TonicForm() {
         ))}
       </CategoryBox>
 
-      <Label htmlFor='tonic-name'>영양제 이름</Label>
-      <Input
-        id='tonic-name'
-        type='text'
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-      />
-
-      <Label htmlFor='short-description'>짧은 글 소개</Label>
-      <Input
-        id='short-description'
-        type='text'
-        value={shortDescription}
-        onChange={(event) => setShortDescription(event.target.value)}
-      />
-
-      <Label htmlFor='long-description'>긴글 소개</Label>
-      <TextArea
-        id='long-description'
-        rows='5'
-        value={description}
-        onChange={(event) => setDescription(event.target.value)}
-      />
-
-      <Label htmlFor='image'>이미지 업로드</Label>
-      <Input1 id='image' type='file' onChange={handleImageChange} />
-      {previewImage && <PreviewImage src={previewImage} alt='uploaded image' />}
       <Button type='submit' disabled={isCreating || isUpdating}>
         {isCreating || isUpdating ? '등록 중...' : '등록하기'}
       </Button>

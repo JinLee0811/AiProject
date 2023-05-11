@@ -1,18 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { SERVER } from './AxiosApi';
-import { useAtomValue } from 'jotai';
-import { selectedBoardAtom } from '../Atoms/BoardAtom';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 
 // const selectedBoard = useAtomValue(selectedBoardAtom);
 //댓글 get
 export const useGetComment = (boardId) => {
-  return useQuery(
-    ['Comments', boardId], //query-key
-    async () => {
-      const { data } = await SERVER.get(`/board/${boardId}/comments`);
-      return data;
-    }
-  );
+  return useQuery('comment', async () => {
+    const { data } = serverWithoutToken.get(`/comment/${boardId}`);
+    return data;
+  });
 };
 
 //댓글, 대댓글 post
@@ -22,7 +17,10 @@ export const useCreateComment = (boardId) => {
 
   return useMutation(
     async (newComment) => {
-      const { data } = await SERVER.post(`/comment/${boardId}`, newComment);
+      const { data } = await serverWithToken.post(
+        `/comment/${boardId}`,
+        newComment
+      );
       return data;
     },
     {
@@ -41,7 +39,7 @@ export const useUpdateComment = () => {
 
   return useMutation(
     async (updateComment) => {
-      const { data } = await SERVER.put(
+      const { data } = await serverWithToken.put(
         `/comment/${updateComment.id}`,
         updateComment
       );
@@ -61,7 +59,7 @@ export const useDeleteComment = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await SERVER.delete(`/comment/${id}`);
+      const { data } = await serverWithToken.delete(`/comment/${id}`);
       return data;
     },
     {

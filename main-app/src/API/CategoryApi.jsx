@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { SERVER } from './AxiosApi';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 
 // GET Hook
-export const useGetCategories = (options) => {
+export const useGetCategories = (input, options) => {
   return useQuery(
     ['categories'],
     async () => {
-      const { data } = await SERVER.get('/tonics/categories');
+      const { data } = await serverWithoutToken.get('/tonics/categories');
       return data;
     },
     { ...options }
@@ -19,7 +19,10 @@ export const useCreateCategory = () => {
 
   return useMutation(
     async (newCategory) => {
-      const { data } = await SERVER.post('admin/tonics/category', newCategory);
+      const { data } = await serverWithToken.post(
+        'admin/tonics/category',
+        newCategory
+      );
       return data;
     },
     {
@@ -36,7 +39,7 @@ export const useUpdateCategory = () => {
 
   return useMutation(
     async (id, updatedCategory) => {
-      const { data } = await SERVER.put(
+      const { data } = await serverWithToken.put(
         `/admin/tonics/categories/${id}`,
         updatedCategory
       );
@@ -56,7 +59,9 @@ export const useDeleteCategory = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await SERVER.delete(`admin/tonics/categories/${id}`);
+      const { data } = await serverWithToken.delete(
+        `admin/tonics/categories/${id}`
+      );
       return data;
     },
     {

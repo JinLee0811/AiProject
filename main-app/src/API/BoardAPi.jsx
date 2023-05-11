@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { SERVER } from './AxiosApi';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 
 // 전체 get
 export const useGetBoard = () => {
   return useQuery(
     ['BoardList'], //query-key
     async () => {
-      const { data } = await SERVER.get('/board');
+      const { data } = await serverWithoutToken.get('/board');
       return data;
     }
   );
@@ -17,7 +17,7 @@ export const useGetMyBoard = (userId) => {
   return useQuery(
     'myBoardList', //query-key
     async () => {
-      const { data } = await SERVER.get(`/board/${userId}`); // myList 만 가져올거라 :id
+      const { data } = await serverWithToken.get(`/board/${userId}`); // myList 만 가져올거라 :id
       return data;
     }
   );
@@ -29,7 +29,7 @@ export const useCreateBoard = () => {
 
   return useMutation(
     async (newPost) => {
-      const { data } = await SERVER.post('/board', newPost);
+      const { data } = await serverWithToken.post('/board', newPost);
       return data;
     },
     {
@@ -46,8 +46,11 @@ export const useUpdateBoard = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (id, updatePost) => {
-      const { data } = await SERVER.put(`/board/${id}`, updatePost);
+    async (updatePost) => {
+      const { data } = await serverWithToken.put(
+        `/board/${updatePost.id}`,
+        updatePost
+      );
       return data;
     },
     {
@@ -64,7 +67,24 @@ export const useDeleteBoard = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await SERVER.delete(`/board/${id}`);
+      const { data } = await serverWithToken.delete(`/board/${id}`);
+      return data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['BoardList']);
+      },
+    }
+  );
+};
+
+// admin delete
+export const useAdminDeleteBoard = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (id) => {
+      const { data } = await serverWithToken.delete(`/admin/board/${id}`);
       return data;
     },
     {

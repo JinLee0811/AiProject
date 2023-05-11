@@ -1,122 +1,113 @@
+import { useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 import { useAtom } from 'jotai';
-import { useQuery, useMutation } from 'react-query';
-import { SERVER } from './AxiosApi';
 import {
+  isLoggedInAtom,
+  isAdminAtom,
   accessTokenAtom,
   refreshTokenAtom,
   userAtom,
 } from '../Atoms/TokenAtom';
-import { useNavigate } from 'react-router-dom';
 
-//토큰 api 추가 해야함 2개? (access token refresh 요청,토큰 유효성 검사 부분)
-//어세스 리프레시 동시만료 시에는 로그인이고
-//어세스만 만료시 다시 어세스 요청 (리프레시를 가지고)
-// api 3개 -> 로그인, 회원가입, 토큰
+const LOGIN_MUTATION_KEY = 'loginMutation';
 
-// 사용자 로그인 요청
-const login = async (email, password) => {
-  const response = await SERVER.post('/signin', { email, password });
-  const { accessToken, refreshToken } = response.data;
-  localStorage.setItem('accessToken', accessToken);
-  localStorage.setItem('refreshToken', refreshToken);
-  return accessToken;
-};
-
-// access token refresh 요청
-const getRefreshAccessToken = async () => {
-  const refreshToken = localStorage.getItem('refreshToken');
-  const response = await SERVER.post('/api/auth/refresh', { refreshToken });
-  const { accessToken } = response.data;
-  localStorage.setItem('accessToken', accessToken);
-  return accessToken;
-};
-
-// useAuth Hook
-export const useAuth = () => {
+export const Auth = () => {
+  const queryClient = useQueryClient();
+  const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const [isAdmin, setIsAdmin] = useAtom(isAdminAtom);
   const [accessToken, setAccessToken] = useAtom(accessTokenAtom);
   const [refreshToken, setRefreshToken] = useAtom(refreshTokenAtom);
-  const [user, setUser] = useAtom(userAtom); // 유저 정보를 담는 Atom
-  const navigate = useNavigate();
+  const [user, setUser] = useAtom(userAtom);
 
-  // 로그인을 위한 useMutation Hook
-  const loginMutation = useMutation(login, {
-    onSuccess: (accessToken) => setAccessToken(accessToken),
-  });
+  useEffect(() => {
+    const access_token = localStorage.getItem('access_token');
+    const refresh_token = localStorage.getItem('refresh_token');
 
-  // 로그아웃 함수
-  const logout = async () => {
-    try {
-      await SERVER.post('/signout', null, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    setAccessToken(null);
-    setRefreshToken(null);
-    setUser(null); // 로그아웃 시 유저 정보도 초기화
-  };
+    if (access_token && refresh_token) {
+      setAccessToken(access_token);
+      setRefreshToken(refresh_token);
+      setIsLoggedIn(true);
 
-  // 토큰 유효성 검사 부분
-  useQuery(
-    'accessToken',
-    async () => {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        try {
-          const response = await SERVER.get('/api/protected', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setUserData(response.data); // 유저 정보 업데이트
-          return token;
-        } catch (error) {
-          if (error.response.status === 401) {
-            const newToken = await getRefreshAccessToken();
-            return newToken;
+      serverWithToken
+        .get('/user/profile')
+        .then((response) => {
+          const user = response.data;
+          setUser(user);
+          setIsAdmin(user.is_admin === 1);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsAdmin(false);
+
+          // 추가된 코드 시작
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            setIsLoggedIn(false);
+            setIsAdmin(false);
+            setUser(null);
+            window.location.href = '/login';
           }
-        }
-      }
-      logout();
-      throw new Error('Access token not found');
-    },
+          // 추가된 코드 끝
+        });
+    } else {
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+      setUser(null);
+    }
+  }, [setUser, isLoggedIn]);
+
+  const loginMutation = useMutation(
+    (data) => serverWithoutToken.post('/user/signin', data),
     {
-      retry: false,
-      refetchInterval: 10 * 60 * 1000, // Refresh access token every 10 minutes
-      onError: () => {
-        logout();
+      onSuccess: (response) => {
+        const { access_token, refresh_token } = response.data;
+        localStorage.setItem('access_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
+        queryClient.invalidateQueries(LOGIN_MUTATION_KEY);
+        window.location.href = '/';
+      },
+      onError: (error) => {
+        setError(error.response.data.message);
       },
     }
   );
 
-  // setUser 함수 정의
-  const setUserData = (data) => {
-    setUser(data);
-  };
+  const logoutMutation = useMutation(() =>
+    serverWithToken.post('/user/signout')
+  );
 
-  // isAdmin 상태 계산
-  const isAdmin = user?.role === 'admin';
+  const refreshMutation = useMutation(
+    () => serverWithToken.post('/user/access'),
+    {
+      onSuccess: (response) => {
+        const { access_token } = response.data;
+        setAccessToken(access_token);
+      },
+    }
+  );
+
+  const login = (data) => loginMutation.mutate(data);
+  const logout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    setIsLoggedIn(false);
+    setIsAdmin(false);
+    setUser(null);
+    logoutMutation.mutate();
+    queryClient.invalidateQueries(LOGIN_MUTATION_KEY);
+  };
+  const refresh = () => refreshMutation.mutate();
 
   return {
-    accessToken,
-    user,
-    login: loginMutation.mutate,
+    login,
     logout,
+    refresh,
+    error,
+    isLoggedIn,
     isAdmin,
+    user,
   };
 };
-
-// 회원가입 hook
-const registerUser = async (userData) => {
-  const { data } = await SERVER.post('/signup', userData);
-  return data;
-};
-
-export function useRegister() {
-  return useMutation(registerUser);
-}

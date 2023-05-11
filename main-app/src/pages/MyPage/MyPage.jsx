@@ -1,18 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useAtom } from 'jotai';
 import styled from 'styled-components';
 import { Outlet, NavLink } from 'react-router-dom';
 import { Link, useLocation } from 'react-router-dom';
 
 function Sidebar() {
   const location = useLocation();
+
   return (
     <Aside>
       <ul>
-        <SideBarProfile>
-          <Profile src='https://via.placeholder.com/150' />
-          <ProfileText>돼지감자</ProfileText>
-        </SideBarProfile>
-
         <li>
           <StyledLink
             to='solutionList'
@@ -22,7 +19,14 @@ function Sidebar() {
         </li>
         <li>
           <StyledLink to='info' active={location.pathname === '/mypage/info'}>
-            나의 정보
+            닉네임 변경
+          </StyledLink>
+        </li>
+        <li>
+          <StyledLink
+            to='changePassword'
+            active={location.pathname === '/mypage/changePassword'}>
+            비밀번호 변경
           </StyledLink>
         </li>
         <li>
@@ -47,6 +51,7 @@ function MyPage() {
     </Container>
   );
 }
+
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: ${(props) => (props.active ? 'green' : 'black')};
@@ -69,9 +74,7 @@ const ProfileText = styled.div`
 const Container = styled.section`
   display: flex;
   flex-direction: row;
-  height: 100vh;
   width: 100vh;
-  margin-top: 1rem;
   @media (max-width: 998px) {
     flex-direction: column;
     align-items: center;
@@ -83,8 +86,9 @@ const Container = styled.section`
 
 const MainContainer = styled.section`
   flex: 1;
-  padding: 20px;
+  padding: 40px;
   font-size: 1.2rem;
+  overflow: hidden;
 `;
 
 const SideBarProfile = styled.div`
@@ -101,9 +105,10 @@ const SideBarProfile = styled.div`
 
 const Aside = styled.aside`
   width: 200px;
-  position: relative;
-  top: 0;
+  position: fixed;
+  height: 100vh;
   left: 0;
+  margin-left: 30px;
   border-right: 1px solid #ccc;
 
   ul {
@@ -129,9 +134,14 @@ const Aside = styled.aside`
 
   @media (max-width: 998px) {
     display: flex;
+    height: 90px;
     justify-content: center;
     width: 100%;
     background-color: #fff;
+    position: relative;
+    margin-left: 0px;
+    top: 0;
+    left: 0;
   }
 `;
 

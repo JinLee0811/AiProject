@@ -1,11 +1,11 @@
-import { SERVER } from './AxiosApi';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 import { useMutation, useQueryClient } from 'react-query';
 
 export const useCreateLike = (boardId) => {
   const queryClient = useQueryClient();
 
   return useMutation(async (userId) => {
-    const { data } = await SERVER.post(`/like/${boardId}`, userId);
+    const { data } = await serverWithToken.post(`/like/${boardId}`, userId);
     return data;
   }, queryClient.invalidateQueries('board'));
 };
@@ -16,7 +16,9 @@ export const useDeleteLike = (boardId) => {
 
   return useMutation(
     async (userId) => {
-      const { data } = await SERVER.delete(`/like/${boardId}/${userId}`);
+      const { data } = await serverWithToken.delete(
+        `/like/${boardId}/${userId}`
+      );
       return data;
     },
     {

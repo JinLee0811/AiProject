@@ -66,25 +66,25 @@ function NutritionMange() {
     <Table>
       <thead>
         <tr>
+          <TableHeader>등록일</TableHeader>
           <TableHeader>이미지</TableHeader>
           <TableHeader>영양제 이름</TableHeader>
           <TableHeader>짧은 설명</TableHeader>
-          <TableHeader>긴 설명</TableHeader>
-          <TableHeader>게시 날짜</TableHeader>
           <TableHeader>관리</TableHeader>
         </tr>
       </thead>
       <tbody>
         {nutritionList.map((nutrition) => (
           <tr key={nutrition.id}>
-            <TableData>
-              <SmallImage src={nutrition.image} />
+            <TableData style={{ width: '4%' }}>
+              {new Date(nutrition.createdAt).toLocaleDateString()}
+            </TableData>
+            <TableData style={{ width: '2%' }}>
+              <SmallImage src={nutrition.image} alt={nutrition.name} />
             </TableData>
             <TableData>{nutrition.name}</TableData>
-            <TableData>{nutrition.shortDescription}</TableData>
-            <TableData>{nutrition.description}</TableData>
-            <TableData>{nutrition.createdAt}</TableData>
-            <TableData>
+            <TableData>{nutrition.short_description}</TableData>
+            <TableData style={{ width: '4%' }}>
               <StatusButton onClick={() => handleEdit(nutrition)}>
                 수정
               </StatusButton>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAtom, useSetAtom } from 'jotai';
 import { boardsAtom } from '../../Atoms/BoardAtom';
-import { useGetBoard, useDeleteBoard } from '../../API/BoardAPi';
+import { useGetBoard, useAdminDeleteBoard } from '../../API/BoardAPi';
 
 function BoardManage() {
   const [Boards, setBoards] = useAtom(boardsAtom);
@@ -15,7 +15,7 @@ function BoardManage() {
     onError: (error) => console.log(error.message),
   }); // 데이터 get
 
-  const { mutate: deleteBoard } = useDeleteBoard(); //데이터 delete
+  const { mutate: deleteBoard } = useAdminDeleteBoard(); //데이터 delete
 
   useEffect(() => {
     if (fetchedBoards) {
@@ -25,12 +25,16 @@ function BoardManage() {
 
   // 삭제 버튼 클릭시 로직
   const handleDelete = async (id) => {
-    try {
-      const response = await deleteBoard(id);
-      setBoards((prevBoards) => prevBoards.filter((board) => board.id !== id));
-      alert(response.data.message);
-    } catch (err) {
-      console.log(err.message);
+    if (window.confirm('회원의 게시글을 삭제하시겠습니까?')) {
+      try {
+        const response = await deleteBoard(id);
+        setBoards((prevBoards) =>
+          prevBoards.filter((board) => board.id !== id)
+        );
+        alert('삭제되었습니다.');
+      } catch (err) {
+        console.log(err.message);
+      }
     }
   };
 
@@ -59,12 +63,16 @@ function BoardManage() {
         {Boards &&
           Boards.map((Board) => (
             <tr key={Board.id}>
-              <TableData>{Board.createdAt}</TableData>
-              <TableData>{Board.user_id}</TableData>
-              <TableData>{Board.board_title}</TableData>
-              <TableData>{Board.status}</TableData>
-              <TableData>{Board.like_number}</TableData>
-              <TableData>{Board.view_number}</TableData>
+              <TableData>
+                {new Date(Board.created_at).toISOString().substring(0, 10)}
+              </TableData>
+              <TableData>{Board.user.email}</TableData>
+              <TableData>{Board.title}</TableData>
+              <TableData>
+                {Board.status === 'PUBLIC' ? '공개' : '비공개'}
+              </TableData>
+              <TableData>{Board.likes}</TableData>
+              <TableData>{Board.views}</TableData>
               <TableData>
                 <DeleteButton
                   key={Board.id}

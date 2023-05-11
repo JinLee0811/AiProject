@@ -25,6 +25,8 @@ import {
   SignOutPage,
   SolutionListPage,
   SolutionDetail,
+  NutritionDetailPage,
+  ChangePassword,
 } from './pages';
 
 const router = createBrowserRouter([
@@ -64,6 +66,10 @@ const router = createBrowserRouter([
             path: 'solutionDetail',
             element: <SolutionDetail />,
           },
+          {
+            path: 'changePassword',
+            element: <ChangePassword />,
+          },
         ],
       },
       {
@@ -89,6 +95,10 @@ const router = createBrowserRouter([
       {
         path: '/nutrition',
         element: <NutritionPage />,
+      },
+      {
+        path: '/nutrition/detail',
+        element: <NutritionDetailPage />,
       },
       {
         path: '/board/Form',
