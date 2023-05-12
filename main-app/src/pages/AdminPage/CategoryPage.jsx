@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   useGetCategories,
   useCreateCategory,
@@ -9,13 +9,21 @@ import styled from 'styled-components';
 
 function CategoriesPage() {
   const [name, setName] = useState('');
-  const [editingId, setEditingId] = useState(null);
+  const [categories, setCategories] = useState([]);
 
-  const { data: categories, isLoading } = useGetCategories();
+  const { data: fetchedCategories } = useGetCategories({
+    onError: (error) => console.log(error.message),
+  }); // 데이터 get
 
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const deleteCategory = useDeleteCategory();
+
+  useEffect(() => {
+    if (fetchedboard) {
+      setCategories(fetchedCategories);
+    }
+  }, [fetchedCategories, setCategories]);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -23,20 +31,41 @@ function CategoriesPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if (editingId) {
-      await updateCategory.mutateAsync(editingId, { name });
-      setEditingId(null);
-    } else {
-      await createCategory.mutateAsync({ name });
+    if (!name) {
+      alert('카테고리 이름을 입력해주세요.');
+      return;
+    }
+    try {
+      await createCategory.mutate({ name });
       setName('');
+      alert('등록되었습니다.');
+    } catch (error) {
+      console.error(error);
+      alert('카테고리 등록에 실패했습니다.');
     }
   };
-
-  const handleEdit = (categoryId) => {
-    const category = categories.find((c) => c.id === categoryId);
-    setName(category.name);
-    setEditingId(category.id);
+  const handleEdit = async (categoryId, categoryIndex) => {
+    const categoryName = categories[categoryIndex].name;
+    const editedName = prompt(
+      '수정할 카테고리 이름을 입력하세요',
+      categoryName
+    );
+    if (editedName && editedName !== categoryName) {
+      try {
+        await updateCategory.mutate({ id: categoryId, name: editedName });
+        setCategories((prevCategories) =>
+          prevCategories.map((category, index) =>
+            index === categoryIndex
+              ? { ...category, name: editedName }
+              : category
+          )
+        );
+        alert('수정되었습니다.');
+      } catch (error) {
+        console.error(error);
+        alert('카테고리 수정에 실패했습니다.');
+      }
+    }
   };
 
   const handleDelete = async (categoryId) => {
@@ -45,10 +74,6 @@ function CategoriesPage() {
     }
   };
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
   return (
     <ContainerBox>
       <FormContainer>
@@ -56,48 +81,37 @@ function CategoriesPage() {
           <FormLabel>
             카테고리 등록:
             <FormInput type='text' value={name} onChange={handleNameChange} />
-            <Button type='submit'>{editingId ? 'Save' : '등록'}</Button>
+            <Button type='submit'>등록하기</Button>
           </FormLabel>
         </form>
       </FormContainer>
       <CategoryList>
-        {/* {categories.map((category) => (
+        {categories.map((category, index) => (
           <CategoryItem key={category.id}>
             <CategoryName>{category.name}</CategoryName>
             <div>
-              <Button onClick={() => handleEdit(category.id)}>수정</Button>
+              <Button onClick={() => handleEdit(category.id, index)}>
+                수정
+              </Button>
               <Button onClick={() => handleDelete(category.id)}>삭제</Button>
             </div>
           </CategoryItem>
-        ))} */}
-        <CategoryItem>
-          <CategoryName>영양제</CategoryName>
-          <div>
-            <Button>수정</Button>
-            <Button>삭제</Button>
-          </div>
-        </CategoryItem>
-        <CategoryItem>
-          <CategoryName>독극물</CategoryName>
-          <div>
-            <Button>수정</Button>
-            <Button>삭제</Button>
-          </div>
-        </CategoryItem>
+        ))}
       </CategoryList>
     </ContainerBox>
   );
 }
+
 const ContainerBox = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  padding: 0 100px;
 `;
 
 const FormContainer = styled.div`
   display: flex;
   margin-bottom: 20px;
+  margin: 0 auto;
 `;
 
 const FormLabel = styled.label`
@@ -139,7 +153,7 @@ const Button = styled.button`
 
 const CategoryList = styled.ul`
   list-style: none;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
 `;
 

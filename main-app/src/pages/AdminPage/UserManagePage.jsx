@@ -59,10 +59,10 @@ function UserManage() {
         {users &&
           users.map((user) => (
             <tr key={user.id}>
-              <TableData>
+              <TableData style={{ width: '13%' }}>
                 {new Date(user.created_at).toISOString().substring(0, 10)}
               </TableData>
-              <TableData>
+              <TableData style={{ width: '13%' }}>
                 {user.deleted_at === null
                   ? '가입 중'
                   : user.deleted_at.substring(0, 10)}
