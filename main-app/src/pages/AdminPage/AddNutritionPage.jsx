@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useAtom, useSetAtom } from 'jotai';
 import { useCreateNutrition, useUpdateNutrition } from '../../API/NutritionApi';
-import { useAtomValue } from 'jotai';
-import { selectedNutritionAtom } from '../../Atoms/NutritionAtom';
 import { useGetCategories } from '../../API/CategoryApi';
+import { selectedNutritionAtom } from '../../Atoms/NutritionAtom';
+import { useLocation } from 'react-router-dom';
 
 function TonicForm() {
-  const selected = useAtomValue(selectedNutritionAtom);
+  const [select, setSelect] = useAtom(selectedNutritionAtom);
+  const [prevCategories, setPrevCategories] = useState([]);
+  const setSelectedNutrition = useSetAtom(selectedNutritionAtom);
   const [categories, setCategories] = useState([]);
-  const [name, setName] = useState(selected?.name || '');
+  const [checkedList, setCheckedList] = useState([]);
+  const [name, setName] = useState(select ? select.name : '');
   const [shortDescription, setShortDescription] = useState(
-    selected?.short_description || ''
+    select ? select.short_description : ''
   );
-  const [description, setDescription] = useState(selected?.description || '');
-  const [image, setImage] = useState(selected?.image || '');
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [previewImage, setPreviewImage] = useState(selected?.image || '');
+  const [description, setDescription] = useState(
+    select ? select.description : ''
+  );
+  const [image, setImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(select ? select.image : '');
+  const location = useLocation();
 
   const { data: fetchedCategories } = useGetCategories({
     onError: (error) => console.log(error.message),
@@ -23,22 +29,25 @@ function TonicForm() {
 
   useEffect(() => {
     if (fetchedCategories) {
-      setCategories(fetchedCategories.map((category) => category.name));
+      const initialCategories = fetchedCategories.map((category) => ({
+        id: category.id,
+        name: category.name,
+      }));
+      setCategories(initialCategories);
     }
   }, [fetchedCategories]);
 
-  const { mutate: createNutrition, isLoading: isCreating } =
-    useCreateNutrition();
-  const { mutate: updateNutrition, isLoading: isUpdating } =
-    useUpdateNutrition();
+  const { mutate: createNutrition } = useCreateNutrition();
+  const { mutate: updateNutrition } = useUpdateNutrition();
 
   const handleReset = () => {
+    setImage('');
     setName('');
     setShortDescription('');
     setDescription('');
-    setImage(null);
-    setSelectedCategories([]);
+    setCheckedList([]);
     setPreviewImage('');
+    setSelectedNutrition('');
   };
 
   const handleSubmit = async (event) => {
@@ -50,15 +59,28 @@ function TonicForm() {
       formData.append('short_description', shortDescription);
       formData.append('description', description);
       formData.append('image', image);
-      formData.append('categories', selectedCategories.join(','));
 
-      if (selected) {
-        await updateNutrition({ id: selected.id, data: formData });
+      // categoryIds가 배열인 경우 set() 메서드를 사용하여 formData에 추가
+      if (checkedList.length < 1) {
+        if (!select || !select.id) {
+          alert('카테고리를 선택해주세요!');
+          return;
+        }
+        formData.append('categoryIds[]', 0);
       } else {
-        await createNutrition(formData);
+        formData.append('categoryIds[]', checkedList);
       }
 
+      if (select && select.id) {
+        await updateNutrition({ id: select.id, formData });
+        console.log(select.id);
+        alert('수정되었습니다.');
+      } else {
+        await createNutrition(formData);
+        alert('등록되었습니다.');
+      }
       handleReset();
+      console.log([...formData.entries()]);
     } catch (error) {
       console.log(error);
     }
@@ -66,85 +88,118 @@ function TonicForm() {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    setImage(file);
-    setPreviewImage(URL.createObjectURL(file));
+
+    // 파일이 존재하는 경우
+    if (file) {
+      setImage(file);
+      setPreviewImage(URL.createObjectURL(file));
+    } else {
+      setImage(null);
+      setPreviewImage(URL.createObjectURL(null));
+    }
   };
 
-  const handleCategoryChange = (event) => {
-    const categoryId = event.target.value;
-    if (selected.includes(categories)) {
-      setSelectedCategories(
-        selected.categories.filter((c) => c !== categoryId)
-      );
+  const checkedCategory = (id) => {
+    // checkedList state 값 활용
+    if (checkedList.indexOf(id) < 0) {
+      // 체크한 카테고리 id 값 확인
+      setCheckedList((checkedList) => [...checkedList, id]);
     } else {
-      setSelectedCategories([...selectedCategories, categoryId]);
+      // 체크해제 확인을 위한 filter 활용
+      setCheckedList(checkedList.filter((checkedList) => checkedList !== id));
     }
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Label htmlFor='category'>카테고리</Label>
-      <CategoryBox>
-        {categories.map((category) => (
-          <CategoryLabel key={category}>
-            <CategoryInput
-              type='checkbox'
-              id={category}
-              name={category}
-              value={category.id}
-              checked={selectedCategories.includes(category.id)}
-              onChange={handleCategoryChange}
-            />
-            <CategoryText htmlFor={category}>{category}</CategoryText>
-          </CategoryLabel>
-        ))}
-      </CategoryBox>
-
-      <Label htmlFor='tonic-name'>영양제 이름</Label>
-      <Input
-        id='tonic-name'
-        type='text'
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-      />
-
-      <Label htmlFor='short-description'>짧은 글 소개</Label>
-      <Input
-        id='short-description'
-        type='text'
-        value={shortDescription}
-        onChange={(event) => setShortDescription(event.target.value)}
-      />
-
-      <Label htmlFor='long-description'>긴글 소개</Label>
-      <TextArea
-        id='long-description'
-        rows='5'
-        value={description}
-        onChange={(event) => setDescription(event.target.value)}
-      />
-
-      <Label htmlFor='image'>이미지 업로드</Label>
-      <Input1 id='image' type='file' onChange={handleImageChange} />
-      {previewImage && <PreviewImage src={previewImage} alt='uploaded image' />}
-      <Button type='submit' disabled={isCreating || isUpdating}>
-        {isCreating || isUpdating ? '등록 중...' : '등록하기'}
-      </Button>
-    </Form>
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <Label htmlFor='category'>카테고리</Label>
+        <CategoryBox>
+          {categories.map((item) => (
+            <CategoryLabel key={item.id}>
+              <CategoryInput
+                type='checkbox'
+                checked={checkedList.indexOf(item.id) < 0 ? false : true}
+                onClick={() => checkedCategory(item.id)}
+                readOnly
+                isChecked={item.isChecked}
+              />
+              <CategoryText>{item.name}</CategoryText>
+            </CategoryLabel>
+          ))}
+        </CategoryBox>
+        {checkedList}
+        <Label htmlFor='tonic-name'>영양제 이름</Label>
+        <Input
+          id='tonic-name'
+          type='text'
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
+        <Label htmlFor='short-description'>짧은 글 소개</Label>
+        <Input
+          id='short-description'
+          type='text'
+          value={shortDescription}
+          onChange={(event) => setShortDescription(event.target.value)}
+        />
+        <Label htmlFor='long-description'>긴글 소개</Label>
+        <TextArea
+          id='long-description'
+          rows='5'
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+        />
+        <Label htmlFor='image'>이미지 업로드</Label>
+        <Input1 id='image' type='file' onChange={handleImageChange} />
+        {previewImage && (
+          <PreviewImage src={previewImage} alt='uploaded image' />
+        )}
+        <Button type='submit'>{select ? '수정하기' : '등록하기'}</Button>
+      </Form>
+      <Reset onClick={handleReset}>초기화</Reset>
+    </Container>
   );
 }
-
-const Form = styled.form`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  max-width: 400px;
+`;
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
 `;
 
 const Label = styled.label`
   margin-bottom: 5px;
   font-size: 16px;
   font-weight: 500;
+`;
+
+const Reset = styled.button`
+  margin: 0 auto;
+  display: inline-block;
+  height: 40px;
+  width: 200px;
+  font-weight: bold;
+  text-align: center;
+  background-color: #759783;
+  font-size: 15px;
+  letter-spacing: -0.6px;
+  text-decoration: none solid rgb(128, 128, 128);
+  vertical-align: middle;
+  word-spacing: 0px;
+  color: #fff;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  :hover {
+    background-color: green;
+  }
 `;
 
 const Input = styled.input`
@@ -177,6 +232,7 @@ const Input1 = styled.input`
 
 const TextArea = styled.textarea`
   padding: 15px;
+  width: 400px;
   margin-bottom: 10px;
   text-decoration: none solid rgb(128, 128, 128);
   border: 1px solid #d9d9d9;
@@ -199,6 +255,7 @@ const Button = styled.button`
   padding: 10px;
   border: none;
   border-radius: 5px;
+  margin-bottom: 10px;
   cursor: pointer;
   :hover {
     background-color: green;
@@ -220,7 +277,7 @@ const CategoryBox = styled.div`
   justify-content: flex-start;
   flex-wrap: wrap;
   padding: 10px;
-  width: auto;
+  width: 400px;
   border: 1px solid #d9d9d9;
   border-radius: 5px;
 `;

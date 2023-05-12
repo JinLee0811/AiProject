@@ -77,7 +77,7 @@ function NutritionMange() {
         {nutritionList.map((nutrition) => (
           <tr key={nutrition.id}>
             <TableData style={{ width: '4%' }}>
-              {new Date(nutrition.createdAt).toLocaleDateString()}
+              {new Date(nutrition.created_at).toLocaleDateString()}
             </TableData>
             <TableData style={{ width: '2%' }}>
               <SmallImage src={nutrition.image} alt={nutrition.name} />

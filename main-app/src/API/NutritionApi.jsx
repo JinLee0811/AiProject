@@ -14,13 +14,13 @@ export const useGetNutrition = (input, options) => {
 };
 
 // POST Hook
-export const useCreateNutrition = () => {
+export const useCreateNutrition = (input, options) => {
   const queryClient = useQueryClient();
 
   return useMutation(
     async (newNutrition) => {
       const { data } = await serverWithToken.post(
-        '/admin/tonics/',
+        '/admin/tonics',
         newNutrition
       );
       return data;
@@ -29,19 +29,24 @@ export const useCreateNutrition = () => {
       onSuccess: () => {
         queryClient.invalidateQueries(['nutrition']);
       },
-    }
+    },
+    { ...options }
   );
 };
 
-// PUT Hook
-export const useUpdateNutrition = () => {
+export const useUpdateNutrition = (options) => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (id, updatedNutrition) => {
-      const { data } = await serverWithToken.put(
+    async ({ id, formData }) => {
+      const { data } = await serverWithToken.patch(
         `/admin/tonics/${id}`,
-        updatedNutrition
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
       return data;
     },
@@ -49,6 +54,7 @@ export const useUpdateNutrition = () => {
       onSuccess: () => {
         queryClient.invalidateQueries(['nutrition']);
       },
+      ...options,
     }
   );
 };

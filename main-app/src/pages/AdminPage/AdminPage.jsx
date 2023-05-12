@@ -62,8 +62,8 @@ const StyledLink = styled(Link)`
 const Container = styled.section`
   display: flex;
   flex-direction: row;
-  width: 150vh;
-  @media (max-width: 998px) {
+  width: 1500px;
+  @media (max-width: 1400px) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -109,7 +109,7 @@ const Aside = styled.aside`
       font-size: 1rem;
     }
 
-    @media (max-width: 998px) {
+    @media (max-width: 1400px) {
       display: flex;
       padding-inline-start: 0;
       li {
@@ -119,7 +119,7 @@ const Aside = styled.aside`
     }
   }
 
-  @media (max-width: 998px) {
+  @media (max-width: 1400px) {
     display: flex;
     height: 90px;
     justify-content: center;

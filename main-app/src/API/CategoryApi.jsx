@@ -13,35 +13,47 @@ export const useGetCategories = (input, options) => {
   );
 };
 
-// POST Hook
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (newCategory) => {
-      const { data } = await serverWithToken.post(
-        'admin/tonics/category',
-        newCategory
+    async (data) => {
+      const { data: responseData } = await serverWithToken.post(
+        '/admin/tonics/category',
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
-      return data;
+      return responseData;
     },
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['categories']);
       },
+      onError: (error) => {
+        console.log(error);
+        alert(error.response.data.message);
+      },
     }
   );
 };
 
-// PUT Hook
 export const useUpdateCategory = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (id, updatedCategory) => {
-      const { data } = await serverWithToken.put(
+    async ({ id, name }) => {
+      const { data } = await serverWithToken.patch(
         `/admin/tonics/categories/${id}`,
-        updatedCategory
+        { name },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
       return data;
     },
