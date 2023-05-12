@@ -1,43 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAtomValue } from 'jotai';
-import { selectedNutritionAtom } from '../../Atoms/NutritionAtom';
+import { useGetTonicDetail } from '../../API/NutritionApi';
+import { useParams } from 'react-router-dom';
 
 const NutritionDetailPage = () => {
-  const selectedNutrition = useAtomValue(selectedNutritionAtom);
+  const [tonic, setTonic] = useState(null);
+  const { tonicId } = useParams();
+
+  const { data: fetchedTonicDetail } = useGetTonicDetail(tonicId, {
+    onError: (error) => console.log(error.message),
+  });
+
+  useEffect(() => {
+    if (fetchedTonicDetail) {
+      setTonic(fetchedTonicDetail);
+      console.log(fetchedTonicDetail);
+    }
+  }, [fetchedTonicDetail, setTonic]);
 
   return (
     <>
-      <Container>
-        <ProductImage src={selectedNutrition.image} />
+      {tonic && (
+        <Container>
+          <ProductImage src={tonic.image} />
 
-        <ProductDescription>
-          <SmallText>CropDoctor</SmallText>
-          <CategoryName>
-            #{' '}
-            {selectedNutrition.categories
-              .map((category) => category.name)
-              .join('  #')}
-          </CategoryName>
-          <Title>🌱{selectedNutrition.name}</Title>
-          <h4>
-            ✔️ {selectedNutrition.short_description}
-            <br />
-            ✔️ 혜택가 : 18,180원
-            <br />
-            ✔️ 브랜드 : 유일
-            <br />
-            ✔️ 제조사 : 유일
-            <br />
-            ✔️ 규격 : 500ml
-            <br />
-          </h4>
-          <ButtonContainer>
-            <Button>구매하기</Button>
-            <Button>장바구니</Button>
-          </ButtonContainer>
-        </ProductDescription>
-      </Container>
+          <ProductDescription>
+            <SmallText>CropDoctor</SmallText>
+            <CategoryName>
+              # {tonic.categories.map((category) => category.name).join('  #')}
+            </CategoryName>
+            <Title>🌱{tonic.name}</Title>
+            <h4>
+              ✔️ {tonic.short_description}
+              <br />
+              ✔️ 혜택가 : 18,180원
+              <br />
+              ✔️ 브랜드 : 유일
+              <br />
+              ✔️ 제조사 : 유일
+              <br />
+              ✔️ 규격 : 500ml
+              <br />
+            </h4>
+            <ButtonContainer>
+              <Button>구매하기</Button>
+              <Button>장바구니</Button>
+            </ButtonContainer>
+          </ProductDescription>
+        </Container>
+      )}
     </>
   );
 };

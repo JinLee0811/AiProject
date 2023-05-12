@@ -97,7 +97,7 @@ const router = createBrowserRouter([
         element: <NutritionPage />,
       },
       {
-        path: '/nutrition/detail',
+        path: '/nutrition/detail/:tonicId',
         element: <NutritionDetailPage />,
       },
       {

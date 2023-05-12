@@ -20,7 +20,7 @@ function CategoriesPage() {
   const deleteCategory = useDeleteCategory();
 
   useEffect(() => {
-    if (fetchedboard) {
+    if (fetchedCategories) {
       setCategories(fetchedCategories);
     }
   }, [fetchedCategories, setCategories]);

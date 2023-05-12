@@ -65,9 +65,7 @@ const NutritionList = () => {
         <ProductsContainer>
           {filteredNutritions.map((nutrition) => (
             <Product key={nutrition.id}>
-              <StyledLink
-                to={`/nutrition/detail`}
-                onClick={() => setSelectedNutrition(nutrition)}>
+              <StyledLink to={`/nutrition/detail/${nutrition.id}`}>
                 <ProductImage src={nutrition.image} alt={nutrition.name} />
                 <ProductName>{nutrition.name}</ProductName>
                 <ProductShortText>

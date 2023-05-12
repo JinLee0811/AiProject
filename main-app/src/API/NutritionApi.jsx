@@ -75,3 +75,11 @@ export const useDeleteNutrition = () => {
     }
   );
 };
+
+//영양제 상세보기
+export const useGetTonicDetail = (tonicId) => {
+  return useQuery(['tonicDetail', tonicId], async () => {
+    const { data } = await serverWithoutToken.get(`/tonics/${tonicId}`);
+    return data;
+  });
+};
