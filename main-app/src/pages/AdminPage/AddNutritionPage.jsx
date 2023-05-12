@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useAtom, useSetAtom } from 'jotai';
 import { useCreateNutrition, useUpdateNutrition } from '../../API/NutritionApi';
@@ -21,11 +21,12 @@ function TonicForm() {
   );
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(select ? select.image : '');
-  const location = useLocation();
 
   const { data: fetchedCategories } = useGetCategories({
     onError: (error) => console.log(error.message),
   });
+
+  const inputRef = useRef();
 
   useEffect(() => {
     if (fetchedCategories) {
@@ -36,6 +37,12 @@ function TonicForm() {
       setCategories(initialCategories);
     }
   }, [fetchedCategories]);
+
+  useEffect(() => {
+    if (select) {
+      setCheckedList(select.categories.map((category) => category.id));
+    }
+  }, []);
 
   const { mutate: createNutrition } = useCreateNutrition();
   const { mutate: updateNutrition } = useUpdateNutrition();
@@ -48,6 +55,8 @@ function TonicForm() {
     setCheckedList([]);
     setPreviewImage('');
     setSelectedNutrition('');
+    inputRef.current.value = '';
+    console.log(inputRef);
   };
 
   const handleSubmit = async (event) => {
@@ -93,9 +102,13 @@ function TonicForm() {
     if (file) {
       setImage(file);
       setPreviewImage(URL.createObjectURL(file));
+      // inputRef.current.value = file.name;
+      console.log(file);
     } else {
       setImage(null);
-      setPreviewImage(URL.createObjectURL(null));
+      // setPreviewImage(URL.createObjectURL(null));
+      inputRef.current.value = '';
+      event.target.value = '';
     }
   };
 
@@ -119,16 +132,13 @@ function TonicForm() {
             <CategoryLabel key={item.id}>
               <CategoryInput
                 type='checkbox'
-                checked={checkedList.indexOf(item.id) < 0 ? false : true}
+                checked={checkedList.includes(item.id)}
                 onClick={() => checkedCategory(item.id)}
-                readOnly
-                isChecked={item.isChecked}
               />
               <CategoryText>{item.name}</CategoryText>
             </CategoryLabel>
           ))}
         </CategoryBox>
-        {checkedList}
         <Label htmlFor='tonic-name'>영양제 이름</Label>
         <Input
           id='tonic-name'
@@ -151,7 +161,12 @@ function TonicForm() {
           onChange={(event) => setDescription(event.target.value)}
         />
         <Label htmlFor='image'>이미지 업로드</Label>
-        <Input1 id='image' type='file' onChange={handleImageChange} />
+        <Input1
+          ref={inputRef}
+          id='image'
+          type='file'
+          onChange={handleImageChange}
+        />
         {previewImage && (
           <PreviewImage src={previewImage} alt='uploaded image' />
         )}

@@ -4,26 +4,17 @@ import { useGetTonicDetail } from '../../API/NutritionApi';
 import { useParams } from 'react-router-dom';
 
 const NutritionDetailPage = () => {
-  const [tonic, setTonic] = useState(null);
   const { tonicId } = useParams();
 
-  const { data: fetchedTonicDetail } = useGetTonicDetail(tonicId, {
+  const { data: tonic } = useGetTonicDetail(tonicId, {
     onError: (error) => console.log(error.message),
   });
-
-  useEffect(() => {
-    if (fetchedTonicDetail) {
-      setTonic(fetchedTonicDetail);
-      console.log(fetchedTonicDetail);
-    }
-  }, [fetchedTonicDetail, setTonic]);
 
   return (
     <>
       {tonic && (
         <Container>
           <ProductImage src={tonic.image} />
-
           <ProductDescription>
             <SmallText>CropDoctor</SmallText>
             <CategoryName>
