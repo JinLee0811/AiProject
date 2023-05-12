@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import * as S from './BoardDetail.style';
+import * as S from './BoardComment.style';
 import { useAtom, useAtomValue } from 'jotai';
 import { useGetBoard } from '../../API/BoardAPi';
 import {
@@ -14,56 +14,69 @@ const BoardComment = () => {
   const selectedBoard = useAtomValue(selectedBoardAtom);
   const [input, setInput] = useState(''); //댓글입력상태
   const [replyInput, setReplyInput] = useState(''); //대댓글 입력상태
-  const [replyToCommentId, setReplyToCommentId] = useState(''); //답글달기 =>내가 지금 작성하려는 댓글이 / 최상위 댓글의 대댓글이 맞는지 확인용
-  const [comments, setComments] = useAtom(commentsAtom); //post요청 한 것을 가져온 댓글
-
-  // const [testComments, setTestComments] = useState([]);
+  const [replyCommentId, setReplyCommentId] = useState(''); //답글달기 =>내가 지금 작성하려는 댓글이 / 최상위 댓글의 대댓글이 맞는지 확인용
+  const [comments, setComments] = useState(selectedBoard.comments); //post요청 한 것을 가져온 댓글
 
   //댓글 get
-  const {
-    data: fetchedComment,
-    isLoading: isCommentLoading,
-    isError: isCommentError,
-  } = useGetBoard(selectedBoard.id, {
-    onSuccess: (data) => {
-      const comments = data.filter(
-        ({ parent_comment_id }) => !parent_comment_id
-      );
-      const commentReply = data.filter(
-        ({ parent_comment_id }) => parent_comment_id
-      );
+  // const {
+  //   data: fetchedComment,
+  //   isLoading: isCommentLoading,
+  //   isError: isCommentError,
+  // } = useGetBoard(selectedBoard.id, {
+  //   onSuccess: (data) => {
+  //     const comments = data.filter(
+  //       ({ parent_comment_id }) => !parent_comment_id
+  //     );
+  //     const commentReply = data.filter(
+  //       ({ parent_comment_id }) => parent_comment_id
+  //     );
 
-      const modifiedComments = comments.map((comment) => {
-        const children = commentReply.filter(
-          ({ parent_comment_id }) => parent_comment_id === comment.id
-        );
-        return { ...comment, children };
-      });
-      setComments([...modifiedComments]);
-    },
-  });
+  //     const modifiedComments = comments.map((comment) => {
+  //       const children = commentReply.filter(
+  //         ({ parent_comment_id }) => parent_comment_id === comment.id
+  //       );
+  //       return { ...comment, children };
+  //     });
+  //     setComments([...modifiedComments]);
+  //   },
+  // });
 
-  useEffect(() => {
-    if (fetchedComment) {
-      setComments(fetchedComment);
-    }
-  }, [fetchedComment, setComments]);
-  //최종적으로 가공된 데이터 => [{id, comment, children: [{id, comment}]}]
+  // useEffect(() => {
+  //   if (fetchedComment) {
+  //     setComments(fetchedComment);
+  //   }
+  // }, [fetchedComment, setComments]);
+  // 최종적으로 가공된 데이터 => [{id, comment, children: [{id, comment}]}]
   // render해서 사용할때 comments.map(({id,comment,children}) => (children.map(reply) => ...))
+  // const {
+  //   data: fetchedComment,
+  //   isLoading: isCommentLoading,
+  //   isError: isCommentError,
+  // } = useGetBoard(selectedBoard.id);
 
-  // 해당 게시글의 댓글만 필터링하여 출력
-  const filteredComments = comments.filter(
-    (comment) => comment.id === selectedBoard.id
-  );
+  // useEffect(() => {
+  //   if (fetchedComment) {
+  //     const comments = fetchedComment.filter(
+  //       ({ parent_comment_id }) => !parent_comment_id
+  //     );
+  //     const commentReply = fetchedComment.filter(
+  //       ({ parent_comment_id }) => parent_comment_id
+  //     );
+  //     const modifiedComments = comments.map((comment) => {
+  //       const children = commentReply.filter(
+  //         ({ parent_comment_id }) => parent_comment_id === comment.id
+  //       );
+  //       return { ...comment, children };
+  //     });
+  //     setComments(modifiedComments);
+  //   }
+  // }, [fetchedComment]);
+
   // 댓글 post
-  const { mutateAsync: createComment } = useCreateComment();
+  const { mutateAsync: createComment } = useCreateComment(selectedBoard.id);
 
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
-    // setTestComments((prev) => [
-    //   ...prev,
-    //   { board_id: selectedBoard.id, text: input },
-    // ]);
     try {
       const response = await createComment({
         board_id: selectedBoard.id,
@@ -72,7 +85,9 @@ const BoardComment = () => {
       });
       alert('댓글 작성 완료');
       setInput('');
-      setComments((prevComments) => [...prevComments, response.data]);
+      console.log(comments);
+      setComments((prevComments) => [...prevComments, response]);
+      console.log(comments);
     } catch (err) {
       console.log(err);
     }
@@ -152,16 +167,15 @@ const BoardComment = () => {
   //     console.log(err);
   //   }
   // };
-  if (isCommentLoading) {
-    return <div>Loading...</div>;
-  }
-  if (isCommentError) {
-    return <div>Error: {isCommentError?.message}</div>; // 서버에서 반환된 에러메세지 보여줌
-  }
+  // if (isCommentLoading) {
+  //   return <div>Loading...</div>;
+  // }
+  // if (isCommentError) {
+  //   return <div>Error: {isCommentError?.message}</div>; // 서버에서 반환된 에러메세지 보여줌
+  // }
   return (
     <>
       <S.CommentContainer>
-        {/* 댓글작성폼 */}
         <form onSubmit={handleCreateSubmit}>
           <input
             type='text'
@@ -176,10 +190,39 @@ const BoardComment = () => {
           </S.CommentManage>
         </form>
         <S.CommentList>
-          {comments.map((comment) => (
-            <S.CommentItem key={comment.id}>
-              <S.CommentContent>{comment.content}</S.CommentContent>
-            </S.CommentItem>
+          {comments.map((selectedComment) => (
+            <S.CommentContainer key={selectedComment.id}>
+              <S.CommentContent>{selectedComment.content}</S.CommentContent>
+
+              {/* 답글작성폼 */}
+              <S.CommentManage
+                onClick={() => {
+                  if (replyCommentId === selectedComment.id) {
+                    setReplyCommentId(null); // 답글작성폼 닫기
+                  } else {
+                    setReplyCommentId(selectedComment.id); // 답글작성폼 열기
+                  }
+                }}>
+                {replyCommentId === selectedComment.id
+                  ? '답글달기'
+                  : '답글달기'}
+              </S.CommentManage>
+              {/* {replyCommentId === comment.id && ( //대댓글인거지 여긴 지금;
+                <form>
+                  <input
+                    type='text'
+                    placeholder='댓글을 입력하세요'
+                    value={replyInput}
+                    onChange={(e) => setInput(e.target.value)}
+                  />
+                  <S.CommentManage>
+                    <button className='write' type='submit' disabled={!input}>
+                      작성
+                    </button>
+                  </S.CommentManage>
+                </form> */}
+              {/* )} */}
+            </S.CommentContainer>
           ))}
         </S.CommentList>
         {/* <S.ReplyContainer>

@@ -1,6 +1,7 @@
 import { React, useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import * as S from './BoardList.style';
+import { SERVER } from '../../API/axios';
 import { useGetMyBoard } from '../../API/BoardAPi';
 import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
 import {
@@ -13,12 +14,12 @@ import {
 const BoardMyList = ({ onPageChange }) => {
   const [boards, setBoards] = useAtom(boardsAtom); //axois.get을 통해 불러올 게시글 목록 표시
   const setSelectedBoard = useSetAtom(selectedBoardAtom); //클릭한 게시글의 정보를 저장하는 상태
-  const { data: fetchedBoard, isLoading, isError } = useGetMyBoard(); //get
+
+  const { data: fetchedBoard, isLoading, isError } = useGetMyBoard();
 
   useEffect(() => {
-    //fetchedBoard 상태 값이 변경될 때마다 useEffect 훅 호출
     if (fetchedBoard) {
-      setBoards(fetchedBoard); //setBoards 에 변경된 상태값 담아서 boards 변경
+      setBoards(fetchedBoard);
     }
   }, [fetchedBoard, setBoards]);
 
@@ -27,13 +28,6 @@ const BoardMyList = ({ onPageChange }) => {
     setSelectedBoard(board); //해당 id의 게시글 정보를 selectedPostAtom에 저장 (selectedPostAtom에을 Detail에서 쓸거임)
     onPageChange(BOARD_DETAIL_PATH);
   };
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (isError) {
-    return <div>Error: {isError.message}</div>; // 서버에서 반환된 에러메세지 보여줌
-  }
-
   const boardClick = () => {
     onPageChange(BOARD_PATH);
   };
@@ -41,6 +35,7 @@ const BoardMyList = ({ onPageChange }) => {
     onPageChange(BOARD_MY_PATH);
   };
   const formClick = () => {
+    setSelectedBoard('');
     onPageChange(BOARD_FORM_PATH);
   };
   const shortenContent = (content) => {
@@ -67,10 +62,14 @@ const BoardMyList = ({ onPageChange }) => {
       return `${filterDays}일 전`;
     }
   };
+
   return (
     <>
       <S.Container>
-        <img className='banner' src='/bannerImage.jpg' alt='Example' />
+        <S.BannerImage
+          src='https://img.freepik.com/free-photo/home-decor-indoor-planhttps://img.freepik.com/free-photo/picture-frame-leaning-against-white-wall_53876-133178.jpg?size=626&ext=jpg&ga=GA1.1.383630718.1678090108&semt=aist-shelf_53876-130000.jpg?w=1800&t=st=1683690318~exp=1683690918~hmac=28f5fe10fb2f0e42e923ea8ff4069705e5a82327e6f34b6521afc857a956bc93'
+          alt='Example'
+        />
         <div className='buttons'>
           <button onClick={boardClick}>전체보기</button>
           <button onClick={myBoardClick}>내 게시글 보기</button>
@@ -80,21 +79,20 @@ const BoardMyList = ({ onPageChange }) => {
           <ul>
             {boards.map((board) => (
               <li key={board.id}>
-                <p className='time'>{filterTime(board.time)}</p>{' '}
+                <p className='time'>{filterTime(board.created_at)}</p>{' '}
                 {/* 등록날짜 표시 */}
                 <h2>{board.title}</h2>
                 <p>{shortenContent(board.content)}</p>
                 {/* content는 미리보기식으로 첫줄만 보이고 이후엔 ... 표기 */}
-                <p className='image'>{board.image}</p>
+                <S.ListImage src={board.image} alt={board.title} />
                 <S.Infor>
                   <span className='material-symbols-outlined'>
                     emoji_nature
                   </span>
-                  <p className='nickname'>{board.nickname}</p>
+                  <p className='nickname'>{board.user.nickname}</p>
                 </S.Infor>
                 <p className='comment'>
-                  조회 {board.views} • 댓글 {board.commentCount} • 관심{' '}
-                  {board.like}
+                  조회 {board.views} • 댓글 • 관심 {board.likes}
                 </p>
                 <button
                   className='Detail'
@@ -109,5 +107,4 @@ const BoardMyList = ({ onPageChange }) => {
     </>
   );
 };
-
 export default BoardMyList;

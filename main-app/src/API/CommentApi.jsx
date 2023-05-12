@@ -3,12 +3,12 @@ import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 
 // const selectedBoard = useAtomValue(selectedBoardAtom);
 //댓글 get
-export const useGetComment = (boardId) => {
-  return useQuery('comment', async () => {
-    const { data } = serverWithoutToken.get(`/comment/${boardId}`);
-    return data;
-  });
-};
+// export const useGetComment = (boardId) => {
+//   return useQuery('comment', async () => {
+//     const { data } = serverWithoutToken.get(`/comment/${boardId}`);
+//     return data;
+//   });
+// };
 
 //댓글, 대댓글 post
 export const useCreateComment = (boardId) => {
@@ -25,8 +25,7 @@ export const useCreateComment = (boardId) => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('comment');
-        queryClient.invalidateQueries(['comment', boardId]);
+        queryClient.invalidateQueries('BoardList');
         //boardId와 관련된 데이터도 업데이트됨. 새로운 댓글이 추가 된 후 해당 게시물의 댓글 목록도 새로고침.
       },
     }

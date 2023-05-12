@@ -89,7 +89,7 @@ const router = createBrowserRouter([
         element: <ImageUpload />,
       },
       {
-        path: '/board/Detail',
+        path: '/board/detail/:boardId',
         element: <BoardDetailPage />,
       },
       {

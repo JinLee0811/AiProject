@@ -15,14 +15,21 @@ export const useGetBoard = () => {
 // 내 게시물 get
 export const useGetMyBoard = (userId) => {
   return useQuery(
-    'myBoardList', //query-key
+    ['myBoardList', userId], //query-key
     async () => {
-      const { data } = await serverWithToken.get(`/board/${userId}`); // myList 만 가져올거라 :id
+      const { data } = await serverWithToken.get('/board/myboard'); // myList 만 가져올거라 :id
       return data;
     }
   );
 };
 
+//게시물 상세보기 get
+export const useGetDetailBoard = (boardId) => {
+  return useQuery(['BoardDetail', boardId], async () => {
+    const { data } = await serverWithoutToken.get(`/board/detail/${boardId}`);
+    return data;
+  });
+};
 // post
 export const useCreateBoard = () => {
   const queryClient = useQueryClient();
@@ -46,11 +53,8 @@ export const useUpdateBoard = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (updatePost) => {
-      const { data } = await serverWithToken.put(
-        `/board/${updatePost.id}`,
-        updatePost
-      );
+    async ({ id, updatedPost }) => {
+      const { data } = await serverWithToken.put(`/board/${id}`, updatedPost);
       return data;
     },
     {
@@ -91,6 +95,16 @@ export const useAdminDeleteBoard = () => {
       onSuccess: () => {
         queryClient.invalidateQueries(['BoardList']);
       },
+    }
+  );
+};
+
+export const useGetBoardDetail = (id) => {
+  return useQuery(
+    ['BoardDetail', id], //query-key
+    async () => {
+      const { data } = await serverWithoutToken.get(`/board/detail/${id}`);
+      return data;
     }
   );
 };

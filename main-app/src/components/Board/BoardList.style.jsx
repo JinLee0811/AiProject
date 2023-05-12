@@ -86,7 +86,6 @@ export const FormContainer = styled.div`
   .nickname {
     font-size: 13px;
     color: #759783
-    font-weight: bold;
     margin-bottom: 0;
   }
 `;

@@ -27,7 +27,7 @@ const BoardForm = ({ onPageChange }) => {
       // mutate(formData);
       if (selectedBoard) {
         //selectedPost 있으면 update 없으면 create
-        await updatePost({ id: selectedBoard.id, data: formData });
+        await updatePost({ id: selectedBoard.id, updatedPost: formData });
       } else {
         //없으면 => 글쓰기 버튼클릭.
         await createPost(formData);
