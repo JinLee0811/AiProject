@@ -29,9 +29,10 @@ const ImageUpload = () => {
       const formData = new FormData();
       formData.append('image', file);
       const data = await createImage(formData);
-      setResult(data);
+      setResult(data.result);
     } catch (error) {
       console.error(error);
+      setError('이미지 업로드에 실패했습니다.');
     }
   };
 
@@ -94,7 +95,6 @@ const ImageUpload = () => {
                 </FileUploader>
               )}
             </Dropzone>
-
             <Button
               onClick={handleImageUpload}
               disabled={!file || isImageUploading}>
@@ -106,7 +106,7 @@ const ImageUpload = () => {
         <RightBox>
           <Title>진단을 확인하세요.</Title>
           <form onSubmit={handleSolutionCreate}>
-            {result ? (
+            {result && (
               <ResultBox>
                 <Result>
                   <ResultTitle>진 단 서🔎</ResultTitle>
@@ -125,15 +125,14 @@ const ImageUpload = () => {
                   </ResultSolution>
                 </Result>
               </ResultBox>
-            ) : (
-              <>
-                <ResultBox>
-                  <ResultTitle1>진 단 서🔎</ResultTitle1>
-                  <ResultImage1 src='https://img.freepik.com/premium-vector/illustration-of-cute-male-doctor-with-stethoscope-kawaii-vector-cartoon-character-design_380474-32.jpg' />
-                  <ResultContents>👉 진단 결과가 없습니다.</ResultContents>
-                  <ResultSolution></ResultSolution>
-                </ResultBox>
-              </>
+            )}
+            {!result && (
+              <ResultBox>
+                <ResultTitle1>진 단 서🔎</ResultTitle1>
+                <ResultImage1 src='https://img.freepik.com/premium-vector/illustration-of-cute-male-doctor-with-stethoscope-kawaii-vector-cartoon-character-design_380474-32.jpg' />
+                <ResultContents>👉 진단 결과가 없습니다.</ResultContents>
+                <ResultSolution></ResultSolution>
+              </ResultBox>
             )}
             <Button onClick={handleReset} disabled={isResetDisabled}>
               초기화
