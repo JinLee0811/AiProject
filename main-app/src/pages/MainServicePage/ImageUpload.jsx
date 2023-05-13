@@ -11,7 +11,7 @@ const ImageUpload = () => {
   const [result, setResult] = useState('');
   const { isLoggedIn } = Auth();
   const locate = useLocation();
-  const { mutate: createImage, isLoading: isImageUploading } = useCreateImage();
+  const { mutateAsync: createImage, isLoading: isImageUploading } = useCreateImage();
   const { mutate: createSolution, isLoading: isSolutionCreating } =
     useCreateSolution();
 
@@ -29,10 +29,11 @@ const ImageUpload = () => {
       const formData = new FormData();
       formData.append('image', file);
       const data = await createImage(formData);
-      setResult(data.result);
+      setResult(data);
+      console.log(data)
+
     } catch (error) {
       console.error(error);
-      setError('이미지 업로드에 실패했습니다.');
     }
   };
 
@@ -66,13 +67,15 @@ const ImageUpload = () => {
   // const isFormDisabled = (!file && !result) || isSolutionCreating || !result;
 
   // 업로드 된 파일이나 결과값이 바뀌면 초기화
-  useEffect(() => {
-    if (!file && !result) {
-      return;
-    }
-    setFile(null);
-    setResult(null);
-  }, [result, setResult]);
+  // useEffect(() => {
+  //   if (!file && !result) {
+  //     return;
+  //   }
+  //   setFile(null);
+  //   setResult(null);
+  // }, [result, setResult]);
+
+  console.log(result)
 
   return (
     <>

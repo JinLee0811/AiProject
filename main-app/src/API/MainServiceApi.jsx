@@ -1,28 +1,28 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
+import {useState} from 'react'
 
 // POST Hook: 질병 진단 이미지 업로드 후 결과물 반환
 export const useCreateImage = () => {
-  const queryClient = useQueryClient();
-  const [error, setError] = useState(null);
+    const queryClient = useQueryClient();
 
-  return useMutation(
-    async (newImage) => {
-      const { data } = await serverWithoutToken.post('solution/predict', {
-        data: newImage,
-      });
-      return data;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['solutions']);
-      },
-      onError: (error) => {
-        setError(error.response.data.message);
-      },
-    }
-  );
+    return useMutation(
+        async (newImage) => {
+            const { data } = await serverWithoutToken.post(
+                '/solution/predict',
+                newImage
+            );
+
+            return data;
+        },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['solutions']);
+            },
+        }
+    );
 };
+
 // GET Hook: 등록된 해결책 조회
 export const useGetSolutions = (options) => {
   return useQuery(
@@ -41,7 +41,7 @@ export const useCreateSolution = () => {
 
   return useMutation(
     async (newSolution) => {
-      const { data } = await serverWithToken.post('/solutions', newSolution);
+      const { data } = await serverWithToken.post('/solution', newSolution);
       return data;
     },
     {
