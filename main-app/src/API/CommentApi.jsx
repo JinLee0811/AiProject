@@ -25,7 +25,7 @@ export const useCreateComment = (boardId) => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('BoardList');
+        queryClient.invalidateQueries('BoardDetail');
         //boardId와 관련된 데이터도 업데이트됨. 새로운 댓글이 추가 된 후 해당 게시물의 댓글 목록도 새로고침.
       },
     }

@@ -2,15 +2,21 @@ import { React, useState, useEffect } from 'react';
 import * as S from './BoardForm.style';
 import Dropzone from 'react-dropzone';
 import { useCreateBoard, useUpdateBoard } from '../../API/BoardAPi';
-import { selectedBoardAtom } from '../../Atoms/BoardAtom';
+import { useGetDetailBoard } from '../../API/BoardAPi';
 import { useAtom, useAtomValue } from 'jotai';
 import { BOARD_PATH } from '../common/path';
+import { useParams } from 'react-router-dom';
 
 const BoardForm = ({ onPageChange }) => {
-  const [selectedBoard, setSelectedBoard] = useAtom(selectedBoardAtom); //detail에서 넘어온 값들이 곧 selectedBoard임
+  const { boardId } = useParams();
+  const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
+    onError: (error) => console.log(error.message),
+  });
+  console.log(boardId);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState('');
+  const [status, setStatus] = useState('PUBLIC');
 
   const { mutateAsync: createPost, isLoading: isCreating } = useCreateBoard(); //내가 작성한 커스텀 훅을  mutate를 통해 반환!
   const { mutateAsync: updatePost, isLoading: isUpdating } = useUpdateBoard();
@@ -22,12 +28,15 @@ const BoardForm = ({ onPageChange }) => {
       const formData = new FormData();
       formData.append('title', title); //보낼 데이터 이름, 실제 데이터
       formData.append('content', content);
-      formData.append('image', image);
+      if (image) {
+        formData.append('image', image);
+      }
+      formData.append('status', status);
       // const formData = new FormData(e.target); 위 방식과 다를 게 없는 듯 한데 맞는지 근데 이럼 title 이름이랑 실제데이터 지정 못하는거아님?
       // mutate(formData);
-      if (selectedBoard) {
-        //selectedPost 있으면 update 없으면 create
-        await updatePost({ id: selectedBoard.id, updatedPost: formData });
+      if (detailBoard && detailBoard.id) {
+        // selectedPost가 있으면서 유효한 id가 있는 경우에만 업데이트 수행
+        await updatePost({ id: detailBoard.id, updatedPost: formData });
       } else {
         //없으면 => 글쓰기 버튼클릭.
         await createPost(formData);
@@ -36,7 +45,7 @@ const BoardForm = ({ onPageChange }) => {
       console.log(error);
     }
     alert('작성이 완료되었습니다!');
-    setSelectedBoard('');
+    // setSelectedBoard('');
     onPageChange(BOARD_PATH);
   };
   const handleFileSelect = (event) => {
@@ -45,25 +54,32 @@ const BoardForm = ({ onPageChange }) => {
   const handleDrop = (acceptedFiles) => {
     // 파일 업로드 처리
     // 업로드된 파일 정보를 state에 저장
-    setImage(acceptedFiles[0]);
+    const selectedImage = acceptedFiles[0];
+    setImage(selectedImage);
   };
 
   useEffect(() => {
-    if (selectedBoard) {
-      setTitle(selectedBoard.title);
-      setContent(selectedBoard.content);
-      if (selectedBoard.image) {
-        setImage(selectedBoard.image);
+    if (detailBoard) {
+      setTitle(detailBoard.title);
+      setContent(detailBoard.content);
+      if (detailBoard.image) {
+        setImage(detailBoard.image);
       } else {
         setImage('');
       }
     }
-  }, [selectedBoard]); //selectedBoard가 변경 될 때마다 실행한다 (3항연산자를 초기값으로 쓰는게 아니라 useEffect!)
+  }, [detailBoard]);
 
   return (
     <S.Container>
       <S.FormContainer>
         <form onSubmit={handleSubmit}>
+          <S.CheckBox
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}>
+            <option value='PUBLIC'>공개</option>
+            <option value='PRIVATE'>비공개</option>
+          </S.CheckBox>
           <div>
             <label>제목</label>
             <input

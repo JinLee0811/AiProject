@@ -4,19 +4,20 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useGetBoard } from '../../API/BoardAPi';
 import {
   useCreateComment,
-  useGetComment,
   useUpdateComment,
   useDeleteComment,
 } from '../../API/CommentApi';
-import { selectedBoardAtom, commentsAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
+import { useGetDetailBoard } from '../../API/BoardAPi';
+import { useParams } from 'react-router-dom';
 
 const BoardComment = () => {
-  const selectedBoard = useAtomValue(selectedBoardAtom);
   const [input, setInput] = useState(''); //댓글입력상태
   const [replyInput, setReplyInput] = useState(''); //대댓글 입력상태
   const [replyCommentId, setReplyCommentId] = useState(''); //답글달기 =>내가 지금 작성하려는 댓글이 / 최상위 댓글의 대댓글이 맞는지 확인용
-  const [comments, setComments] = useState(selectedBoard.comments); //post요청 한 것을 가져온 댓글
-
+  const { boardId } = useParams();
+  const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
+    onError: (error) => console.log(error.message),
+  });
   //댓글 get
   // const {
   //   data: fetchedComment,
@@ -71,15 +72,15 @@ const BoardComment = () => {
   //     setComments(modifiedComments);
   //   }
   // }, [fetchedComment]);
-
   // 댓글 post
-  const { mutateAsync: createComment } = useCreateComment(selectedBoard.id);
+  const { mutateAsync: createComment } = useCreateComment(detailBoard.id);
+  const [comments, setComments] = useState(detailBoard.comments); //post요청 한 것을 가져온 댓글
 
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await createComment({
-        board_id: selectedBoard.id,
+        board_id: detailBoard.id,
         parent_comment_id: null,
         content: input,
       });
@@ -173,6 +174,7 @@ const BoardComment = () => {
   // if (isCommentError) {
   //   return <div>Error: {isCommentError?.message}</div>; // 서버에서 반환된 에러메세지 보여줌
   // }
+
   return (
     <>
       <S.CommentContainer>

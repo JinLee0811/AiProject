@@ -98,13 +98,3 @@ export const useAdminDeleteBoard = () => {
     }
   );
 };
-
-export const useGetBoardDetail = (id) => {
-  return useQuery(
-    ['BoardDetail', id], //query-key
-    async () => {
-      const { data } = await serverWithoutToken.get(`/board/detail/${id}`);
-      return data;
-    }
-  );
-};
