@@ -63,7 +63,7 @@ const router = createBrowserRouter([
             element: <SignOutPage />,
           },
           {
-            path: 'solutionDetail',
+            path: 'solutionDetail/:detailId',
             element: <SolutionDetail />,
           },
           {

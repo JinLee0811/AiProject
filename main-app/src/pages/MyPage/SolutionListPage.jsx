@@ -1,72 +1,165 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import { useGetSolutions, useDeleteSolution } from '../../API/MainServiceApi';
+import { useNavigate } from 'react-router-dom';
 
 const SolutionsForm = () => {
-  // const [solutionList, setSolutionList] = useState([]);
+  const [solutionList, setSolutionList] = useState([]);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     // 서버에서 진단 내역 리스트를 불러오는 API 호출
-  //     const response = await axios.get('/api/diagnosis');
-  //     setSolutionList(response.data);
-  //   }
-  //   fetchData();
-  // }, []);
+  const { data: fetchedSolutionList } = useGetSolutions({
+    onError: (error) => console.log(error.message),
+  }); // 데이터 get
+
+  const { mutate: deleteSolution } = useDeleteSolution(); //데이터 delete
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (fetchedSolutionList) {
+      setSolutionList(fetchedSolutionList);
+    }
+  }, [fetchedSolutionList, setSolutionList]);
+
+  // 삭제 버튼 클릭시 로직
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteSolution(id);
+      setSolutionList((prevSolution) =>
+        prevSolution.map((solution) => {
+          if (solution.id === id) {
+            return {
+              ...solution,
+              deletedAt: new Date(),
+            };
+          }
+          return solution;
+        })
+      );
+      alert(response.data.message);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  // 상세보기
+  const handleDetail = (id) => {
+    navigate(`/mypage/solutionDetail/${id}`);
+  };
+
+  console.log(solutionList);
 
   return (
-    <Wrapper>
-      {/* <Title>나의 작물 진단 내역</Title>
-      {solutionList.length > 0 ? (
-        <DiagnosisList>
-          {solutionList.map((solution) => (
-            <DiagnosisItem key={solution.id}>
-              <img src={solution.plantImage} alt='solution plant' />
-              <p>{solution.result}</p>
-            </DiagnosisItem>
+    <Table>
+      <thead>
+        <tr>
+          <TableHeader>진단일</TableHeader>
+          <TableHeader>진단 이미지</TableHeader>
+          <TableHeader>작물 이름</TableHeader>
+          <TableHeader>질병 이름</TableHeader>
+          <TableHeader>관리</TableHeader>
+        </tr>
+      </thead>
+      <tbody>
+        {solutionList &&
+          solutionList.map((solution) => (
+            <tr key={solution.id}>
+              <TableData style={{ width: '6%' }}>
+                {new Date(solution.created_at).toLocaleDateString()}
+              </TableData>
+              <TableData style={{ width: '6%' }}>
+                <SmallImage src={solution.image} />
+              </TableData>
+              <TableData style={{ width: '6%' }}>
+                {solution.solution.crop_name}
+              </TableData>
+              <TableData>{solution.solution.disease_name}</TableData>
+              <TableData style={{ width: '13%' }}>
+                <StatusButton onClick={() => handleDetail(solution.id)}>
+                  상세보기
+                </StatusButton>
+                <StatusButton onClick={() => handleDelete(solution.id)}>
+                  삭제
+                </StatusButton>
+              </TableData>
+            </tr>
           ))}
-        </DiagnosisList>
-      ) : (
-        <p>진단 내역이 없습니다.</p>
-      )} */}
-    </Wrapper>
+      </tbody>
+    </Table>
   );
 };
 
-const Wrapper = styled.div`
+const Table = styled.table`
+  width: 100%;
+  font-size: 1rem;
+  border-collapse: collapse;
+  @media (max-width: 998px) {
+  }
+`;
+const SmallImage = styled.img`
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  object-position: center;
+`;
+
+const TableHeader = styled.th`
+  background-color: white;
+  padding: 0.5rem 0.5px;
+  text-align: left;
+  font-weight: bold;
+`;
+
+const TableData = styled.td`
+  border-bottom: 1px solid #ddd;
+  height: 2rem;
+  width: 10%;
+`;
+
+const StatusButton = styled.button`
+  background-color: #759683;
+  border: none;
+  color: #fff;
+  padding: 0.5rem;
+  margin: 0.5rem 1px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  font-size: 0.6rem;
+  :hover {
+    background-color: green;
+  }
+`;
+const Container = styled.section`
   display: flex;
   flex-direction: column;
+  padding-top: 80px;
   align-items: center;
 `;
 
-const Title = styled.h2`
-  margin-bottom: 20px;
+const DeleteMessage = styled.div`
+  padding: 1rem;
+  font-size: 1rem;
 `;
 
-const DiagnosisList = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-`;
-
-const DiagnosisItem = styled.li`
+const PaginationContainer = styled.div`
   display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-
-  img {
-    width: 100px;
-    height: 100px;
-    margin-right: 20px;
-    object-fit: cover;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+  justify-content: center;
+  flex-direction: row;
+  ul {
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+    a {
+      padding: 1rem;
+    }
   }
-
-  p {
-    font-size: 1rem;
-    font-weight: 500;
-    margin: 0;
+  .active {
+    font-family: 'NanumSquareNeoExtraBold';
+    a {
+      color: #33a23d;
+    }
   }
 `;
 

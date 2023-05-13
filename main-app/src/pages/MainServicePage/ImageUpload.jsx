@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Dropzone from 'react-dropzone';
-import { useAtom } from 'jotai';
-import { fileAtom, resultAtom } from '../../Atoms/MainServiceAtom';
 import { useCreateImage, useCreateSolution } from '../../API/MainServiceApi';
+import { Auth } from '../../API/authApi';
+import { useLocation } from 'react-router-dom';
 
 // 이미지 url 받기
 const ImageUpload = () => {
-  const [file, setFile] = useAtom(fileAtom);
-  const [result, setResult] = useAtom(resultAtom);
+  const [file, setFile] = useState('');
+  const [result, setResult] = useState('');
+  const { isLoggedIn } = Auth();
+  const locate = useLocation();
   const { mutate: createImage, isLoading: isImageUploading } = useCreateImage();
   const { mutate: createSolution, isLoading: isSolutionCreating } =
     useCreateSolution();
@@ -19,15 +21,15 @@ const ImageUpload = () => {
 
   // 이미지 업로드 로직
   const handleImageUpload = async () => {
+    if (!file) {
+      alert('진단받을 이미지가 없습니다.');
+      return;
+    }
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('image', file);
       const data = await createImage(formData);
-      setResult({
-        title: data.title,
-        items: data.items,
-        imageUrl: URL.createObjectURL(file),
-      });
+      setResult(data);
     } catch (error) {
       console.error(error);
     }
@@ -35,16 +37,18 @@ const ImageUpload = () => {
 
   // 데이터 저장 로직 (저장을 한번만 시키기)
   const handleSolutionCreate = async () => {
+    if (!isLoggedIn) {
+      locate('/login');
+      return;
+    }
     if (!result || isSolutionCreating) {
+      alert('진단 내역이 없습니다');
       return;
     }
     try {
-      const solution = {
-        title: result.title,
-        items: result.items,
-      };
+      const solution = { result };
       const data = await createSolution(solution);
-      console.log('Created solution:', data);
+      console.log('진단 저장', data);
     } catch (error) {
       console.error(error);
     }
@@ -102,34 +106,35 @@ const ImageUpload = () => {
         <RightBox>
           <Title>진단을 확인하세요.</Title>
           <form onSubmit={handleSolutionCreate}>
-            {/* <ResultBox>
-              <ResultTitle> 예측 작물 : {result.crop_name}</ResultTitle>
-              <Result>질병 이름: {result.disease_name}</Result>
-              <Result>해결책: {result.disease_solution}</Result>
-            </ResultBox> */}
-            <ResultBox>
-              <Result>
-                <ResultTitle>진 단 서🔎</ResultTitle>
-                <ResultImage src='https://www.newssc.co.kr/news/photo/202107/48405_32603_2018.jpg' />
-
-                <ResultContents>
-                  👉 당신의 작물은 <ResultStrong>'고추'</ResultStrong>이며, 크롭
-                  닥터의 진단 결과 질병의 이름은
-                  <ResultStrong>'탄저병'</ResultStrong> 입니다.
-                </ResultContents>
-                <ResultSolution>
-                  <ResultStrong2>
-                    👨‍🌾아래의 해결방법을 참고하세요👨‍🌾
-                  </ResultStrong2>
-                  <ResultStrong3>
-                    "감염된 식물 부분은 즉시 제거하고 폐기해야 합니다.", "물을
-                    뿌릴 때 잎에 직접 물이 닿지 않도록 하고, 대신 뿌리 부근에
-                    물을 주세요.", "예방을 위해 식물을 심기 전에 씨앗을 잠시
-                    물에 담갔다가 건조시키는 방법이 효과적입니다."
-                  </ResultStrong3>
-                </ResultSolution>
-              </Result>
-            </ResultBox>
+            {result ? (
+              <ResultBox>
+                <Result>
+                  <ResultTitle>진 단 서🔎</ResultTitle>
+                  <ResultImage src={result.image} />
+                  <ResultContents>
+                    👉 당신의 작물은{' '}
+                    <ResultStrong>'{result.crop_name}'</ResultStrong>이며, 크롭
+                    닥터의 진단 결과 질병의 이름은
+                    <ResultStrong>'{result.disease_name}'</ResultStrong> 입니다.
+                  </ResultContents>
+                  <ResultSolution>
+                    <ResultStrong2>
+                      👨‍🌾아래의 해결방법을 참고하세요👨‍🌾
+                    </ResultStrong2>
+                    <ResultStrong3>"{result.disease_solution}"</ResultStrong3>
+                  </ResultSolution>
+                </Result>
+              </ResultBox>
+            ) : (
+              <>
+                <ResultBox>
+                  <ResultTitle1>진 단 서🔎</ResultTitle1>
+                  <ResultImage1 src='https://img.freepik.com/premium-vector/illustration-of-cute-male-doctor-with-stethoscope-kawaii-vector-cartoon-character-design_380474-32.jpg' />
+                  <ResultContents>👉 진단 결과가 없습니다.</ResultContents>
+                  <ResultSolution></ResultSolution>
+                </ResultBox>
+              </>
+            )}
             <Button onClick={handleReset} disabled={isResetDisabled}>
               초기화
             </Button>
@@ -208,6 +213,17 @@ const ResultBox = styled.div`
 `;
 const ResultTitle = styled.div`
   display: flex;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: 700;
+`;
+const ResultTitle1 = styled.div`
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 50px;
   align-items: center;
   justify-content: center;
   font-size: 25px;
@@ -260,9 +276,15 @@ const ResultImage = styled.img`
   margin-top: 5px;
   width: 250px;
   height: 150px;
-  margin-left: 50px;
+  margin: 0 auto;
   border-radius: 10px;
   border: 3px solid white;
+`;
+const ResultImage1 = styled.img`
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+  border-radius: 10px;
 `;
 
 const FileUploader = styled.div`

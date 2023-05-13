@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useGetTonicDetail } from '../../API/NutritionApi';
 import { useParams } from 'react-router-dom';
@@ -9,6 +9,7 @@ const NutritionDetailPage = () => {
   const { data: tonic } = useGetTonicDetail(tonicId, {
     onError: (error) => console.log(error.message),
   });
+  console.log(tonic);
 
   return (
     <>

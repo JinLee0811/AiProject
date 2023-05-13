@@ -56,59 +56,36 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   color: ${(props) => (props.active ? 'green' : 'black')};
 `;
-const Profile = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 100%;
-  margin-bottom: 10px;
-`;
 
-const ProfileText = styled.div`
-  font-size: 17px;
-  width: 700px;
-  font-weight: bold;
-  margin-bottom: 70px;
-  text-align: center;
-`;
-
-const Container = styled.section`
+const Container = styled.div`
   display: flex;
   flex-direction: row;
-  width: 100vh;
-  @media (max-width: 998px) {
+  width: 100%;
+  @media (max-width: 1000px) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    width: 100vw;
+    width: 100%;
   }
 `;
 
-const MainContainer = styled.section`
-  flex: 1;
-  padding: 40px;
-  font-size: 1.2rem;
-  overflow: hidden;
-`;
-
-const SideBarProfile = styled.div`
+const MainContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  width: 100%;
+  margin-left: 20px;
   justify-content: center;
   align-items: center;
-  margin-right: 100px;
-  @media (max-width: 998px) {
-    display: none;
-    background-color: #fff;
-  }
+  padding: 30px;
+  font-size: 1.2rem;
+  overflow: scroll;
 `;
 
 const Aside = styled.aside`
   width: 200px;
-  position: fixed;
-  height: 100vh;
+  position: relative;
+  top: 0;
   left: 0;
-  margin-left: 30px;
+  margin-left: 0px;
   border-right: 1px solid #ccc;
 
   ul {
@@ -122,8 +99,9 @@ const Aside = styled.aside`
       font-size: 1rem;
     }
 
-    @media (max-width: 998px) {
+    @media (max-width: 1000px) {
       display: flex;
+      border-right: none;
       padding-inline-start: 0;
       li {
         padding-right: 1rem;
@@ -132,7 +110,7 @@ const Aside = styled.aside`
     }
   }
 
-  @media (max-width: 998px) {
+  @media (max-width: 1000px) {
     display: flex;
     height: 90px;
     justify-content: center;

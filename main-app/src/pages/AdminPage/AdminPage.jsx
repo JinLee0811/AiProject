@@ -59,36 +59,27 @@ const StyledLink = styled(Link)`
   color: ${(props) => (props.active ? 'green' : 'black')};
 `;
 
-const Container = styled.section`
+const Container = styled.div`
   display: flex;
   flex-direction: row;
-  width: 1500px;
-  @media (max-width: 1400px) {
+  width: 100%;
+  @media (max-width: 1000px) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    width: 100vw;
+    width: 100%;
   }
 `;
 
-const MainContainer = styled.section`
-  flex: 1;
-  padding: 20px;
-  font-size: 1.2rem;
-  overflow: scroll;
-`;
-
-const SideBarProfile = styled.div`
+const MainContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  width: 100%;
+  margin-left: 20px;
   justify-content: center;
   align-items: center;
-  margin-right: 100px;
-  @media (max-width: 998px) {
-    display: none;
-    background-color: #fff;
-  }
+  padding: 30px;
+  font-size: 1.2rem;
+  overflow: scroll;
 `;
 
 const Aside = styled.aside`
@@ -97,6 +88,7 @@ const Aside = styled.aside`
   top: 0;
   left: 0;
   margin-left: 0px;
+  border-right: 1px solid #ccc;
 
   ul {
     list-style: none;
@@ -109,8 +101,9 @@ const Aside = styled.aside`
       font-size: 1rem;
     }
 
-    @media (max-width: 1400px) {
+    @media (max-width: 1000px) {
       display: flex;
+      border-right: none;
       padding-inline-start: 0;
       li {
         padding-right: 1rem;
@@ -119,7 +112,7 @@ const Aside = styled.aside`
     }
   }
 
-  @media (max-width: 1400px) {
+  @media (max-width: 1000px) {
     display: flex;
     height: 90px;
     justify-content: center;

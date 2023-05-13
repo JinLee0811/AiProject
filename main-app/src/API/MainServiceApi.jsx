@@ -26,7 +26,7 @@ export const useGetSolutions = (options) => {
   return useQuery(
     ['solutions'],
     async () => {
-      const { data } = await serverWithToken.get('/solutions');
+      const { data } = await serverWithToken.get('/solution');
       return data;
     },
     { ...options }
@@ -43,9 +43,8 @@ export const useCreateSolution = () => {
       return data;
     },
     {
-      onSuccess: (newSolution) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(['solutions']);
-        console.log('New solution created:', newSolution);
       },
     }
   );
@@ -66,4 +65,12 @@ export const useDeleteSolution = () => {
       },
     }
   );
+};
+
+// GET Hook: 등록된 해결책 상세조회
+export const useGetDetailSolutions = (detailId) => {
+  return useQuery(['solutionDetil', detailId], async () => {
+    const { data } = await serverWithToken.get(`/solution/${detailId}`);
+    return data;
+  });
 };
