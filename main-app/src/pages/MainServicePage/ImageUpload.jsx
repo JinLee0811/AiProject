@@ -13,7 +13,7 @@ const ImageUpload = () => {
   const locate = useLocation();
   const { mutateAsync: createImage, isLoading: isImageUploading } =
     useCreateImage();
-  const { mutate: createSolution, isLoading: isSolutionCreating } =
+  const { mutateAsync: createSolution, isLoading: isSolutionCreating } =
     useCreateSolution();
 
   const handleDrop = (acceptedFiles) => {
@@ -31,7 +31,7 @@ const ImageUpload = () => {
       formData.append('image', file);
       const data = await createImage(formData);
       setResult(data);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -48,7 +48,8 @@ const ImageUpload = () => {
       return;
     }
     try {
-      const solution = { result };
+      const solution = { image: result.image, solution_id: result.id, resolved_at: result.resolved_at };
+      console.log(solution)
       const data = await createSolution(solution);
       console.log('진단 저장', data);
     } catch (error) {

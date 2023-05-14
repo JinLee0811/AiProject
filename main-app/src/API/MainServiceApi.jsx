@@ -37,19 +37,27 @@ export const useGetSolutions = (options) => {
 
 // POST Hook: 해결책 저장
 export const useCreateSolution = () => {
-  const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
-  return useMutation(
-    async (newSolution) => {
-      const { data } = await serverWithToken.post('/solution', newSolution);
-      return data;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['solutions']);
-      },
-    }
-  );
+    return useMutation(
+        async (data) => {
+            const { data: responseData } = await serverWithToken.post(
+                '/solution',
+                data,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            return responseData;
+        },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['solutions']);
+            },
+        }
+    );
 };
 
 // DELETE Hook: 등록된 해결책 삭제
