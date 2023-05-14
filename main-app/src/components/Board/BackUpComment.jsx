@@ -97,6 +97,40 @@ const BoardComment = () => {
   };
 
   //대댓글 post
+  // const handleReplySubmit = async (e, parent_id) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await createComment({
+  //       board_id: selectedBoard.id,
+  //       parent_id,
+  //       text: replyInput,
+  //     });
+  //     alert('대댓글 작성 완료');
+  //     setReplyInput('');
+  //     const newComment = response.data;
+  //     const updatedComments = comments.map((comment) => {
+  //       if (comment.id === parent_id) {
+  //         // 대댓글(child)의 부모id가  부모인 댓글의 id랑 일치하면 children에다 넣어라
+  //         return {
+  //           ...comment,
+  //           children: [...comment.children, newComment], // 이전에 적힌 대댓글(children) 배열에 추가
+  //         };
+  //       }
+  //       return comment;
+  //     });
+  //     setComments(updatedComments);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+  // if (isCommentLoading) {
+  //   return <div>Loading...</div>;
+  // }
+  // if (isCommentError) {
+  //   return <div>Error: {isCommentError?.message}</div>; // 서버에서 반환된 에러메세지 보여줌
+  // }
+
+  //대댓글 post
   const handleReplySubmit = async (e, parent_id) => {
     e.preventDefault();
     try {

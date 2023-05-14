@@ -15,14 +15,21 @@ export const useGetBoard = () => {
 // 내 게시물 get
 export const useGetMyBoard = (userId) => {
   return useQuery(
-    'myBoardList', //query-key
+    ['myBoardList', userId], //query-key
     async () => {
-      const { data } = await serverWithToken.get(`/board/${userId}`); // myList 만 가져올거라 :id
+      const { data } = await serverWithToken.get('/board/myboard'); // myList 만 가져올거라 :id
       return data;
     }
   );
 };
 
+//게시물 상세보기 get
+export const useGetDetailBoard = (boardId) => {
+  return useQuery(['BoardDetail', boardId], async () => {
+    const { data } = await serverWithoutToken.get(`/board/detail/${boardId}`);
+    return data;
+  });
+};
 // post
 export const useCreateBoard = () => {
   const queryClient = useQueryClient();
@@ -33,9 +40,8 @@ export const useCreateBoard = () => {
       return data;
     },
     {
-      onSuccess: (newPost) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(['BoardList']); //여기서 말하는 BoardList는 useQuery의 key?
-        console.log('New Post created:', newPost);
       }, //식별자를 가진 쿼리 결과를 무효화(invalidate)하여, 해당 쿼리를 다시 실행하도록 유도하는 역할을 한다라..
     }
   );
@@ -46,11 +52,8 @@ export const useUpdateBoard = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (updatePost) => {
-      const { data } = await serverWithToken.put(
-        `/board/${updatePost.id}`,
-        updatePost
-      );
+    async ({ id, updatedPost }) => {
+      const { data } = await serverWithToken.put(`/board/${id}`, updatedPost);
       return data;
     },
     {
@@ -93,12 +96,4 @@ export const useAdminDeleteBoard = () => {
       },
     }
   );
-};
-
-//영양제 상세보기
-export const useGetBoardDetail = (boardId) => {
-  return useQuery(['boardDetail', boardId], async () => {
-    const { data } = await serverWithoutToken.get(`board/detail/${boardId}`);
-    return data;
-  });
 };

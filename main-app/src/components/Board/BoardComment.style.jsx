@@ -56,7 +56,7 @@ export const Comment = styled.div`
 `;
 export const CommentManage = styled.div`
   .write {
-    margin-left: 92%;
+    margin-left: 84%;
     background-color: #759783;
     :hover {
       background-color: green;
@@ -106,8 +106,29 @@ export const CommentList = styled.div`
 export const CommentItem = styled.div``;
 export const CommentContent = styled.div`
   color: #759783;
-  background-color: white;
-  border: 1px solid gray;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  padding: 12px 25px;
+  width: 700px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
+  border: grey;
+  border-radius: 8px;
+`;
+export const FirstForm = styled.form`
+  margin-bottom: 30px;
+`;
+export const Nickname = styled.label`
+  width: 60px;
+`;
+export const SecondForm = styled.div``;
+export const CommentEDU = styled.div`
+  margin-bottom: 20px;
+  label {
+    color: #759783;
+    margin-left: 15px;
+    font-size: 15px;
+  }
+  .replyComment {
+    margin-left: 75%;
+  }
 `;

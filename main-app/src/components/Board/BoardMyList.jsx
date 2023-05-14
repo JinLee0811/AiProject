@@ -1,7 +1,7 @@
 import { React, useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import * as S from './BoardList.style';
-import { SERVER } from '../../API/axios';
+import { useNavigate } from 'react-router-dom';
 import { useGetMyBoard } from '../../API/BoardAPi';
 import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
 import {
@@ -14,7 +14,7 @@ import {
 const BoardMyList = ({ onPageChange }) => {
   const [boards, setBoards] = useAtom(boardsAtom); //axois.get을 통해 불러올 게시글 목록 표시
   const setSelectedBoard = useSetAtom(selectedBoardAtom); //클릭한 게시글의 정보를 저장하는 상태
-
+  const navigate = useNavigate();
   const { data: fetchedBoard, isLoading, isError } = useGetMyBoard();
 
   useEffect(() => {
@@ -23,10 +23,9 @@ const BoardMyList = ({ onPageChange }) => {
     }
   }, [fetchedBoard, setBoards]);
 
-  const detailClick = (id) => {
-    const board = boards.find((board) => board.id === id);
-    setSelectedBoard(board); //해당 id의 게시글 정보를 selectedPostAtom에 저장 (selectedPostAtom에을 Detail에서 쓸거임)
-    onPageChange(BOARD_DETAIL_PATH);
+  const detailClick = (boardId) => {
+    //해당 id의 게시글 정보를 selectedPostAtom에 저장 (selectedPostAtom에을 Detail에서 쓸거임)
+    navigate(`/board/detail/${boardId}`);
   };
   const boardClick = () => {
     onPageChange(BOARD_PATH);

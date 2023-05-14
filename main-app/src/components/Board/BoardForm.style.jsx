@@ -19,7 +19,7 @@ export const FormContainer = styled.div`
   padding: 2rem;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  height: 600px;
+  height: 650px;
   width: 800px;
   overflow: auto;
 
@@ -84,6 +84,15 @@ export const FormContainer = styled.div`
       background-color: green;
     }
   }
+`;
+export const CheckBox = styled.select`
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #759783;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-left: 90%;
 `;
 export const Dropzone = styled.div``;
 export const ImageContainer = styled.div`
