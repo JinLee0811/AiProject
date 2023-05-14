@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { atom, useAtom } from 'jotai';
@@ -19,6 +19,14 @@ const Navbar = () => {
   const [fadeToggle, setFadeToggle] = useAtom(fadeAtom);
   const { logout, isLoggedIn, isAdmin } = Auth();
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -49,79 +57,143 @@ const Navbar = () => {
           </LogoBox>
         </StyledLink>
       </NavLogo>
-      <Nav>
-        <LeftMenu>
-          <StyledLink to='/'>
-            <MenuItem>
-              <span class='material-symbols-outlined'>home</span>
-            </MenuItem>
-          </StyledLink>
-          <StyledLink to='/service'>
-            <MenuItem1>
-              {/* <span class='material-symbols-outlined'>image_search</span> */}
-              <span>진단하기</span>
-            </MenuItem1>
-          </StyledLink>
-          <StyledLink to='/nutrition'>
-            <MenuItem>
-              {/* <span class='material-symbols-outlined'>medication</span> */}
-              <span>스토어</span>
-            </MenuItem>
-          </StyledLink>
-          <StyledLink to='/board'>
-            <MenuItem>
-              {/* <span class='material-symbols-outlined'>chat</span> */}
-              <span>커뮤니티</span>
-            </MenuItem>
-          </StyledLink>
-        </LeftMenu>
-        <RightMenu>
-          {isLoggedIn ? (
-            <>
-              <StyledLink to='/mypage/solutionList'>
-                <MenuItem>
-                  <span class='material-symbols-outlined'>person</span>
-                </MenuItem>
-              </StyledLink>
-              {isAdmin && (
-                <StyledLink to='/admin/user'>
+      <Nav1>
+        <MenuIcon onClick={toggleMenu}>
+          <div />
+          <div />
+          <div />
+        </MenuIcon>
+        <MenuLinks isOpen={isOpen}>
+          <LeftMenu>
+            <StyledLink to='/'>
+              <MenuItem>
+                <span class='material-symbols-outlined'>home</span>
+              </MenuItem>
+            </StyledLink>
+            <StyledLink to='/service'>
+              <MenuItem1>
+                {/* <span class='material-symbols-outlined'>image_search</span> */}
+                <span>진단하기</span>
+              </MenuItem1>
+            </StyledLink>
+            <StyledLink to='/nutrition'>
+              <MenuItem>
+                {/* <span class='material-symbols-outlined'>medication</span> */}
+                <span>스토어</span>
+              </MenuItem>
+            </StyledLink>
+            <StyledLink to='/board'>
+              <MenuItem>
+                {/* <span class='material-symbols-outlined'>chat</span> */}
+                <span>커뮤니티</span>
+              </MenuItem>
+            </StyledLink>
+          </LeftMenu>
+          <RightMenu>
+            {isLoggedIn ? (
+              <>
+                <StyledLink to='/mypage/solutionList'>
                   <MenuItem>
-                    <span class='material-symbols-outlined'>
-                      manage_accounts
-                    </span>
+                    <span class='material-symbols-outlined'>person</span>
                   </MenuItem>
                 </StyledLink>
-              )}
-              <MenuItem onClick={handleLogoutClick}>
-                <span class='material-symbols-outlined'>logout</span>
-              </MenuItem>
-            </>
-          ) : (
-            <>
-              <StyledLink to='/login'>
-                <MenuItem>
-                  <span class='material-symbols-outlined'>person</span>
+                {isAdmin && (
+                  <StyledLink to='/admin/user'>
+                    <MenuItem>
+                      <span class='material-symbols-outlined'>
+                        manage_accounts
+                      </span>
+                    </MenuItem>
+                  </StyledLink>
+                )}
+                <MenuItem onClick={handleLogoutClick}>
+                  <span class='material-symbols-outlined'>logout</span>
                 </MenuItem>
-              </StyledLink>
-            </>
-          )}
-
-          <MenuItem>
-            <SearchBox>
-              <SearchInput type='text' placeholder='Crop을 검색하세요' />
-              <SearchButton onClick={onClickSearch}>
-                <span class='material-symbols-outlined'>search</span>
-              </SearchButton>
-            </SearchBox>
-          </MenuItem>
-        </RightMenu>
-      </Nav>
+              </>
+            ) : (
+              <>
+                <StyledLink to='/login'>
+                  <MenuItem>
+                    <span class='material-symbols-outlined'>person</span>
+                  </MenuItem>
+                </StyledLink>
+              </>
+            )}
+            <MenuItem>
+              <SearchBox>
+                <SearchInput type='text' placeholder='Crop을 검색하세요' />
+                <SearchButton onClick={onClickSearch}>
+                  <span class='material-symbols-outlined'>search</span>
+                </SearchButton>
+              </SearchBox>
+            </MenuItem>
+          </RightMenu>
+          <CloseButton onClick={closeMenu}>X</CloseButton>
+        </MenuLinks>
+      </Nav1>
       <NavWrite>
         <NavWriteTag>{sentences[fadeToggle]}</NavWriteTag>
       </NavWrite>
     </>
   );
 };
+const CloseButton = styled.button`
+  position: absolute;
+  top: 1rem;
+  right: 3rem;
+  background-color: transparent;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+`;
+const Nav1 = styled.nav`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 1rem;
+`;
+
+const MenuIcon = styled.div`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+
+    div {
+      width: 2rem;
+      height: 0.25rem;
+      background-color: #333;
+      margin-bottom: 0.5rem;
+      border-radius: 2px;
+    }
+  }
+`;
+
+const MenuLinks = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  color: white;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    position: absolute;
+    top: 3rem;
+    left: ${({ isOpen }) => (isOpen ? '0' : '-100%')};
+    width: 90%;
+    transition: all 0.3s ease-in-out;
+    background-color: white;
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+`;
+
 const NavLogo = styled.div`
   width: 100%;
   height: 15px;
@@ -146,22 +218,6 @@ const LogoImage = styled.img`
   margin-right: 0px;
 `;
 
-const Nav = styled.nav`
-  width: 1300px;
-  height: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #fff;
-  padding: 30px 0px 20px 0px;
-  margin: 0px;
-  @media (max-width: 968px) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
-`;
 const fadeInOut = keyframes`
   0% {
     opacity: 0;
@@ -210,7 +266,7 @@ const LeftMenu = styled.ul`
   align-items: center;
   margin-right: 0;
   padding: 0;
-  @media (max-width: 998px) {
+  @media (max-width: 769px) {
   }
 `;
 const RightMenu = styled.ul`
@@ -220,7 +276,7 @@ const RightMenu = styled.ul`
   margin-left: 250px;
   padding: 0;
   @media (max-width: 998px) {
-    display: none;
+    margin-left: 0px;
   }
 `;
 
@@ -262,6 +318,9 @@ const SearchBox = styled.div`
   width: 200px;
   height: 20px;
   padding: 8px;
+  @media (max-width: 998px) {
+    width: 130px;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -276,6 +335,9 @@ const SearchInput = styled.input`
   &::placeholder {
     color: #bbb;
   }
+  @media (max-width: 998px) {
+    width: 100px;
+  }
 `;
 
 const SearchButton = styled.button`
@@ -284,6 +346,9 @@ const SearchButton = styled.button`
   padding: 0;
   margin-left: 8px;
   cursor: pointer;
+  @media (max-width: 998px) {
+    margin-left: 8px;
+  }
 `;
 
 const StyledLink = styled(Link)`

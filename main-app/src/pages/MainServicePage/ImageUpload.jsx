@@ -11,7 +11,8 @@ const ImageUpload = () => {
   const [result, setResult] = useState('');
   const { isLoggedIn } = Auth();
   const locate = useLocation();
-  const { mutateAsync: createImage, isLoading: isImageUploading } = useCreateImage();
+  const { mutateAsync: createImage, isLoading: isImageUploading } =
+    useCreateImage();
   const { mutate: createSolution, isLoading: isSolutionCreating } =
     useCreateSolution();
 
@@ -30,8 +31,7 @@ const ImageUpload = () => {
       formData.append('image', file);
       const data = await createImage(formData);
       setResult(data);
-      console.log(data)
-
+      console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -75,7 +75,7 @@ const ImageUpload = () => {
   //   setResult(null);
   // }, [result, setResult]);
 
-  console.log(result)
+  console.log(result);
 
   return (
     <>

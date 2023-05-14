@@ -47,7 +47,7 @@ const MainPage = () => {
           <Title>영양제 소개 서비스</Title>
           <Contents>여러분의 작물 상태에 알맞은</Contents>
           <Contents>영양제를 추천합니다.</Contents>
-          <StyledLink to={'/service'}>
+          <StyledLink to={'/nutrition'}>
             <Button>구경하러 가기 🔎</Button>
           </StyledLink>
         </ContentsBox>
