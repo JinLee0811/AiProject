@@ -40,9 +40,8 @@ export const useCreateBoard = () => {
       return data;
     },
     {
-      onSuccess: (newPost) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(['BoardList']); //여기서 말하는 BoardList는 useQuery의 key?
-        console.log('New Post created:', newPost);
       }, //식별자를 가진 쿼리 결과를 무효화(invalidate)하여, 해당 쿼리를 다시 실행하도록 유도하는 역할을 한다라..
     }
   );
@@ -54,7 +53,7 @@ export const useUpdateBoard = () => {
 
   return useMutation(
     async ({ id, updatedPost }) => {
-      const { data } = await serverWithToken.put(`/board/${id}`, updatedPost);
+      const { data } = await serverWithToken.patch(`/board/${id}`, updatedPost);
       return data;
     },
     {

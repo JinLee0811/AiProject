@@ -33,37 +33,39 @@ export const useCreateComment = (boardId) => {
 };
 
 // put
-export const useUpdateComment = () => {
+export const useUpdateComment = (boardId) => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (updateComment) => {
-      const { data } = await serverWithToken.put(
-        `/comment/${updateComment.id}`,
-        updateComment
+    async (id, content) => {
+      const { data } = await serverWithToken.patch(
+        `/comment/${boardId}/${id}`,
+        { content }
       );
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('comment');
+        queryClient.invalidateQueries('BoardDetail');
       },
     }
   );
 };
 
 // delete
-export const useDeleteComment = () => {
+export const useDeleteComment = (boardId) => {
   const queryClient = useQueryClient();
 
   return useMutation(
     async (id) => {
-      const { data } = await serverWithToken.delete(`/comment/${id}`);
+      const { data } = await serverWithToken.delete(
+        `/comment/${boardId}/${id}`
+      );
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('comment');
+        queryClient.invalidateQueries('BoardDetail');
       },
     }
   );

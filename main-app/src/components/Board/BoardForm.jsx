@@ -6,13 +6,15 @@ import { useGetDetailBoard } from '../../API/BoardAPi';
 import { useAtom, useAtomValue } from 'jotai';
 import { BOARD_PATH } from '../common/path';
 import { useParams } from 'react-router-dom';
+import { selectedBoardAtom } from '../../Atoms/BoardAtom';
 
 const BoardForm = ({ onPageChange }) => {
-  const { boardId } = useParams();
-  const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
-    onError: (error) => console.log(error.message),
-  });
-  console.log(boardId);
+  const [select, setSelect] = useAtom(selectedBoardAtom);
+  // const { boardId } = useParams();
+  // const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
+  //   onError: (error) => console.log(error.message),
+  // });
+  // console.log(boardId);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState('');
@@ -28,15 +30,16 @@ const BoardForm = ({ onPageChange }) => {
       const formData = new FormData();
       formData.append('title', title); //보낼 데이터 이름, 실제 데이터
       formData.append('content', content);
-      if (image) {
-        formData.append('image', image);
-      }
+      formData.append('image', image);
       formData.append('status', status);
+      for (const pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
       // const formData = new FormData(e.target); 위 방식과 다를 게 없는 듯 한데 맞는지 근데 이럼 title 이름이랑 실제데이터 지정 못하는거아님?
       // mutate(formData);
-      if (detailBoard && detailBoard.id) {
+      if (select && select.id) {
         // selectedPost가 있으면서 유효한 id가 있는 경우에만 업데이트 수행
-        await updatePost({ id: detailBoard.id, updatedPost: formData });
+        await updatePost({ id: select.id, updatedPost: formData });
       } else {
         //없으면 => 글쓰기 버튼클릭.
         await createPost(formData);
@@ -45,10 +48,10 @@ const BoardForm = ({ onPageChange }) => {
       console.log(error);
     }
     alert('작성이 완료되었습니다!');
-    // setSelectedBoard('');
+    setSelect('');
     onPageChange(BOARD_PATH);
   };
-  const handleFileSelect = (event) => {
+  const handlImageChange = (event) => {
     setImage(event.target.files[0]);
   };
   const handleDrop = (acceptedFiles) => {
@@ -59,16 +62,17 @@ const BoardForm = ({ onPageChange }) => {
   };
 
   useEffect(() => {
-    if (detailBoard) {
-      setTitle(detailBoard.title);
-      setContent(detailBoard.content);
-      if (detailBoard.image) {
-        setImage(detailBoard.image);
+    // 넘겨온 데이터가 맞으면 해당 데이터의 값들 보여주기
+    if (select) {
+      setTitle(select.title);
+      setContent(select.content);
+      if (select.image) {
+        setImage(select.image);
       } else {
         setImage('');
       }
     }
-  }, [detailBoard]);
+  }, [select]);
 
   return (
     <S.Container>
@@ -117,7 +121,7 @@ const BoardForm = ({ onPageChange }) => {
                   id='imageInput'
                   type='file'
                   accept='image/*' //허용되는 파일 유형지정
-                  onChange={handleFileSelect}
+                  onChange={handlImageChange}
                   style={{ display: 'none' }}
                 />
               </S.ImageContainer>

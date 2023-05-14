@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import * as S from './BoardDetail.style';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useDeleteBoard } from '../../API/BoardAPi';
 import { useCreateLike, useDeleteLike } from '../../API/LikeAPi';
-import { detailBoardAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
+import { detailBoardAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 import { useNavigate } from 'react-router-dom';
 import { BOARD_FORM_PATH, BOARD_PATH } from '../common/path';
 import { userAtom } from '../../Atoms/TokenAtom';
@@ -15,17 +15,19 @@ const BoardDetail = () => {
   const navigate = useNavigate();
   const { boardId } = useParams();
   const [user] = useAtom(userAtom);
+  const setSelectedBoard = useSetAtom(selectedBoardAtom);
   const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
     onError: (error) => console.log(error.message),
   });
 
-  const handleBoardUpdate = () => {
+  const handleBoardUpdate = (detailBoard) => {
     if (user.id !== detailBoard.user.id) {
       // 지우려는 사람이 본인이 아닐경우
       alert('해당 게시글을 수정할 수 없습니다.');
       return;
     }
     alert('게시글을 수정하시겠습니까?');
+    setSelectedBoard(detailBoard);
     navigate(BOARD_FORM_PATH);
   };
 

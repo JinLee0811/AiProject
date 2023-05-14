@@ -45,7 +45,7 @@ const BoardList = ({ onPageChange }) => {
     onPageChange(BOARD_MY_PATH);
   };
   const formClick = () => {
-    setSelectedBoard('');
+    // setSelectedBoard('');
     onPageChange(BOARD_FORM_PATH);
   };
   const shortenContent = (content) => {
