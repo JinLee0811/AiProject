@@ -59,9 +59,7 @@ const BoardList = ({ onPageChange }) => {
     // 서버에서 보내주는 시간 값을 Date 객체로 바꿈
     const serverTime = new Date(time);
     // 클라이언트의 로컬 시간대에 맞추어 변환
-    const localTime = new Date( //현재 시간에서 뺌
-      serverTime.getTime() - serverTime.getTimezoneOffset() * 60 * 1000
-    );
+    const localTime = new Date(serverTime.getTime()); //현재 시간에서 뺌
     const filter = Date.now() - localTime.getTime();
     const filterSeconds = Math.floor(filter / 1000);
     const filterMinutes = Math.floor(filter / 60000);

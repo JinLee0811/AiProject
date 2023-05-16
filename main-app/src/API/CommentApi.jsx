@@ -10,6 +10,19 @@ import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 //   });
 // };
 
+//대댓글 get
+export const useGetReplyComment = (boardId, commentId) => {
+  return useQuery(
+    ['BoardDetail'], //query-key
+    async () => {
+      const { data } = await serverWithoutToken.get(
+        `comment/${boardId}/${commentId}`
+      );
+      return data;
+    }
+  );
+};
+
 //댓글, 대댓글 post
 export const useCreateComment = (boardId) => {
   // postman으로 endPoint 보내는 거 보고 맞추기.
@@ -25,7 +38,7 @@ export const useCreateComment = (boardId) => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('BoardDetail');
+        queryClient.invalidateQueries(['BoardDetail', boardId]);
         //boardId와 관련된 데이터도 업데이트됨. 새로운 댓글이 추가 된 후 해당 게시물의 댓글 목록도 새로고침.
       },
     }
@@ -37,7 +50,7 @@ export const useUpdateComment = (boardId) => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (id, content) => {
+    async ({ id, content }) => {
       const { data } = await serverWithToken.patch(
         `/comment/${boardId}/${id}`,
         { content }

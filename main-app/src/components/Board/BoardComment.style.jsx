@@ -129,6 +129,6 @@ export const CommentEDU = styled.div`
     font-size: 15px;
   }
   .replyComment {
-    margin-left: 75%;
+    margin-left: 65%;
   }
 `;
