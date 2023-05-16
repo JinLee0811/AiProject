@@ -137,6 +137,7 @@ const Navbar = () => {
     </>
   );
 };
+
 const CloseButton = styled.button`
   position: absolute;
   top: 1rem;
@@ -154,7 +155,7 @@ const Nav1 = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
+  background-color: rgb(237, 235, 226);
   padding: 1rem;
 `;
 
@@ -188,7 +189,7 @@ const MenuLinks = styled.div`
     left: ${({ isOpen }) => (isOpen ? '0' : '-100%')};
     width: 90%;
     transition: all 0.3s ease-in-out;
-    background-color: white;
+    background-color: rgb(237, 235, 226);
     padding: 2rem 1rem;
     text-align: center;
   }
@@ -202,7 +203,7 @@ const NavLogo = styled.div`
   align-items: center;
   color: white;
   font-weight: 700;
-  background-color: white;
+  background-color: rgb(237, 235, 226);
   padding: 10px;
   margin-bottom: 0px;
   margin-top: 15px;

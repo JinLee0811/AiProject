@@ -52,9 +52,8 @@ const ImageUpload = () => {
         solution_id: result.id,
         resolved_at: result.resolved_at,
       };
-      console.log(solution);
       const data = await createSolution(solution);
-      console.log('진단 저장', data);
+      alert('저장이 완료되었습니다.');
     } catch (error) {
       console.error(error);
     }

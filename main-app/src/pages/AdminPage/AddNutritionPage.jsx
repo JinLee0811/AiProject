@@ -191,10 +191,9 @@ const Label = styled.label`
 `;
 
 const Reset = styled.button`
-  margin: 0 auto;
   display: inline-block;
   height: 40px;
-  width: 200px;
+  width: 400px;
   font-weight: bold;
   text-align: center;
   background-color: #759783;

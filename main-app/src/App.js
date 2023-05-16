@@ -21,7 +21,6 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Provider>
           <AllDiv className='App'>
-            {/* Nav 컴포넌트를 표시할지 여부에 따라 조건부 렌더링 */}
             {isNavVisible && <Nav />}
             <Outlet />
           </AllDiv>
@@ -34,6 +33,8 @@ function App() {
 
 const AllDiv = styled.div`
   padding: 0px;
+  background-color: rgb(237, 235, 226);
+  color: rgb(0, 51, 46);
 
   @media (min-width: 768px) {
     display: flex;

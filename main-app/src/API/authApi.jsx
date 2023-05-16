@@ -57,7 +57,6 @@ export const Auth = () => {
         const { access_token, refresh_token } = response.data;
         localStorage.setItem('access_token', access_token);
         localStorage.setItem('refresh_token', refresh_token);
-        queryClient.invalidateQueries(LOGIN_MUTATION_KEY);
         window.location.href = '/';
       },
       onError: (error) => {
