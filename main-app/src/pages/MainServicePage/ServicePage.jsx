@@ -22,17 +22,20 @@ const MainPage = () => {
 
   return (
     <>
-      <Section id='section1' ref={ref1} inView={inView1}>
-        <ContentsBox>
-          <Title>진단 사용 설명서</Title>
-          <Contents>스크롤을 내려 설명을 참고하여</Contents>
-          <Contents>정확한 진단을 받으세요!</Contents>
-          <Contents1>이미 사용법을 아신다면 Click!</Contents1>
-          <a href='/service/upload'>
-            <Button>바로 진단하러 가기</Button>
-          </a>
-        </ContentsBox>
-      </Section>
+      <Background>
+        <Section id='section1' ref={ref1} inView={inView1}>
+          <ContentsBox>
+            <Title>진단 사용 설명서</Title>
+            <Contents>스크롤을 내려 설명을 참고하여</Contents>
+            <Contents>정확한 진단을 받으세요!</Contents>
+            <Contents1>이미 사용법을 아신다면 Click!</Contents1>
+            <a href='/service/upload'>
+              <Button>바로 진단하러 가기</Button>
+            </a>
+          </ContentsBox>
+        </Section>
+      </Background>
+
       {/* <ContentsBox>
         <Link to='section2' smooth={true} duration={500}>
           <Arrow>⬇</Arrow>
@@ -91,6 +94,26 @@ const MainPage = () => {
     </>
   );
 };
+const Background = styled.div`
+  margin-top: 10px;
+  position: relative;
+  height: 100vh;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    filter: blur(9px);
+    opacity: 5px;
+    z-index: -3px;
+  }
+
+  background-image: url('https://i.pinimg.com/564x/de/59/b7/de59b728a96fbe42b7bad782e326010d.jpg');
+  background-size: cover;
+  background-position: cover;
+`;
 const Box = styled.div`
   display: flex;
   flex-direction: column;

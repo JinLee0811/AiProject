@@ -5,7 +5,7 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
   font-family: 'Spoqa Han Sans Neo';
@@ -13,7 +13,7 @@ export const Container = styled.div`
   .buttons {
     display: flex;
     margin-top: 25px;
-    margin-left: 60%;
+    margin-left: 320px;
     button {
       margin-right: 10px;
     }
@@ -38,7 +38,7 @@ export const Container = styled.div`
   }
 `;
 export const BannerImage = styled.img`
-  width: 800px;
+  width: 600px;
   height: 250px;
   margin-top: 10px;
   margin-left: 30px;
@@ -64,8 +64,8 @@ export const FormContainer = styled.div`
   }
   li {
     padding: 20px 25px;
-    margin-bottom: 15px;
-    width: 800px;
+    margin-bottom: 30px;
+    width: 500px;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
     border-radius: 8px;
     display: flex;
@@ -85,7 +85,7 @@ export const FormContainer = styled.div`
   }
   .nickname {
     font-size: 13px;
-    color: #759783
+    color: #759783;
     margin-bottom: 0;
   }
 `;
@@ -96,7 +96,8 @@ export const Infor = styled.div`
   }
 `;
 export const ListImage = styled.img`
-  width: 80px;
-  height: 80px;
-  margin: 20px;
+  display: flex;
+  width: 400px;
+  height: 350px;
+  margin: 0 auto;
 `;

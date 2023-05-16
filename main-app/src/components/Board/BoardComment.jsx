@@ -170,11 +170,14 @@ const BoardComment = () => {
     commentId
   );
   const [replycomments, setReplyComments] = useState([]);
+  // 해당 보드 아이디의 전체 대댓글이 담기게
+
   useEffect(() => {
     if (GetReplyComment) {
       setReplyComments(GetReplyComment);
     }
   }, [GetReplyComment]);
+  // replycomments 모든 대댓글이 달려있다.
 
   //대댓글 get
   const handleReplyComment = (id) => {
@@ -381,4 +384,4 @@ const BoardComment = () => {
   );
 };
 
-// export default BoardComment;
+export default BoardComment;

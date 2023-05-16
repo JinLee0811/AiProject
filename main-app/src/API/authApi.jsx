@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 import { useAtom } from 'jotai';
+import { useNavigate } from 'react-router-dom';
 import {
   isLoggedInAtom,
   isAdminAtom,
@@ -92,7 +93,6 @@ export const Auth = () => {
     setUser(null);
     window.location.href = '/login';
   };
-
   const login = (data) => loginMutation.mutate(data);
   const logout = () => {
     localStorage.removeItem('access_token');
@@ -101,6 +101,7 @@ export const Auth = () => {
     setIsAdmin(false);
     setUser(null);
     logoutMutation.mutate();
+    window.location.href = '/';
     queryClient.invalidateQueries(LOGIN_MUTATION_KEY);
   };
   const refresh = () => refreshMutation.mutate();

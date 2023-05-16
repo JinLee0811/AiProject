@@ -155,7 +155,7 @@ const Nav1 = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgb(237, 235, 226);
+  background-color: white;
   padding: 1rem;
 `;
 
@@ -189,7 +189,7 @@ const MenuLinks = styled.div`
     left: ${({ isOpen }) => (isOpen ? '0' : '-100%')};
     width: 90%;
     transition: all 0.3s ease-in-out;
-    background-color: rgb(237, 235, 226);
+    background-color: white;
     padding: 2rem 1rem;
     text-align: center;
   }
@@ -203,7 +203,7 @@ const NavLogo = styled.div`
   align-items: center;
   color: white;
   font-weight: 700;
-  background-color: rgb(237, 235, 226);
+  background-color: white;
   padding: 10px;
   margin-bottom: 0px;
   margin-top: 15px;

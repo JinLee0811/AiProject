@@ -33,8 +33,6 @@ function App() {
 
 const AllDiv = styled.div`
   padding: 0px;
-  background-color: rgb(237, 235, 226);
-  color: rgb(0, 51, 46);
 
   @media (min-width: 768px) {
     display: flex;

@@ -81,7 +81,7 @@ const BoardList = ({ onPageChange }) => {
     <>
       <S.Container>
         <S.BannerImage
-          src='https://img.freepik.com/free-photo/home-decor-indoor-planhttps://img.freepik.com/free-photo/picture-frame-leaning-against-white-wall_53876-133178.jpg?size=626&ext=jpg&ga=GA1.1.383630718.1678090108&semt=aist-shelf_53876-130000.jpg?w=1800&t=st=1683690318~exp=1683690918~hmac=28f5fe10fb2f0e42e923ea8ff4069705e5a82327e6f34b6521afc857a956bc93'
+          src='https://i.pinimg.com/564x/3b/f6/6d/3bf66d28aaf0ba444320c705dbc77808.jpg'
           alt='Example'
         />
         <div className='buttons'>
@@ -91,7 +91,7 @@ const BoardList = ({ onPageChange }) => {
         </div>
         <S.FormContainer>
           <ul>
-            {boards.map((board) => (
+            {[...boards].reverse().map((board) => (
               <li key={board.id}>
                 <p className='time'>{filterTime(board.created_at)}</p>{' '}
                 {/* 등록날짜 표시 */}
@@ -106,7 +106,7 @@ const BoardList = ({ onPageChange }) => {
                   <p className='nickname'>{board.user.nickname}</p>
                 </S.Infor>
                 <p className='comment'>
-                  조회 {board.views} • 댓글 • 관심 {board.likes}
+                  조회 {board.views} • 댓글 {} • 관심 {board.likes}
                 </p>
                 <button
                   className='Detail'

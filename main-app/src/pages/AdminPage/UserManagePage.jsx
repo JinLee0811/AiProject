@@ -40,7 +40,6 @@ function UserManage() {
       <thead>
         <tr>
           <TableHeader>가입일</TableHeader>
-          <TableHeader>탈퇴일</TableHeader>
           <TableHeader>이메일</TableHeader>
           <TableHeader>닉네임</TableHeader>
           <TableHeader>유형</TableHeader>
@@ -53,11 +52,6 @@ function UserManage() {
             <tr key={user.id}>
               <TableData style={{ width: '13%' }}>
                 {new Date(user.created_at).toISOString().substring(0, 10)}
-              </TableData>
-              <TableData style={{ width: '13%' }}>
-                {user.deleted_at === null
-                  ? '가입 중'
-                  : user.deleted_at.substring(0, 10)}
               </TableData>
               <TableData>{user.email}</TableData>
               <TableData>{user.nickname}</TableData>

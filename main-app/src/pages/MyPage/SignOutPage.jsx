@@ -7,7 +7,7 @@ const WithdrawForm = () => {
   const [password, setPassword] = useState('');
   const locate = useLocation();
   const { logout, error } = Auth();
-  const { mutate: deleteUser } = useDeleteUser();
+  const { mutateAsync: deleteUser } = useDeleteUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,15 +22,11 @@ const WithdrawForm = () => {
     }
 
     try {
-      const result = await deleteUser(password);
-      if (result.success) {
-        alert('이용해주셔서 감사합니다!');
-      } else {
-        alert(result.message || '회원 탈퇴에 실패했습니다.');
-      }
+      await deleteUser(password);
+      alert('이용해주셔서 감사합니다.');
+      logout();
     } catch (error) {
-      console.error(error);
-      alert('회원 탈퇴에 실패했습니다.');
+      alert('비밀번호를 확인해주세요.');
     }
   };
   return (
