@@ -7,8 +7,8 @@ import LogoPng from '../../../components/image/Logo.png';
 import { isLoggedInAtom, isAdminAtom } from '../../../Atoms/TokenAtom';
 
 const LoginForm = () => {
-  const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
-  const { login, error } = Auth();
+  const [, setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const { login, error, setError } = Auth(); // error 상태값과 setError 함수 추가
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,11 +24,10 @@ const LoginForm = () => {
     event.preventDefault();
     try {
       await login({ email, password });
-      console.log('로그인 성공!');
       setIsLoggedIn(true);
-      console.log(isLoggedIn);
     } catch (error) {
       console.error('로그인 실패:', error.message);
+      setError(error.message); // error 상태값에 에러 메시지 저장
     }
   };
 
@@ -60,6 +59,7 @@ const LoginForm = () => {
           value={password}
           onChange={handlePasswordChange}
         />
+        <ErrorDiv>{error && error}</ErrorDiv>
         <Button type='submit'>로그인</Button>
         <LastDiv>
           <CheckboxLabel>
@@ -73,6 +73,9 @@ const LoginForm = () => {
   );
 };
 
+const ErrorDiv = styled.div`
+  color: red;
+`;
 const LoginFormContainer = styled.div`
   height: 85vh;
   margin: 0 auto;

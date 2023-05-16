@@ -45,7 +45,9 @@ function CategoriesPage() {
     }
   };
   const handleEdit = async (categoryId, categoryIndex) => {
-    const categoryName = categories[categoryIndex].name;
+    const categoryName = categories.find(
+      (category) => category.id === categoryId
+    )?.name;
     const editedName = prompt(
       '수정할 카테고리 이름을 입력하세요',
       categoryName

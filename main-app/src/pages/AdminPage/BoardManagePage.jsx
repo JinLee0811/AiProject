@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { boardsAtom } from '../../Atoms/BoardAtom';
 import { useGetBoard, useAdminDeleteBoard } from '../../API/BoardAPi';
 
@@ -27,7 +27,7 @@ function BoardManage() {
   const handleDelete = async (id) => {
     if (window.confirm('회원의 게시글을 삭제하시겠습니까?')) {
       try {
-        const response = await deleteBoard(id);
+        await deleteBoard(id);
         setBoards((prevBoards) =>
           prevBoards.filter((board) => board.id !== id)
         );

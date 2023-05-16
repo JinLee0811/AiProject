@@ -1,87 +1,58 @@
-import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-
-export const USER_QUERY_KEY = 'userProfile';
-export const USER_MUTATION_KEY = 'userProfileMutation';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { serverWithToken } from '../config/AxiosRequest';
 
 export const useUser = () => {
+  return useQuery('user', async () => {
+    const response = await serverWithToken.get('/user/profile');
+    return response.data;
+  });
+};
+
+export const useUpdatePassword = () => {
   const queryClient = useQueryClient();
 
-  const getUserProfile = async () => {
-    const access_token = localStorage.getItem('access_token');
-
-    const { data } = await serverWithToken.get('/user/profile');
-
-    return data;
-  };
-
-  const updateUserProfile = async (updatedProfile) => {
-    const access_token = localStorage.getItem('access_token');
-
-    const { data } = await serverWithToken.patch(
-      '/user/profile',
-      updatedProfile
-    );
-
-    return data;
-  };
-
-  const deleteUserProfile = async () => {
-    const access_token = localStorage.getItem('access_token');
-
-    await serverWithToken.delete('/user/profile', {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
+  return useMutation(
+    async (data) => {
+      await serverWithToken.put('/user/password', data);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('user');
       },
-    });
-  };
+    }
+  );
+};
 
-  const { data: userProfile } = useQuery(USER_QUERY_KEY, getUserProfile);
+export const useUpdateNickname = () => {
+  const queryClient = useQueryClient();
 
-  const userMutation = useMutation(updateUserProfile, {
-    onSuccess: (updatedProfile) => {
-      queryClient.setQueryData(USER_QUERY_KEY, updatedProfile);
+  return useMutation(
+    async (data) => {
+      await serverWithToken.put('/user/nickname', data);
+      return data;
     },
-  });
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('user');
+      },
+    }
+  );
+};
 
-  const deleteUser = useMutation(deleteUserProfile, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(USER_QUERY_KEY);
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (password) => {
+      const { data } = await serverWithToken.delete('/user/profile', {
+        data: { password },
+      });
+      return data;
     },
-  });
-
-  const updateUserNickname = async (nickname) => {
-    const access_token = localStorage.getItem('access_token');
-
-    const { data } = await serverWithToken.patch(
-      '/user/profile/nickname',
-      { nickname },
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    queryClient.setQueryData(USER_QUERY_KEY, data);
-  };
-
-  const updateUserProfileImage = async (profileImage) => {
-    const access_token = localStorage.getItem('access_token');
-
-    const formData = new FormData();
-    formData.append('profileImage', profileImage);
-
-    const { data } = await serverWithToken.patch('/user/profile/image');
-
-    queryClient.setQueryData(USER_QUERY_KEY, data);
-  };
-
-  return {
-    userProfile,
-    updateUserProfile: userMutation.mutate,
-    deleteUserProfile: deleteUser.mutate,
-    updateUserNickname,
-    updateUserProfileImage,
-  };
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('user');
+      },
+    }
+  );
 };

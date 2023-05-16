@@ -2,25 +2,20 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
 import { userAtom } from '../../Atoms/TokenAtom';
-import { useMutation, useQueryClient } from 'react-query';
-import { serverWithToken } from '../../config/AxiosRequest';
+import { useUpdateNickname, useUser } from '../../API/UserApi';
 
 const Info = () => {
   const [user, setUser] = useAtom(userAtom);
-  const [nickName, setNickName] = useState(user?.nickname || '');
+  const [nickName, setNickName] = useState('');
   const [profileImage, setProfileImage] = useState('');
+  const { data: fetchUser } = useUser();
+  const { mutateAsync: updateNickname } = useUpdateNickname();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await serverWithToken.get('/user/profile');
-        setUser(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [setUser]);
+    if (fetchUser) {
+      setNickName(fetchUser.nickname);
+    }
+  }, [fetchUser]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -33,30 +28,13 @@ const Info = () => {
     setProfileImage(event.target.files[0]);
   };
 
-  const queryClient = useQueryClient();
-  const updateUserNickName = useMutation(async (data) => {
-    const { nickname } = data;
-    const response = await serverWithToken.put('/user/nickname', { nickname });
-    return response.data;
-  });
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (window.confirm('정말 닉네임을 변경하시겠습니까?')) {
       try {
-        await updateUserNickName.mutateAsync(
-          {
-            nickname: nickName,
-          },
-          {
-            onSuccess: (data) => {
-              setUser(data);
-              setNickName(data.nickname);
-              queryClient.invalidateQueries('user');
-              alert('닉네임이 변경 되었습니다');
-            },
-          }
-        );
+        await updateNickname({ nickname: nickName });
+        setNickName(nickName);
+        alert('닉네임이 변경되었습니다.');
       } catch (error) {
         console.error(error);
         alert(error.message);
@@ -77,7 +55,7 @@ const Info = () => {
       </ProfileImageWrapper>
       <FormGroup>
         <label htmlFor='email'>이메일</label>
-        <input type='email' name='email' value={user?.email} disabled />
+        <input type='email' name='email' value={fetchUser?.email} disabled />
       </FormGroup>
       <FormGroup>
         <label htmlFor='name'>닉네임</label>

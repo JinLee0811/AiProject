@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useGetUsers, useDeleteUser } from '../../API/AdminUserApi';
 import styled from 'styled-components';
+import Loading from '../../components/common/Loading';
 
 function UserManage() {
   const [users, setUsers] = useState([]);
@@ -14,29 +15,20 @@ function UserManage() {
   }, [fetchedUsers, setUsers]);
 
   const handleDelete = async (id) => {
-    if (window.confirm('회원을 탈퇴시키겠습니까?')) {
+    if (window.confirm('삭제하시겠습니까?')) {
       try {
-        const response = await deleteUser(id);
-        setUsers((prevUsers) =>
-          prevUsers.map((user) => {
-            if (user.id === id) {
-              return {
-                ...user,
-                deletedAt: new Date(),
-              };
-            }
-            return user;
-          })
-        );
-        alert(response.data.message);
+        await deleteUser(id); // 서버에서 데이터를 소프트 딜리트
+        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id)); // 클라이언트에서 실제 데이터를 제거
+        alert('삭제되었습니다.');
       } catch (err) {
         console.log(err.message);
+        alert('삭제에 실패했습니다.');
       }
     }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (error) {

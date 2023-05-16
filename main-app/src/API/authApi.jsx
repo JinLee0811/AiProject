@@ -7,6 +7,7 @@ import {
   isAdminAtom,
   accessTokenAtom,
   refreshTokenAtom,
+  isErrorAtom,
   userAtom,
 } from '../Atoms/TokenAtom';
 
@@ -14,7 +15,7 @@ const LOGIN_MUTATION_KEY = 'loginMutation';
 
 export const Auth = () => {
   const queryClient = useQueryClient();
-  const [error, setError] = useState(null);
+  const [error, setError] = useAtom(isErrorAtom);
   const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
   const [isAdmin, setIsAdmin] = useAtom(isAdminAtom);
   const [accessToken, setAccessToken] = useAtom(accessTokenAtom);
@@ -40,17 +41,7 @@ export const Auth = () => {
         .catch((error) => {
           console.error(error);
           setIsAdmin(false);
-
-          // 추가된 코드 시작
-          if (error.response && error.response.status === 401) {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-            setIsLoggedIn(false);
-            setIsAdmin(false);
-            setUser(null);
-            window.location.href = '/login';
-          }
-          // 추가된 코드 끝
+          handleUnauthorized();
         });
     } else {
       setIsLoggedIn(false);
@@ -70,7 +61,8 @@ export const Auth = () => {
         window.location.href = '/';
       },
       onError: (error) => {
-        setError(error.response.data.message);
+        const errorMessage = error.response?.data?.message || '로그인 실패';
+        setError(errorMessage);
       },
     }
   );
@@ -86,8 +78,21 @@ export const Auth = () => {
         const { access_token } = response.data;
         setAccessToken(access_token);
       },
+      onError: (error) => {
+        console.error(error);
+        handleUnauthorized();
+      },
     }
   );
+
+  const handleUnauthorized = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    setIsLoggedIn(false);
+    setIsAdmin(false);
+    setUser(null);
+    window.location.href = '/login';
+  };
 
   const login = (data) => loginMutation.mutate(data);
   const logout = () => {

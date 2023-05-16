@@ -43,8 +43,13 @@ const SolutionsForm = () => {
   const handleDetail = (id) => {
     navigate(`/mypage/solutionDetail/${id}`);
   };
-
-  console.log(solutionList);
+  if (!solutionList || solutionList.length === 0) {
+    return (
+      <>
+        <NoResult>진단 결과가 없습니다</NoResult>
+      </>
+    );
+  }
 
   return (
     <Table>
@@ -61,17 +66,17 @@ const SolutionsForm = () => {
         {solutionList &&
           solutionList.map((solution) => (
             <tr key={solution.id}>
-              <TableData style={{ width: '6%' }}>
+              <TableData style={{ width: '8%' }}>
                 {new Date(solution.created_at).toLocaleDateString()}
               </TableData>
-              <TableData style={{ width: '6%' }}>
+              <TableData style={{ width: '7%' }}>
                 <SmallImage src={solution.image} />
               </TableData>
               <TableData style={{ width: '6%' }}>
                 {solution.solution.crop_name}
               </TableData>
               <TableData>{solution.solution.disease_name}</TableData>
-              <TableData style={{ width: '13%' }}>
+              <TableData style={{ width: '8%' }}>
                 <StatusButton onClick={() => handleDetail(solution.id)}>
                   상세보기
                 </StatusButton>
@@ -85,9 +90,14 @@ const SolutionsForm = () => {
     </Table>
   );
 };
+const NoResult = styled.div`
+  display: flex;
+  font-weight: bold;
+`;
 
 const Table = styled.table`
-  width: 100%;
+  margin-left: 50px;
+  width: 900px;
   font-size: 1rem;
   border-collapse: collapse;
   @media (max-width: 998px) {

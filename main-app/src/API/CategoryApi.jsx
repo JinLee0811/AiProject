@@ -12,7 +12,7 @@ export const useGetCategories = (input, options) => {
     { ...options }
   );
 };
-
+//post hook
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
 

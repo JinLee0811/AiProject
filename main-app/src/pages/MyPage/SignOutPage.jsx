@@ -1,27 +1,38 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { serverWithToken } from '../../config/AxiosRequest';
 import { useLocation } from 'react-router-dom';
+import { useDeleteUser } from '../../API/UserApi';
+import { Auth } from '../../API/authApi';
 const WithdrawForm = () => {
   const [password, setPassword] = useState('');
   const locate = useLocation();
+  const { logout, error } = Auth();
+  const { mutate: deleteUser } = useDeleteUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (window.confirm('정말 회원 탈퇴하시겠습니까?')) {
-      try {
-        const response = await serverWithToken.delete('/user/profile', {
-          password,
-        });
-        alert('이용해 주셔서 감사합니다.');
-        locate('/');
-      } catch (error) {
-        console.error(error);
-        alert(error.message);
+
+    if (!window.confirm('정말 회원 탈퇴하시겠습니까?')) {
+      return;
+    }
+
+    if (!password) {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      const result = await deleteUser(password);
+      if (result.success) {
+        alert('이용해주셔서 감사합니다!');
+      } else {
+        alert(result.message || '회원 탈퇴에 실패했습니다.');
       }
+    } catch (error) {
+      console.error(error);
+      alert('회원 탈퇴에 실패했습니다.');
     }
   };
-
   return (
     <Wrapper>
       <Title>회원 탈퇴</Title>

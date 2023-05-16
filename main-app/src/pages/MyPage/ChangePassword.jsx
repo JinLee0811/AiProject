@@ -1,24 +1,22 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { serverWithToken } from '../../config/AxiosRequest';
+import { useUpdatePassword } from '../../API/UserApi';
 
 const PasswordChangeForm = () => {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [passwordConfirmError, setPasswordConfirmError] = useState('');
+
+  const { mutate: updatePassword } = useUpdatePassword();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== passwordConfirm) {
-      alert('입력하신 두 비밀번호가 일치하지 않습니다.');
-      return;
-    }
-
     if (window.confirm('정말 비밀번호를 변경하시겠습니까?')) {
       try {
-        const response = await serverWithToken.put('/user/password', {
-          password,
-          passwordConfirm,
+        await updatePassword({
+          password: password,
+          passwordConfirm: passwordConfirm,
         });
         alert('비밀번호가 성공적으로 변경되었습니다.');
       } catch (error) {
@@ -30,6 +28,11 @@ const PasswordChangeForm = () => {
 
   const handlePasswordConfirmChange = (e) => {
     setPasswordConfirm(e.target.value);
+    if (password !== e.target.value) {
+      setPasswordConfirmError('입력하신 두 비밀번호가 일치하지 않습니다.');
+    } else {
+      setPasswordConfirmError('');
+    }
   };
 
   return (
@@ -53,13 +56,18 @@ const PasswordChangeForm = () => {
             value={passwordConfirm}
             onChange={handlePasswordConfirmChange}
           />
+          <ErrorMessage>{passwordConfirmError}</ErrorMessage>
         </FormGroup>
         <Button type='submit'>변경하기</Button>
       </form>
     </Wrapper>
   );
 };
-
+const ErrorMessage = styled.div`
+  margin-top: 5px;
+  color: red;
+  font-size: 16px;
+`;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;

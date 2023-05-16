@@ -4,7 +4,6 @@ import { useAtom, useSetAtom } from 'jotai';
 import { useCreateNutrition, useUpdateNutrition } from '../../API/NutritionApi';
 import { useGetCategories } from '../../API/CategoryApi';
 import { selectedNutritionAtom } from '../../Atoms/NutritionAtom';
-import { useLocation } from 'react-router-dom';
 
 function TonicForm() {
   const [select, setSelect] = useAtom(selectedNutritionAtom);
@@ -25,7 +24,8 @@ function TonicForm() {
   const { data: fetchedCategories } = useGetCategories({
     onError: (error) => console.log(error.message),
   });
-
+  const { mutate: createNutrition } = useCreateNutrition();
+  const { mutate: updateNutrition } = useUpdateNutrition();
   const inputRef = useRef();
 
   useEffect(() => {
@@ -43,9 +43,6 @@ function TonicForm() {
       setCheckedList(select.categories.map((category) => category.id));
     }
   }, []);
-
-  const { mutate: createNutrition } = useCreateNutrition();
-  const { mutate: updateNutrition } = useUpdateNutrition();
 
   const handleReset = () => {
     setImage('');
@@ -82,7 +79,6 @@ function TonicForm() {
 
       if (select && select.id) {
         await updateNutrition({ id: select.id, formData });
-        console.log(select.id);
         alert('수정되었습니다.');
       } else {
         await createNutrition(formData);

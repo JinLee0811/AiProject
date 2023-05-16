@@ -10,7 +10,7 @@ import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 //   });
 // };
 
-//댓글, 대댓글 post
+//댓글 등록
 export const useCreateComment = (boardId) => {
   // postman으로 endPoint 보내는 거 보고 맞추기.
   const queryClient = useQueryClient();
@@ -32,7 +32,7 @@ export const useCreateComment = (boardId) => {
   );
 };
 
-// put
+// 댓글 수정
 export const useUpdateComment = (boardId) => {
   const queryClient = useQueryClient();
 
@@ -52,7 +52,7 @@ export const useUpdateComment = (boardId) => {
   );
 };
 
-// delete
+// delete 댓글 삭제
 export const useDeleteComment = (boardId) => {
   const queryClient = useQueryClient();
 
