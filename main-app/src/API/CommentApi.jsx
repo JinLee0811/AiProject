@@ -11,13 +11,11 @@ import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 // };
 
 //대댓글 get
-export const useGetReplyComment = (boardId, commentId) => {
+export const useGetReplyComment = (boardId) => {
   return useQuery(
     ['BoardDetail'], //query-key
     async () => {
-      const { data } = await serverWithoutToken.get(
-        `comment/${boardId}/${commentId}`
-      );
+      const { data } = await serverWithoutToken.get(`comment/${boardId}`);
       return data;
     }
   );
@@ -50,10 +48,10 @@ export const useUpdateComment = (boardId) => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async ({ id, content }) => {
+    async ({ id, content, parent_comment_id }) => {
       const { data } = await serverWithToken.patch(
         `/comment/${boardId}/${id}`,
-        { content }
+        { content, parent_comment_id }
       );
       return data;
     },
