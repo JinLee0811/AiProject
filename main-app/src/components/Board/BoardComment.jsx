@@ -367,4 +367,4 @@ const BoardComment = () => {
   );
 };
 
-// export default BoardComment;
+export default BoardComment;
