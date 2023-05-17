@@ -72,7 +72,6 @@ const Container = styled.div`
 const MainContainer = styled.div`
   display: flex;
   width: 100%;
-  margin-left: 20px;
   justify-content: center;
   align-items: center;
   padding: 30px;

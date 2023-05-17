@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Route,
+  Redirect,
+} from 'react-router-dom';
+
 import App from './App';
 import './index.css';
 import {
@@ -28,6 +34,7 @@ import {
   NutritionDetailPage,
   ChangePassword,
 } from './pages';
+import { Auth } from './API/authApi';
 
 const router = createBrowserRouter([
   {

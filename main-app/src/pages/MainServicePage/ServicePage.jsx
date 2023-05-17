@@ -96,24 +96,9 @@ const MainPage = () => {
   );
 };
 const Background = styled.div`
-  margin-top: 10px;
+  margin-top: 0px;
   position: relative;
   height: 100vh;
-
-  &::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: inherit;
-    filter: blur(9px);
-    opacity: 5px;
-    z-index: -3px;
-  }
-
-  background-image: url('https://i.pinimg.com/564x/de/59/b7/de59b728a96fbe42b7bad782e326010d.jpg');
-  background-size: cover;
-  background-position: cover;
 `;
 const Box = styled.div`
   display: flex;

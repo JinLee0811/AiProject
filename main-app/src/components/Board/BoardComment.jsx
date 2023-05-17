@@ -50,8 +50,6 @@ const BoardComment = () => {
       setCommentNumber(number);
     }
   }, [detailBoard.comments]);
-
-  console.log(commentNumber);
   // 댓글 post
   const { mutateAsync: createComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는 이미지가 확실할때
   const handleCreateSubmit = async (e) => {
@@ -88,7 +86,6 @@ const BoardComment = () => {
         return comment; //수정 필요없는애들은 그대로
       });
       setComments(updatedComments);
-      // console.log(response);
       alert('수정완료');
       setEditingCommentText('');
       setEditingCommentId(null);
@@ -133,7 +130,7 @@ const BoardComment = () => {
       });
 
       setReplyComments((prevComments) => [...prevComments, response]);
-      console.log(response);
+
       setReplyInput('');
       setReplyCommentId(null);
     } catch (err) {
@@ -153,7 +150,7 @@ const BoardComment = () => {
       // console.log(response);
       const updatedComments = comments.map((comment) => {
         //내가 추가한 커스텀부분
-        console.log(comment.id);
+
         if (comment.id === reply.id) {
           //댓글 아이디랑 고유한 대댓글의 id랑 일치하면
           //수정하려는 댓글 id랑 일치하는지 확인
@@ -164,7 +161,6 @@ const BoardComment = () => {
         }
         return comment; //수정 필요없는애들은 그대로
       });
-      console.log(updatedComments);
 
       setReplyComments(updatedComments);
 
@@ -179,23 +175,6 @@ const BoardComment = () => {
   return (
     <>
       <S.CommentContainer>
-        <S.FirstForm onSubmit={handleCreateSubmit}>
-          <S.Nickname>
-            <span class='material-symbols-outlined'>psychiatry</span>
-            {user && user.nickname}
-          </S.Nickname>
-          <input
-            type='text'
-            placeholder='댓글을 입력하세요'
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <S.CommentManage>
-            <button className='write' type='submit' disabled={!input}>
-              작성
-            </button>
-          </S.CommentManage>
-        </S.FirstForm>
         <S.SecondForm>
           {comments &&
             comments.map((selectedComment) => (
@@ -224,10 +203,7 @@ const BoardComment = () => {
                   </form>
                 ) : (
                   <>
-                    <S.Nickname>
-                      <span class='material-symbols-outlined'>psychiatry</span>
-                      {selectedComment.user.nickname}
-                    </S.Nickname>
+                    <S.Nickname>{selectedComment.user.nickname}</S.Nickname>
                     <S.CommentContent>
                       {selectedComment.content}
                     </S.CommentContent>
@@ -262,7 +238,7 @@ const BoardComment = () => {
                             setReplyCommentId(selectedComment.id); // 답글달기 열기
                           }
                         }}>
-                        답글
+                        답글보기
                       </label>
                     </S.CommentEDU>
                   </>
@@ -377,6 +353,23 @@ const BoardComment = () => {
               </S.CommentContainer>
             ))}
         </S.SecondForm>
+        <S.FirstForm onSubmit={handleCreateSubmit}>
+          <S.Nickname1>
+            <span class='material-symbols-outlined'>psychiatry</span>
+            {user && user.nickname}
+          </S.Nickname1>
+          <input
+            type='text'
+            placeholder='댓글을 입력하세요'
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+          <S.CommentManage>
+            <button className='write' type='submit' disabled={!input}>
+              작성
+            </button>
+          </S.CommentManage>
+        </S.FirstForm>
       </S.CommentContainer>
     </>
   );

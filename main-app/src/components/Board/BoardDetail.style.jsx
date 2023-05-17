@@ -11,25 +11,21 @@ export const Container = styled.div`
 export const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 800px;
   background-color: white;
-  padding: 1.5rem;
   border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  height: 100hv;
-  overflow: auto;
+  height: 100%;
+  padding: 30px;
   margin: 32px;
-  padding-left: 50px;
-  font-family: 'Spoqa Han Sans Neo';
   color: #555555;
   font-weight: bold;
   .buttons {
-    margin-left: 680px;
+    margin-left: 600px;
     button {
-      margin-right: 10px;
-      padding: 10px 20px;
+      margin-right: 3px;
+      padding: 5px 10px;
       background-color: #759783;
       color: white;
-      font-family: 'Spoqa Han Sans Neo';
       font-weight: bold;
       border: none;
       border-radius: 5px;
@@ -41,51 +37,43 @@ export const FormContainer = styled.div`
     }
   }
   h1.title {
-    font-size: 20px;
-    width: 800px;
-    padding: 12px 25px;
+    font-size: 30px;
+    width: 100%;
+    margin-left: 150px;
+    margin-bottom: 50px;
   }
   .information {
     display: flex;
-    padding: 0 25px 0px 25px;
-
+    margin-left: 130px;
     font-size: 16px;
     color: #759783;
     font-weight: bold;
   }
   p.nickname {
     font-size: 16px;
+    margin-bottom: 20px;
   }
   p.time {
-    margin-left: 250px;
-  }
-  h2 {
-    padding: 12px 25px;
-    margin-bottom: 14px;
-    width: 800px;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
+    margin-left: 360px;
   }
   h2.content {
-    font-size: 16px;
-    overflow: auto;
+    font-size: 17px;
     width: 600px;
-    height: 100px;
-  }
-  h2.image {
-    height: 200px;
+    height: 90px;
+    margin-top: 40px;
+    margin-left: 150px;
   }
   p.comment {
-    padding: 0px 10px;
-    color: #759783;
+    color: grey;
     font-weight: bold;
+    margin-left: 120px;
+    margin-bottom: 50px;
   }
 `;
 export const DetailImage = styled.img`
-  height: 400px;
-  width: 400px;
+  height: 500px;
+  width: 500px;
+  margin: 0 auto;
   border-radius: 8px;
   label {
     margin-left: 13px;

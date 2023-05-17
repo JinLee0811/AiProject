@@ -116,7 +116,7 @@ const Background2 = styled.div`
     z-index: -5px;
   }
 
-  background-image: url('https://i.pinimg.com/564x/e2/1b/02/e21b026cb9d1464073031b09e7f8f93f.jpg');
+  background-image: url('https://img.freepik.com/premium-vector/abstract-smooth-pastel-gradient-color-effect-background-for-website-and-poster-graphic-design_120819-733.jpg');
   background-size: cover;
   background-position: 0 0;
 `;

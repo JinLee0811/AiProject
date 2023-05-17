@@ -33,6 +33,7 @@ const Footer = () => {
 };
 
 const Box = styled.div`
+  margin-top: 220px;
   background-color: #f2f2f2;
   padding: 20px;
   width: 100%;

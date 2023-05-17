@@ -10,17 +10,19 @@ import { userAtom } from '../../Atoms/TokenAtom';
 import BoardComment from './BoardComment';
 import { useGetDetailBoard } from '../../API/BoardAPi';
 import { useParams } from 'react-router-dom';
+import { useUser } from '../../API/UserApi';
 
 const BoardDetail = () => {
   const navigate = useNavigate();
   const { boardId } = useParams();
-  const [user] = useAtom(userAtom);
   const setSelectedBoard = useSetAtom(selectedBoardAtom);
   const [likeChange, setLikeChange] = useState(true);
   const [likes, setLikes] = useState('');
   const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
     onError: (error) => console.log(error.message),
   });
+  const { data: user } = useUser();
+
   // const [likeChange, setLikeChange] = useState(false);
   console.log(detailBoard);
   useEffect(() => {
@@ -124,17 +126,7 @@ const BoardDetail = () => {
         <S.DetailImage src={detailBoard.image} />
         <h2 className='content'>{detailBoard.content}</h2>
         <p className='comment'>
-          조회 {detailBoard.views} • 댓글 • 관심
-          {likes}
-          <label onClick={handleLike}>
-            {likeChange ? (
-              <span class='material-symbols-outlined'>favorite</span>
-            ) : (
-              <span class='material-symbols-outlined' style={{ color: 'red' }}>
-                favorite
-              </span>
-            )}
-          </label>
+          조회 {detailBoard.views} • 댓글 {detailBoard.comments.length}
         </p>
         <BoardComment />
       </S.FormContainer>

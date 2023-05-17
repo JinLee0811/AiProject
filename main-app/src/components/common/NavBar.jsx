@@ -12,7 +12,6 @@ const sentences = [
   '👨‍🌾어떤 작물을 기르고 계신가요?👨‍🌾',
   '👨‍🌾작물의 성장은 이루어지고 있나요? 성장과정을 공유하세요👨‍🌾',
   // '작물에 필요한 영양분을 충분히 공급하고 계신가요? 작물의 건강을 위해 중요합니다👨‍🌾',
-  '👨‍🌾작물을 키우는데 궁금한 점이 있다면 언제든지 질문해주세요👨‍🌾',
   // '당신의 작물에게 부여할 별명을 지어보는 것은 어떨까요?👨‍🌾',
 ];
 const Navbar = () => {
@@ -155,7 +154,7 @@ const Nav1 = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: white;
+  background-color: transparent;
   padding: 1rem;
 `;
 
@@ -189,7 +188,7 @@ const MenuLinks = styled.div`
     left: ${({ isOpen }) => (isOpen ? '0' : '-100%')};
     width: 90%;
     transition: all 0.3s ease-in-out;
-    background-color: white;
+    background-color: transparent;
     padding: 2rem 1rem;
     text-align: center;
   }
@@ -203,7 +202,7 @@ const NavLogo = styled.div`
   align-items: center;
   color: white;
   font-weight: 700;
-  background-color: white;
+  background-color: transparent;
   padding: 10px;
   margin-bottom: 0px;
   margin-top: 15px;
@@ -230,7 +229,7 @@ const fadeInOut = keyframes`
   }
   100% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(0px);
   }
   
 `;
@@ -251,7 +250,7 @@ const NavWrite = styled.div`
 `;
 const NavWriteTag = styled.p`
   color: white;
-  /* animation: ${fadeInOut} 4s ease-in-out infinite; */
+  animation: ${fadeInOut} 3s ease-in-out infinite;
 `;
 
 const Logo = styled.h1`
@@ -276,7 +275,7 @@ const RightMenu = styled.ul`
   list-style: none;
   display: flex;
   align-items: center;
-  margin-left: 50px;
+  margin-left: 530px;
   padding: 0;
   @media (max-width: 998px) {
     margin-left: 0px;
