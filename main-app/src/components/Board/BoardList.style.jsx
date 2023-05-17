@@ -69,7 +69,7 @@ export const FormContainer = styled.div`
   }
   .time {
     font-size: 13px;
-    margin-left: 90%;
+    margin-left: 88%;
     margin-bottom: 0px;
     margin-top: 0px;
   }
@@ -112,8 +112,4 @@ export const ListImage = styled.img`
   width: 500px;
   height: 450px;
   margin: 15px auto;
-`;
-export const NoBoards = styled.div`
-  width: 500px;
-  height: 450px;
 `;
