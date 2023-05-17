@@ -2,19 +2,10 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { serverWithToken } from '../config/AxiosRequest';
 
 export const useUser = () => {
-  const queryClient = useQueryClient();
-  return useQuery(
-    'user',
-    async () => {
-      const response = await serverWithToken.get('/user/profile');
-      return response.data;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('user');
-      },
-    }
-  );
+  return useQuery(['user'], async () => {
+    const { data } = await serverWithToken.get('/user/profile');
+    return data;
+  });
 };
 
 export const useUpdatePassword = () => {

@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAtom } from 'jotai';
-import { userAtom } from '../../Atoms/TokenAtom';
 import { useUpdateNickname, useUser } from '../../API/UserApi';
 
 const Info = () => {
-  const [user, setUser] = useAtom(userAtom);
   const [nickName, setNickName] = useState('');
   const [profileImage, setProfileImage] = useState('');
   const { data: fetchUser } = useUser();

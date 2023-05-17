@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import * as S from './BoardDetail.style';
-import { useAtom, useSetAtom } from 'jotai';
+import styled from 'styled-components';
+import { useSetAtom } from 'jotai';
 import { useDeleteBoard } from '../../API/BoardAPi';
-import { useCreateLike, useDeleteLike } from '../../API/BoardAPi';
-import { detailBoardAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
+import { useCreateLike, useGetLike } from '../../API/BoardAPi';
+import { selectedBoardAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 import { useNavigate } from 'react-router-dom';
 import { BOARD_FORM_PATH, BOARD_PATH } from '../common/path';
-import { userAtom } from '../../Atoms/TokenAtom';
 import BoardComment from './BoardComment';
 import { useGetDetailBoard } from '../../API/BoardAPi';
 import { useParams } from 'react-router-dom';
@@ -18,20 +18,29 @@ const BoardDetail = () => {
   const { isLoggedIn } = Auth();
   const { boardId } = useParams();
   const setSelectedBoard = useSetAtom(selectedBoardAtom);
-  const [likeChange, setLikeChange] = useState(true);
-  const [likes, setLikes] = useState('');
+  const [liked, setLiked] = useState(true);
+  const [likeCount, setLikeCount] = useState('');
   const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
     onError: (error) => console.log(error.message),
   });
   const { data: user } = useUser();
+  const { data: likeCheck } = useGetLike();
 
-  // const [likeChange, setLikeChange] = useState(false);
-  console.log(detailBoard);
+  useEffect(() => {
+    if (likeCheck) {
+      const userLikedPosts = likeCheck.boardId;
+      const isLiked = userLikedPosts.some((postId) => postId == boardId);
+      setLiked(isLiked);
+    } else {
+      setLiked(false);
+    }
+  }, [boardId, likeCheck]);
+
   useEffect(() => {
     if (detailBoard) {
-      setLikes(detailBoard.likes);
+      setLikeCount(detailBoard.likes);
     }
-  }, []);
+  }, [detailBoard]);
 
   const handleBoardUpdate = (detailBoard) => {
     if (user.id !== detailBoard.user.id) {
@@ -43,12 +52,6 @@ const BoardDetail = () => {
     setSelectedBoard(detailBoard);
     navigate(BOARD_FORM_PATH);
   };
-
-  useEffect(() => {
-    if (detailBoard) {
-      setLikes(detailBoard.likes);
-    }
-  }, [detailBoard]);
 
   //   //게시글 삭제
   const { mutateAsync: deleteBoard } = useDeleteBoard();
@@ -76,13 +79,22 @@ const BoardDetail = () => {
   };
 
   const { mutateAsync: createLike } = useCreateLike(boardId);
-  const handleLike = async (e) => {
-    setLikeChange(!likeChange);
+  const handleLike = async () => {
+    if (!isLoggedIn) {
+      window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+      return;
+    }
     try {
-      const res = await createLike();
-      console.log(res);
+      const response = await createLike();
+      if (response.likes === 1) {
+        setLiked(true);
+        setLikeCount((prevCount) => prevCount + 1);
+      } else if (response.likes === -1 || response.likes === 0) {
+        setLiked(false);
+        setLikeCount((prevCount) => prevCount - 1);
+      }
     } catch (error) {
-      console.error('좋아요 요청 실패:', error);
+      console.error(error);
     }
   };
 
@@ -145,12 +157,21 @@ const BoardDetail = () => {
         <S.DetailImage src={detailBoard.image} />
         <h2 className='content'>{detailBoard.content}</h2>
         <p className='comment'>
-          조회 {detailBoard.views} • 댓글 {detailBoard.comments.length}
+          <LikeHeart onClick={handleLike}>{liked ? '❤️' : '🤍'}</LikeHeart>
+          조회 {detailBoard.views} • 댓글 {detailBoard.comments.length} • 좋아요{' '}
+          {likeCount}
         </p>
         <BoardComment />
       </S.FormContainer>
     </S.Container>
   );
 };
+
+const LikeHeart = styled.button`
+  border: none;
+  font-size: 20px;
+  background-color: transparent;
+  margin-right: 10px;
+`;
 
 export default BoardDetail;

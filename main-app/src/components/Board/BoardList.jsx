@@ -1,7 +1,7 @@
-import { React, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
+import styled from 'styled-components';
 import * as S from './BoardList.style';
-import { useGetBoard } from '../../API/BoardAPi';
 import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
 import {
   BOARD_PATH,
@@ -10,14 +10,27 @@ import {
   BOARD_FORM_PATH,
   LOGIN_PATH,
 } from '../common/path';
+import { useCreateLike, useGetLike } from '../../API/BoardAPi';
 import { useNavigate } from 'react-router-dom';
 import { serverWithoutToken } from '../../config/AxiosRequest';
 import { Auth } from '../../API/authApi';
 const BoardList = ({ onPageChange }) => {
   const navigate = useNavigate();
-  const [boards, setBoards] = useAtom(boardsAtom); //axois.get을 통해 불러올 게시글 목록 표시
+  const [boards, setBoards] = useAtom(boardsAtom);
   const { isLoggedIn } = Auth();
-  const setSelectedBoard = useSetAtom(selectedBoardAtom); //클릭한 게시글의 정보를 저장하는 상태
+  const setSelectedBoard = useSetAtom(selectedBoardAtom);
+  const [liked, setLiked] = useState(true);
+  const [likeCount, setLikeCount] = useState('');
+  const [likedBoard, setLikedBoard] = useState('');
+
+  const { data: likeCheck } = useGetLike();
+
+  useEffect(() => {
+    if (likeCheck) {
+      setLikedBoard(likeCheck.boardId);
+    }
+  }, []);
+
   useEffect(() => {
     serverWithoutToken
       .get('/board')
@@ -45,10 +58,7 @@ const BoardList = ({ onPageChange }) => {
     onPageChange(BOARD_MY_PATH);
   };
   const formClick = () => {
-    if (!isLoggedIn) {
-      window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
-      return;
-    }
+    // setSelectedBoard('');
     onPageChange(BOARD_FORM_PATH);
   };
   const shortenContent = (content) => {
@@ -80,6 +90,22 @@ const BoardList = ({ onPageChange }) => {
     }
   };
 
+  // const { mutateAsync: createLike } = useCreateLike();
+  // const handleLike = async (id) => {
+  //   try {
+  //     const response = await createLike();
+  //     if (response.likes === 1) {
+  //       setLiked(true);
+  //       setLikeCount((prevCount) => prevCount + 1);
+  //     } else if (response.likes === -1 || response.likes === 0) {
+  //       setLiked(false);
+  //       setLikeCount((prevCount) => prevCount - 1);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   return (
     <>
       <S.Container>
@@ -97,34 +123,49 @@ const BoardList = ({ onPageChange }) => {
             {boards &&
               boards
                 .filter((board) => board.status === 'PUBLIC')
-                .map((board) => (
-                  <li key={board.id}>
-                    <p className='time'>{filterTime(board.created_at)}</p>
-                    {/* 등록날짜 표시 */}
-                    <h2>{board.title}</h2>
-                    <p>{board.content}</p>
-                    <S.ListImage src={board.image} alt={board.title} />
-                    <S.Infor>
-                      <span className='material-symbols-outlined'>
-                        emoji_nature
-                      </span>
-                      <p className='nickname'>{board.user.nickname}</p>
-                    </S.Infor>
-                    <p className='comment'>
-                      조회 {board.views} • 댓글 {board.commentCount} • 관심{' '}
-                      {board.likes}
-                    </p>
-                    <button
-                      className='Detail'
-                      onClick={() => detailClick(board.id)}>
-                      구경하기
-                    </button>
-                  </li>
-                ))}
+                .map((board) => {
+                  const isLiked = false;
+                  //  = likedBoard.some(
+                  //   (postId) => postId == board.id
+                  // );
+                  return (
+                    <li key={board.id}>
+                      <p className='time'>{filterTime(board.created_at)}</p>
+                      <h2>{board.title}</h2>
+                      <p>{board.content}</p>
+                      <S.ListImage src={board.image} alt={board.title} />
+                      <S.Infor>
+                        <span className='material-symbols-outlined'>
+                          emoji_nature
+                        </span>
+                        <p className='nickname'>{board.user.nickname}</p>
+                      </S.Infor>
+                      <p className='comment'>
+                        <LikeHeart onClick={() => detailClick(board.id)}>
+                          {isLiked && isLoggedIn ? '❤️' : '🤍'}
+                        </LikeHeart>
+                        조회 {board.views} • 댓글 {board.commentCount} • 관심{' '}
+                        {board.likes}
+                      </p>
+                      <button
+                        className='Detail'
+                        onClick={() => detailClick(board.id)}>
+                        구경하기
+                      </button>
+                    </li>
+                  );
+                })}
           </ul>
         </S.FormContainer>
       </S.Container>
     </>
   );
 };
+const LikeHeart = styled.button`
+  border: none;
+  font-size: 20px;
+  background-color: transparent;
+  margin-right: 10px;
+  background-color: white;
+`;
 export default BoardList;

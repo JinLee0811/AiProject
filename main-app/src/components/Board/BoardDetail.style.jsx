@@ -54,20 +54,19 @@ export const FormContainer = styled.div`
     margin-bottom: 20px;
   }
   p.time {
-    margin-left: 360px;
+    margin-left: 370px;
   }
   h2.content {
     font-size: 17px;
     width: 600px;
     height: 90px;
     margin-top: 40px;
-    margin-left: 150px;
+    margin-left: 110px;
   }
   p.comment {
     color: grey;
     font-weight: bold;
-    margin-left: 120px;
-    margin-bottom: 50px;
+    margin-left: 90px;
   }
 `;
 export const DetailImage = styled.img`

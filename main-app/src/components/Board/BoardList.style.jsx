@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  background-image: url('https://img.freepik.com/premium-photo/abstract-color-pastel-background-a-soft-sky-with-cloud-background-in-pastel-color_6529-317.jpg');
+  background-image: url('https://mblogthumb-phinf.pstatic.net/MjAyMTAyMDRfMjYw/MDAxNjEyNDE1ODEwMDQz.vRDKSQBhhbbsycaGlU8nrmx5IB0CSECcU66tKOpWt0og.LjXUDfUjvlHkeCuUIv7zKO6q1FIq-jcchkuARMw0yMkg.JPEG.skysjin08/SE-826ac1a0-d9e1-41e0-b52f-089ea04d8d64.jpg?type=w800');
   background-size: cover;
   background-position: 0 0;
-
   li {
     background-color: white;
   }
@@ -20,12 +19,24 @@ export const Container = styled.div`
   .buttons {
     display: flex;
     margin-top: 25px;
-    margin-left: 320px;
+    margin-left: 340px;
     button {
-      margin-right: 10px;
+      margin-right: 6px;
+      padding: 10px;
+      background-color: #759783;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      font-family: 'Spoqa Han Sans Neo';
+      font-weight: bold;
+      :hover {
+        background-color: green;
+      }
     }
   }
-  button {
+  .Detail {
     padding: 10px 20px;
     background-color: #759783;
     color: white;
@@ -86,7 +97,8 @@ export const FormContainer = styled.div`
     font-size: 13px;
     color: #759783;
     font-weight: bold;
-    margin-left: 20px;
+    margin-left: 0px;
+    background-color: transparent;
   }
   .Detail {
     width: 100px;
@@ -96,7 +108,7 @@ export const FormContainer = styled.div`
     font-size: 10px;
   }
   .nickname {
-    font-size: 13px;
+    font-size: 15px;
     color: #759783;
     margin-bottom: 0;
   }

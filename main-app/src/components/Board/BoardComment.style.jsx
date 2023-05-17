@@ -94,23 +94,6 @@ export const CommentEdit = styled.div`
   }
 `;
 
-export const HeartIcon = styled.span`
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-`;
-
-export const RedHeartIcon = () => <HeartIcon isLiked={true} />;
-export const EmptyHeartIcon = () => <HeartIcon isLiked={false} />;
-export const CommentList = styled.div`
-  // width: 800px;
-  // height: 100px;
-  // padding: 12px;
-  // color: rgb(43, 43, 43);
-  // box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
-  // border: grey;
-  // border-radius: 6px;
-`;
 export const CommentItem = styled.div``;
 export const CommentContent = styled.div`
   color: #575555;

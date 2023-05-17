@@ -116,3 +116,10 @@ export const useCreateLike = (boardId) => {
     }
   );
 };
+
+export const useGetLike = () => {
+  return useQuery(['like'], async () => {
+    const { data } = await serverWithToken.get('/board/likes');
+    return data;
+  });
+};
