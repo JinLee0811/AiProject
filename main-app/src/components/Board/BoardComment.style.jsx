@@ -15,6 +15,14 @@ export const CommentContainer = styled.div`
       background-color: #759783;
     }
   }
+  label {
+    font-family: 'Spoqa Han Sans Neo';
+    border: none;
+    cursor: pointer;
+    :hover {
+      color: green;
+    }
+  }
   form {
     display: flex;
     flex-direction: column;
@@ -153,6 +161,10 @@ export const ReplyForm = styled.div`
   input[type='text'] {
     width: 650px;
   }
+  input[value='${(props) => props.replyinput}'] {
+    box-shadow: 0 0 10px rgba(0, 128, 0, 0.4);
+    border: grey;
+  }
 `;
 export const ReplyCommentContent = styled.div`
   color: #759783;
@@ -161,6 +173,6 @@ export const ReplyCommentContent = styled.div`
   padding: 12px 25px;
   width: 650px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
-  border: solid green;
+  border: grey;
   border-radius: 8px;
 `;
