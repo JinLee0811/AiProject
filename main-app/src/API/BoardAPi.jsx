@@ -30,7 +30,7 @@ export const useGetDetailBoard = (boardId) => {
     return data;
   });
 };
-// post
+// 게시글 post
 export const useCreateBoard = () => {
   const queryClient = useQueryClient();
 
@@ -47,13 +47,13 @@ export const useCreateBoard = () => {
   );
 };
 
-// put
+// 게시글 patch
 export const useUpdateBoard = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
     async ({ id, updatedPost }) => {
-      const { data } = await serverWithToken.put(`/board/${id}`, updatedPost);
+      const { data } = await serverWithToken.patch(`/board/${id}`, updatedPost);
       return data;
     },
     {
@@ -64,7 +64,7 @@ export const useUpdateBoard = () => {
   );
 };
 
-// delete
+// 게시글 delete
 export const useDeleteBoard = () => {
   const queryClient = useQueryClient();
 
@@ -98,11 +98,15 @@ export const useAdminDeleteBoard = () => {
   );
 };
 
+//좋아요
 export const useCreateLike = (boardId) => {
   const queryClient = useQueryClient();
   return useMutation(
     async (newPost) => {
-      const { data } = await serverWithToken.post(`/likes/${boardId}`, newPost);
+      const { data } = await serverWithToken.post(
+        `/board/likes/${boardId}`,
+        newPost
+      );
       return data;
     },
     {

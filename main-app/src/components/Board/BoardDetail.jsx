@@ -21,6 +21,13 @@ const BoardDetail = () => {
   const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
     onError: (error) => console.log(error.message),
   });
+  // const [likeChange, setLikeChange] = useState(false);
+  console.log(detailBoard);
+  useEffect(() => {
+    if (detailBoard) {
+      setLikes(detailBoard.likes);
+    }
+  }, []);
 
   const handleBoardUpdate = (detailBoard) => {
     if (user.id !== detailBoard.user.id) {
@@ -63,7 +70,6 @@ const BoardDetail = () => {
     alert('삭제되었습니다!');
     navigate(BOARD_PATH);
   };
-  //   //@@@@@@@@@@@@@@좋아요@@@@@@@@@@@@@@@
 
   const { mutateAsync: createLike } = useCreateLike(boardId);
   const handleLike = async (e) => {
@@ -115,8 +121,8 @@ const BoardDetail = () => {
           <p className='nickname'>{detailBoard.user.nickname}</p>
           <p className='time'>{filterTime(detailBoard.created_at)}</p>
         </div>
-        <h2 className='content'>{detailBoard.content}</h2>
         <S.DetailImage src={detailBoard.image} />
+        <h2 className='content'>{detailBoard.content}</h2>
         <p className='comment'>
           조회 {detailBoard.views} • 댓글 • 관심
           {likes}

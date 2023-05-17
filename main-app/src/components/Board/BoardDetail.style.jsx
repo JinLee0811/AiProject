@@ -12,17 +12,18 @@ export const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   height: 100hv;
   overflow: auto;
   margin: 32px;
+  padding-left: 50px;
   font-family: 'Spoqa Han Sans Neo';
   color: #555555;
   font-weight: bold;
   .buttons {
-    margin-left: 80%;
+    margin-left: 680px;
     button {
       margin-right: 10px;
       padding: 10px 20px;
@@ -47,7 +48,7 @@ export const FormContainer = styled.div`
   .information {
     display: flex;
     padding: 0 25px 0px 25px;
-    border-bottom: 1px solid rgb(210, 210, 210);
+
     font-size: 16px;
     color: #759783;
     font-weight: bold;
@@ -56,7 +57,7 @@ export const FormContainer = styled.div`
     font-size: 16px;
   }
   p.time {
-    margin-left: 700px;
+    margin-left: 250px;
   }
   h2 {
     padding: 12px 25px;
@@ -70,22 +71,24 @@ export const FormContainer = styled.div`
   h2.content {
     font-size: 16px;
     overflow: auto;
-    width: 800px;
-    height: 200px;
+    width: 600px;
+    height: 100px;
   }
   h2.image {
     height: 200px;
   }
   p.comment {
-    border-bottom: 1px solid rgb(210, 210, 210);
-    border-top: 1px solid rgb(210, 210, 210);
-    padding: 10px 25px;
+    padding: 0px 10px;
     color: #759783;
     font-weight: bold;
   }
 `;
 export const DetailImage = styled.img`
-  height: 180px;
-  width: 180px;
-  margin: 20px;
+  height: 400px;
+  width: 400px;
+  border-radius: 8px;
+  label {
+    margin-left: 13px;
+  }
 `;
+export const Like = styled.button``;
