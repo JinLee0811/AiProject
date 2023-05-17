@@ -10,8 +10,10 @@ import {
 import { useGetDetailBoard } from '../../API/BoardAPi';
 import { useParams } from 'react-router-dom';
 import { userAtom } from '../../Atoms/TokenAtom';
+import { Auth } from '../../API/authApi';
 
 const BoardComment = () => {
+  const { isLoggedIn } = Auth();
   const [input, setInput] = useState(''); //댓글입력상태
   const [replyInput, setReplyInput] = useState(''); //대댓글 입력상태
   const [replyCommentId, setReplyCommentId] = useState(''); //답글달기 =>내가 지금 작성하려는 댓글이 / 최상위 댓글의 대댓글이 맞는지 확인용
@@ -211,6 +213,10 @@ const BoardComment = () => {
                       <label
                         type='button'
                         onClick={() => {
+                          if (!isLoggedIn) {
+                            window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+                            return;
+                          }
                           if (user.id !== selectedComment.user.id) {
                             // 지우려는 사람이 본인이 아닐경우
                             alert('해당 댓글을 수정할 수 없습니다.');
@@ -226,12 +232,23 @@ const BoardComment = () => {
                         수정
                       </label>
                       <label
-                        onClick={() => handleCommentDelete(selectedComment)}>
+                        onClick={() => {
+                          if (!isLoggedIn) {
+                            window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+                            return;
+                          }
+                          handleCommentDelete(selectedComment);
+                        }}>
                         삭제
                       </label>
+
                       <label
                         type='button'
                         onClick={() => {
+                          if (!isLoggedIn) {
+                            window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+                            return;
+                          }
                           if (replyCommentId === selectedComment.id) {
                             setReplyCommentId(null); // 답글달기 닫기
                           } else {

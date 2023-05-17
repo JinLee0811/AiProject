@@ -11,9 +11,11 @@ import BoardComment from './BoardComment';
 import { useGetDetailBoard } from '../../API/BoardAPi';
 import { useParams } from 'react-router-dom';
 import { useUser } from '../../API/UserApi';
+import { Auth } from '../../API/authApi';
 
 const BoardDetail = () => {
   const navigate = useNavigate();
+  const { isLoggedIn } = Auth();
   const { boardId } = useParams();
   const setSelectedBoard = useSetAtom(selectedBoardAtom);
   const [likeChange, setLikeChange] = useState(true);
@@ -112,8 +114,25 @@ const BoardDetail = () => {
     <S.Container>
       <S.FormContainer>
         <div className='buttons'>
-          <button onClick={() => handleBoardUpdate(detailBoard)}>수정</button>
-          <button onClick={() => handleBoardDelete(detailBoard.id)}>
+          <button
+            onClick={() => {
+              if (!isLoggedIn) {
+                window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+                return;
+              }
+              handleBoardUpdate(detailBoard);
+            }}>
+            수정
+          </button>
+
+          <button
+            onClick={() => {
+              if (!isLoggedIn) {
+                window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+                return;
+              }
+              handleBoardDelete(detailBoard.id);
+            }}>
             삭제
           </button>
         </div>
