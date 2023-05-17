@@ -91,7 +91,7 @@ const BoardList = ({ onPageChange }) => {
         </div>
         <S.FormContainer>
           <ul>
-            {[...boards].reverse().map((board) => (
+            {boards.map((board) => (
               <li key={board.id}>
                 <p className='time'>{filterTime(board.created_at)}</p>{' '}
                 {/* 등록날짜 표시 */}

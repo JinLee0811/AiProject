@@ -151,8 +151,8 @@ const BoardComment = () => {
   //대댓글 put
   const { mutateAsync: updateReplyComment } = useUpdateComment(detailBoard.id);
   const handleReplyCommentUpdate = async (reply, contentData) => {
-    console.log(reply.parent_comment_id); //parentId
-    console.log(reply.id); //고유한 대댓글의 id
+    // console.log(reply.parent_comment_id); //parentId
+    // console.log(reply.id); //고유한 대댓글의 id
 
     try {
       const response = await updateReplyComment({
@@ -161,7 +161,7 @@ const BoardComment = () => {
         content: contentData.content,
         parent_comment_id: reply.parent_comment_id,
       });
-      console.log(response);
+      // console.log(response);
       const updatedComments = comments.map((comment) => {
         //내가 추가한 커스텀부분
         console.log(comment.id);
@@ -175,6 +175,7 @@ const BoardComment = () => {
         }
         return comment; //수정 필요없는애들은 그대로
       });
+      console.log(updatedComments);
 
       setReplyComments(updatedComments);
 
