@@ -1,7 +1,6 @@
 import { React, useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import * as S from './BoardList.style';
-import axios from 'axios';
 import { useGetBoard } from '../../API/BoardAPi';
 import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
 import {
@@ -10,8 +9,10 @@ import {
   BOARD_MY_PATH,
   BOARD_FORM_PATH,
 } from '../common/path';
-
+import { useNavigate } from 'react-router-dom';
+import { serverWithoutToken } from '../../config/AxiosRequest';
 const BoardList = ({ onPageChange }) => {
+  const navigate = useNavigate();
   const [boards, setBoards] = useAtom(boardsAtom); //axois.get을 통해 불러올 게시글 목록 표시
   const setSelectedBoard = useSetAtom(selectedBoardAtom); //클릭한 게시글의 정보를 저장하는 상태
   // const {
@@ -23,20 +24,19 @@ const BoardList = ({ onPageChange }) => {
   // }); //get
 
   useEffect(() => {
-    axios
-      .get('/BoardList.json')
+    serverWithoutToken
+      .get('/board')
       .then((response) => {
-        setBoards(response.data); //가져온 data가 비어있던 postAtom에 업데이트 됨
+        setBoards(response.data); //가져온 data가 비어있던 boardsAtom 업데이트 됨
       })
       .catch((error) => {
         console.log(error);
       });
   }, [setBoards]); //두번째 매개변수로 setPosts 박아둠으로써 상태가 업데이트될 때마다 데이터를 가져오고 컴포넌트를 업데이트
 
-  const detailClick = (id) => {
-    const board = boards.find((board) => board.id === id);
-    setSelectedBoard(board); //해당 id의 게시글 정보를 selectedPostAtom에 저장 (selectedPostAtom에을 Detail에서 쓸거임)
-    onPageChange(BOARD_DETAIL_PATH);
+  const detailClick = (boardId) => {
+    //해당 id의 게시글 정보를 selectedPostAtom에 저장 (selectedPostAtom에을 Detail에서 쓸거임)
+    navigate(`/board/detail/${boardId}`);
   };
   const boardClick = () => {
     onPageChange(BOARD_PATH);
@@ -45,6 +45,7 @@ const BoardList = ({ onPageChange }) => {
     onPageChange(BOARD_MY_PATH);
   };
   const formClick = () => {
+    // setSelectedBoard('');
     onPageChange(BOARD_FORM_PATH);
   };
   const shortenContent = (content) => {
@@ -55,7 +56,11 @@ const BoardList = ({ onPageChange }) => {
     return content;
   };
   const filterTime = (time) => {
-    const filter = Date.now() - new Date(time);
+    // 서버에서 보내주는 시간 값을 Date 객체로 바꿈
+    const serverTime = new Date(time);
+    // 클라이언트의 로컬 시간대에 맞추어 변환
+    const localTime = new Date(serverTime.getTime()); //현재 시간에서 뺌
+    const filter = Date.now() - localTime.getTime();
     const filterSeconds = Math.floor(filter / 1000);
     const filterMinutes = Math.floor(filter / 60000);
     const filterHours = Math.floor(filter / 3600000);
@@ -75,7 +80,10 @@ const BoardList = ({ onPageChange }) => {
   return (
     <>
       <S.Container>
-        <img className='banner' src='/bannerImage.jpg' alt='Example' />
+        <S.BannerImage
+          src='https://i.pinimg.com/564x/3b/f6/6d/3bf66d28aaf0ba444320c705dbc77808.jpg'
+          alt='Example'
+        />
         <div className='buttons'>
           <button onClick={boardClick}>전체보기</button>
           <button onClick={myBoardClick}>내 게시글 보기</button>
@@ -83,23 +91,22 @@ const BoardList = ({ onPageChange }) => {
         </div>
         <S.FormContainer>
           <ul>
-            {boards.map((board) => (
+            {[...boards].reverse().map((board) => (
               <li key={board.id}>
-                <p className='time'>{filterTime(board.time)}</p>{' '}
+                <p className='time'>{filterTime(board.created_at)}</p>{' '}
                 {/* 등록날짜 표시 */}
                 <h2>{board.title}</h2>
                 <p>{shortenContent(board.content)}</p>
                 {/* content는 미리보기식으로 첫줄만 보이고 이후엔 ... 표기 */}
-                <p className='image'>{board.image}</p>
+                <S.ListImage src={board.image} alt={board.title} />
                 <S.Infor>
                   <span className='material-symbols-outlined'>
                     emoji_nature
                   </span>
-                  <p className='nickname'>{board.nickname}</p>
+                  <p className='nickname'>{board.user.nickname}</p>
                 </S.Infor>
                 <p className='comment'>
-                  조회 {board.views} • 댓글 {board.commentCount} • 관심{' '}
-                  {board.like}
+                  조회 {board.views} • 댓글 {} • 관심 {board.likes}
                 </p>
                 <button
                   className='Detail'

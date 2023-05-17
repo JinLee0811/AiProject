@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Dropzone from 'react-dropzone';
-import { useAtom } from 'jotai';
-import { fileAtom, resultAtom } from '../../Atoms/MainServiceAtom';
 import { useCreateImage, useCreateSolution } from '../../API/MainServiceApi';
-// 이미지 url 받기
+import { Auth } from '../../API/authApi';
+import { useNavigate } from 'react-router-dom';
 
+// 이미지 url 받기
 const ImageUpload = () => {
-  const [file, setFile] = useAtom(fileAtom);
-  const [result, setResult] = useAtom(resultAtom);
-  const { mutate: createImage, isLoading: isImageUploading } = useCreateImage();
-  const { mutate: createSolution, isLoading: isSolutionCreating } =
+  const [file, setFile] = useState('');
+  const [result, setResult] = useState('');
+  const { isLoggedIn } = Auth();
+  const navigate = useNavigate();
+  const { mutateAsync: createImage, isLoading: isImageUploading } =
+    useCreateImage();
+  const { mutateAsync: createSolution, isLoading: isSolutionCreating } =
     useCreateSolution();
 
   const handleDrop = (acceptedFiles) => {
@@ -19,15 +22,15 @@ const ImageUpload = () => {
 
   // 이미지 업로드 로직
   const handleImageUpload = async () => {
+    if (!file) {
+      alert('진단받을 이미지가 없습니다.');
+      return;
+    }
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('image', file);
       const data = await createImage(formData);
-      setResult({
-        title: data.title,
-        items: data.items,
-        imageUrl: URL.createObjectURL(file),
-      });
+      setResult(data);
     } catch (error) {
       console.error(error);
     }
@@ -35,16 +38,22 @@ const ImageUpload = () => {
 
   // 데이터 저장 로직 (저장을 한번만 시키기)
   const handleSolutionCreate = async () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
     if (!result || isSolutionCreating) {
+      alert('진단 내역이 없습니다');
       return;
     }
     try {
       const solution = {
-        title: result.title,
-        items: result.items,
+        image: result.image,
+        solution_id: result.id,
+        resolved_at: result.resolved_at,
       };
       const data = await createSolution(solution);
-      console.log('Created solution:', data);
+      alert('저장이 완료되었습니다.');
     } catch (error) {
       console.error(error);
     }
@@ -58,15 +67,6 @@ const ImageUpload = () => {
   // 초기화 버튼과 저장 버튼 활성화 / 비활성화 조건
   const isResetDisabled = !file && !result;
   const isSaveDisabled = !result || isSolutionCreating;
-
-  // 업로드 된 파일이나 결과값이 바뀌면 초기화
-  useEffect(() => {
-    if (!file && !result) {
-      return;
-    }
-    setFile(null);
-    setResult(null);
-  }, [result, setResult]);
 
   return (
     <>
@@ -89,7 +89,6 @@ const ImageUpload = () => {
                 </FileUploader>
               )}
             </Dropzone>
-
             <Button
               onClick={handleImageUpload}
               disabled={!file || isImageUploading}>
@@ -97,27 +96,44 @@ const ImageUpload = () => {
             </Button>
           </form>
         </LeftBox>
-        <Arrow>➡</Arrow>
+        <Arrow></Arrow>
         <RightBox>
           <Title>진단을 확인하세요.</Title>
           <form onSubmit={handleSolutionCreate}>
-            {/* <ResultBox>
-              <ResultTitle> 예측 작물 : {result.crop_name}</ResultTitle>
-              <Result>질병 이름: {result.disease_name}</Result>
-              <Result>해결책: {result.disease_solution}</Result>
-            </ResultBox> */}
-            <ResultBox>
-              <ResultImage src='' />
-              <ResultTitle> 예측 작물 :asdasd</ResultTitle>
-              <ResultTitle>질병 이름: asdasd</ResultTitle>
-
-              <Result>
-                "감염된 식물 부분은 즉시 제거하고 폐기해야 합니다.", "물을 뿌릴
-                때 잎에 직접 물이 닿지 않도록 하고, 대신 뿌리 부근에 물을
-                주세요.", "예방을 위해 식물을 심기 전에 씨앗을 잠시 물에
-                담갔다가 건조시키는 방법이 효과적입니다."
-              </Result>
-            </ResultBox>
+            {result && (
+              <ResultBox>
+                <Result>
+                  <ResultTitle>진 단 서🔎</ResultTitle>
+                  <ResultImage src={result.image} />
+                  <ResultContents>
+                    👉 당신의 작물은{' '}
+                    <ResultStrong>'{result.crop_name}'</ResultStrong>이며, 크롭
+                    닥터의 진단 결과 질병의 이름은
+                    <ResultStrong>'{result.disease_name}'</ResultStrong> 입니다.
+                  </ResultContents>
+                  <ResultSolution>
+                    <ResultStrong2>
+                      👨‍🌾아래의 해결방법을 참고하세요👨‍🌾
+                    </ResultStrong2>
+                    <ResultStrong3>
+                      "
+                      {result.disease_solution.split('\n\n').map((item) => (
+                        <div>{item}</div>
+                      ))}
+                      "
+                    </ResultStrong3>
+                  </ResultSolution>
+                </Result>
+              </ResultBox>
+            )}
+            {!result && (
+              <ResultBox1>
+                <ResultTitle1>진 단 서🔎</ResultTitle1>
+                <ResultImage1 src='https://img.freepik.com/premium-vector/illustration-of-cute-male-doctor-with-stethoscope-kawaii-vector-cartoon-character-design_380474-32.jpg' />
+                <ResultContents>👉 진단 결과가 없습니다.</ResultContents>
+                <ResultSolution></ResultSolution>
+              </ResultBox1>
+            )}
             <Button onClick={handleReset} disabled={isResetDisabled}>
               초기화
             </Button>
@@ -160,11 +176,21 @@ const RightBox = styled.div`
 const Arrow = styled.div`
   margin: 50px;
   font-size: 100px;
-  color: #4ba888;
+  color: #759683;
+  &:before {
+    content: '➡';
+  }
+
+  @media (max-width: 968px) {
+    margin: 5px;
+    &:before {
+      content: '⬇️';
+    }
+  }
 `;
 const Title = styled.div`
   font-size: 20px;
-  color: #4ba888;
+  color: #759683;
   font-weight: 900;
   margin: 10px;
 `;
@@ -172,46 +198,114 @@ const Title = styled.div`
 const Button = styled.button`
   padding: 10px 20px;
   margin-right: 10px;
-  background-color: #4ba888;
+  background-color: #759683;
   color: white;
   border: none;
   border-radius: 5px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   :hover {
-    background-color: #759783;
+    background-color: #4ba888;
   }
 `;
 const ResultBox = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 400px;
+  width: 500px;
   height: 500px;
   margin-bottom: 20px;
-  border: 2px solid #759783;
   border-radius: 5px;
-  background-color: #d8dddb98;
+  background-color: #759683;
+  overflow: auto;
+`;
+const ResultBox1 = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 500px;
+  height: 500px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  border: 1px solid green;
+  background-color: white;
+  overflow: auto;
 `;
 const ResultTitle = styled.div`
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 20px;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 25px;
   font-weight: 700;
 `;
-const Result = styled.div`
-  margin: 10px;
-  font-size: 3px;
+const ResultTitle1 = styled.div`
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 50px;
   align-items: center;
-  font-size: 15px;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: 700;
+`;
+const ResultContents = styled.div`
+  margin-top: 10px;
+  margin-bottom: 0px;
+  padding: 20px;
+  font-size: 18px;
+  font-weight: 700;
+`;
+const ResultStrong = styled.div`
+  display: inline;
+  border-radius: 0px;
+  padding: 1px;
+  color: green;
+`;
+const ResultStrong2 = styled.div`
+  display: block;
+  border-radius: 0px;
+  padding: 1px;
+  color: black;
+  margin-bottom: 3px;
+`;
+const ResultStrong3 = styled.div`
+  display: block;
+  border-radius: 0px;
+  padding: 10px;
+  color: black;
+  margin-bottom: 3px;
+  color: green;
+  border: 1px solid black;
+`;
+const Result = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  padding: 15px;
+  align-items: center;
   background-color: white;
   border: 1px solid black;
 `;
+const ResultSolution = styled.div`
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: green;
+`;
 const ResultImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 1px solid black;
+  margin-top: 5px;
+  width: 250px;
+  height: 150px;
+  margin: auto;
+  border-radius: 10px;
+  border: 3px solid white;
+`;
+const ResultImage1 = styled.img`
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+  border-radius: 10px;
 `;
 
 const FileUploader = styled.div`

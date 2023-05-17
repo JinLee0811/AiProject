@@ -14,12 +14,12 @@ export const FormContainer = styled.div`
   justify-content: center;
   align-items: center;
   background-color: white;
-  color: #4ba888;
+  color: #759783;
   font-weight: bold;
   padding: 2rem;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  height: 600px;
+  height: 650px;
   width: 800px;
   overflow: auto;
 
@@ -72,7 +72,7 @@ export const FormContainer = styled.div`
 
   button[type='submit'] {
     padding: 10px 20px;
-    background-color: #4ba888;
+    background-color: #759783;
     color: white;
     font-weight: bold;
     margin-bottom: 0;
@@ -81,25 +81,31 @@ export const FormContainer = styled.div`
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     :hover {
-      background-color: #759783;
+      background-color: green;
     }
   }
 `;
-export const Dropzone = styled.div`
-  div {
-    width: 100px;
-    height: 50px;
-  }
+export const CheckBox = styled.select`
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #759783;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-left: 90%;
 `;
+export const Dropzone = styled.div``;
 export const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 200px;
+  width: 250px;
   margin-bottom: 1rem;
 
   img {
-    max-height: 100%;
-    max-width: 100%;
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
   }
 `;

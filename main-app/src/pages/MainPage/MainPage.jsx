@@ -3,6 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Carousel from './Carousel';
+import Footer from '../../components/common/Footer';
 
 const MainPage = () => {
   const [ref1, inView1] = useInView({
@@ -18,6 +19,7 @@ const MainPage = () => {
   });
   return (
     <>
+      {/* <Background> */}
       {/* <Carousel /> */}
       <Section ref={ref1} inView={inView1}>
         <Image src='https://post-phinf.pstatic.net/MjAyMDEwMTJfMjE1/MDAxNjAyNDg4NDcxMjU0.tP5xJjijMM6f34AlMu9cNxJMoCtY0988OsBiP1Q2LlAg.tYlm1RnALI28XqQeLgDBws_3jxatRtGA-McadL3VDUYg.PNG/image.png?type=w1200' />
@@ -30,6 +32,8 @@ const MainPage = () => {
           </StyledLink>
         </ContentsBox>
       </Section>
+      {/* </Background> */}
+      {/* <Background1> */}
       <Section ref={ref2} inView={inView2}>
         <ContentsBox>
           <Title>성장일지 서비스</Title>
@@ -41,20 +45,81 @@ const MainPage = () => {
         </ContentsBox>
         <Image src='https://openimage.interpark.com/goods_image_big/2/1/8/3/10217262183_l.jpg' />
       </Section>
+      {/* </Background1> */}
+      {/* <Background2> */}
       <Section ref={ref3} inView={inView3}>
         <Image src='https://blog.kakaocdn.net/dn/bEL0oC/btrzhri7dB6/0zszgyJjmWuPfh5nAZRqj1/img.jpg' />
         <ContentsBox>
           <Title>영양제 소개 서비스</Title>
           <Contents>여러분의 작물 상태에 알맞은</Contents>
           <Contents>영양제를 추천합니다.</Contents>
-          <StyledLink to={'/service'}>
+          <StyledLink to={'/nutrition'}>
             <Button>구경하러 가기 🔎</Button>
           </StyledLink>
         </ContentsBox>
       </Section>
+      {/* </Background2> */}
+      <Footer />
     </>
   );
 };
+const Background = styled.div`
+  position: relative;
+  height: 100vh;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    filter: blur(3px);
+    opacity: 5px;
+    z-index: -2px;
+  }
+
+  background-image: url('https://i.pinimg.com/736x/21/9e/f6/219ef65aa6e149d9ebdb2786c888acf3.jpg');
+  background-size: cover;
+  background-position: center;
+`;
+const Background1 = styled.div`
+  position: relative;
+  height: 100vh;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    filter: blur(3px);
+    opacity: 5px;
+    z-index: -5px;
+  }
+
+  background-image: url('https://i.pinimg.com/736x/2e/ef/24/2eef24e050d7edb992e52a34e53639f6.jpg');
+  background-size: cover;
+  background-position: 0 0;
+`;
+const Background2 = styled.div`
+  position: relative;
+  height: 100vh;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    filter: blur(3px);
+    opacity: 5px;
+    z-index: -5px;
+  }
+
+  background-image: url('https://i.pinimg.com/564x/e2/1b/02/e21b026cb9d1464073031b09e7f8f93f.jpg');
+  background-size: cover;
+  background-position: 0 0;
+`;
 const StyledLink = styled(Link)`
   text-decoration: none;
 `;
@@ -68,6 +133,8 @@ const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  letter-spacing: -0.6px;
   border: 2px;
   border-radius: 100px;
   color: white;
@@ -111,9 +178,10 @@ const Image = styled.img`
   width: 500px;
   height: 500px;
   border-radius: 22px;
-  @media (max-width: 968px) {
-    width: 350px;
-    height: 350px;
+  @media (max-width: 998px) {
+    display: none;
+    width: 300px;
+    height: 300px;
   }
 `;
 const Container = styled.section`

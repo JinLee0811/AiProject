@@ -7,20 +7,20 @@ import BoardFormPage from './BoardPage/BoardFormPage';
 import LoginPage from './UserPage/LoginPage/Login';
 import SignUpPage from './UserPage/SignUpPage/SignUpPage';
 import MyPage from './MyPage/MyPage';
-import MyDataPage from './MyPage/MyDataPage';
-import MyListPage from './MyPage/MyListPage';
-import MySignOutPage from './MyPage/MySignOutPage';
+import InfoPage from './MyPage/InfoPage';
+import SolutionListPage from './MyPage/SolutionListPage';
+import SignOutPage from './MyPage/SignOutPage';
 import NutritionPage from './NutritionPage/NutritionPage';
-import NutritionPage1 from './NutritionPage/NutritionPage1';
-import NCategory1 from './NutritionPage/NCategory1';
-import NCategory2 from './NutritionPage/NCategory2';
-import NCategory3 from './NutritionPage/NCategory3';
+import NutritionDetailPage from './NutritionPage/NutritionDetailPage';
 import AdminPage from './AdminPage/AdminPage';
 import BoardManage from './AdminPage/BoardManagePage';
 import UserManage from './AdminPage/UserManagePage';
 import NutritionManage from './AdminPage/NutritionManagePage';
 import AddNutrition from './AdminPage/AddNutritionPage';
 import BoardMyListPage from './BoardPage/BoardMyListPage';
+import CategoryPage from './AdminPage/CategoryPage';
+import SolutionDetail from './MyPage/SolutionDetail';
+import ChangePassword from './MyPage/ChangePassword';
 
 export {
   MainPage,
@@ -29,14 +29,11 @@ export {
   LoginPage,
   SignUpPage,
   MyPage,
-  MyDataPage,
-  MyListPage,
-  MySignOutPage,
+  InfoPage,
+  SolutionListPage,
+  SignOutPage,
+  SolutionDetail,
   NutritionPage,
-  NutritionPage1,
-  NCategory1,
-  NCategory2,
-  NCategory3,
   ImageUpload,
   BoardDetailPage,
   BoardFormPage,
@@ -46,4 +43,7 @@ export {
   UserManage,
   NutritionManage,
   AddNutrition,
+  CategoryPage,
+  NutritionDetailPage,
+  ChangePassword,
 };

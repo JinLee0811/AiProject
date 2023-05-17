@@ -1,77 +1,97 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as S from './BoardDetail.style';
-// import { useInView } from 'react-intersection-observer';
-import { useAtom } from 'jotai';
-import { useCreateComment } from '../../API/CommentApi';
-import { selectedBoardAtom, commentsAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
+import { useAtom, useSetAtom } from 'jotai';
+import { useDeleteBoard } from '../../API/BoardAPi';
+import { useCreateLike, useDeleteLike } from '../../API/LikeAPi';
+import { detailBoardAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 import { useNavigate } from 'react-router-dom';
-import { BOARD_FORM_PATH } from '../common/path';
+import { BOARD_FORM_PATH, BOARD_PATH } from '../common/path';
+import { userAtom } from '../../Atoms/TokenAtom';
+import BoardComment from './BoardComment';
+import { useGetDetailBoard } from '../../API/BoardAPi';
+import { useParams } from 'react-router-dom';
 
 const BoardDetail = () => {
-  const [selectedBoard, setSelectedBoard] = useAtom(selectedBoardAtom); // useAtomValue를 사용하면 저장된 selectedPost 상태값을 바로가져옴
-  //list에서 setSelectedPost(post) 로 받아온거를 한번 더 보내줘야하니까 selectedPost를 board/Form으로 보내준다.
   const navigate = useNavigate();
-  const handleEdit = (selectedBoard) => {
-    //수정버튼
-    setSelectedBoard(selectedBoard);
+  const { boardId } = useParams();
+  const [user] = useAtom(userAtom);
+  const setSelectedBoard = useSetAtom(selectedBoardAtom);
+  const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
+    onError: (error) => console.log(error.message),
+  });
+
+  const handleBoardUpdate = (detailBoard) => {
+    if (user.id !== detailBoard.user.id) {
+      // 지우려는 사람이 본인이 아닐경우
+      alert('해당 게시글을 수정할 수 없습니다.');
+      return;
+    }
+    alert('게시글을 수정하시겠습니까?');
+    setSelectedBoard(detailBoard);
     navigate(BOARD_FORM_PATH);
   };
-  const [comments, setComments] = useAtom(
-    //comments와 setComments 모두 써야해서 useAtom 씀.
-    commentsAtom
-  );
 
-  const [input, setInput] = useState(''); //댓글입력상태
-  const [replyInput, setReplyInput] = useState(''); //대댓글 입력상태
-  const [replyIndex, setReplyIndex] = useState(null); //대댓글 작성할 댓글의 index 담는상태
+  //   //게시글 삭제
+  const { mutateAsync: deleteBoard } = useDeleteBoard();
 
-  // post요청한 댓글을 get하는 로직을 비동기 fetchData 함수에 담는다!
-  // useEffect(() => { 컴포넌트가 렌더링될 때 한 번만 시행하도록 useEffect 씀
-  //   const fetchData = async () => {
+  const handleBoardDelete = async (id) => {
+    if (user.id !== detailBoard.user.id) {
+      // 지우려는 사람이 본인이 아닐경우
+      alert('해당 게시글을 삭제할 수 없습니다.');
+      return;
+    }
+    const confirmResult = window.confirm('회원의 게시글을 삭제하시겠습니까?'); //취소 눌렀을시 삭제안되게
+    if (!confirmResult) {
+      return;
+    }
+    try {
+      await deleteBoard(id);
+      detailBoard((prevBoards) =>
+        prevBoards.filter((board) => board.id !== id)
+      );
+    } catch (err) {
+      console.log(err.message);
+    }
+    alert('삭제되었습니다!');
+    navigate(BOARD_PATH);
+  };
+  //   //@@@@@@@@@@@@@@좋아요@@@@@@@@@@@@@@@
+
+  // //   const { mutateAsync: createLike } = useCreateLike(selectedBoard.id);
+  // //   const { mutateAsync: deleteLike } = useDeleteLike(selectedBoard.id);
+  // //   const { currentUser } = useAuth();
+
+  //   const handleLike = async () => {
   //     try {
-  //       const response = await axios.get('/api/comments');
-  //       setComments(response.data)
+  //       if (selectedBoard.user === currentUser.id) {
+  //         // 이미 좋아요를 누른 경우, 삭제
+  //         await deleteLike(currentUser.id);
+  //         setSelectedBoard((prev) => ({
+  //           ...prev,
+  //           user: null,
+  //           isLiked: false,
+  //         }));
+  //       } else {
+  //         // 좋아요를 누르지 않은 경우, 생성
+  //         await createLike(currentUser.id);
+  //         setSelectedBoard((prev) => ({
+  //           //현재 setSelectedBoard 객체 가져와서 거기다 추가
+  //           ...prev,
+  //           user: currentUser.id,
+  //           isLiked: true,
+  //         }));
+  //       }
   //     } catch (error) {
-  //       console.log(error);
+  //       console.error(error);
   //     }
-  //   }
-  // fetchData(); 얘가 렌더링시 알아서 실행되면서~ comments에 response.data가 불러와짐.
-  // },[]) //두번째 인자로 빈 배열줘야 fetchData 함수가 한 번만 실행
+  //   };
 
-  const { mutate } = useCreateComment({
-    onSuccess: (data) => {
-      //data = 서버로부터 반환된 새 댓글 객체
-      setComments([...comments, data]); //댓글 작성 후에 새로운댓글 목록에 추가됨!
-      setInput('');
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  }); // 내가 만든 훅은 mutate를 통해 반환한다! 기억하기~!
-  const handleSubmit = (e) => {
-    // react-query훅
-    e.preventDefault();
-    mutate(
-      { text: input, replies: [] } //첫번째 매개변수는 오롯이 요청에 필요한 데이터만! setComments등의 함수는 무조건 option에서.
-    );
-  };
-
-  const handleReplySubmit = (e, index) => {
-    //해당 index가 들어오면 comments의 replies배열에 인풋값 추가.
-    e.preventDefault();
-    const newComments = [...comments];
-    newComments[index].replies.push(replyInput);
-    setComments(newComments);
-    setReplyInput('');
-    setReplyIndex(null); //인덱스 초기화
-  };
-  const handleReplyInput = (e, index) => {
-    //대댓글에 입력시
-    setReplyInput(e.target.value);
-    setReplyIndex(index); // 특정 인덱스로 설정
-  };
-  function filterTime(time) {
-    const filter = Date.now() - new Date(time);
+  const filterTime = (time) => {
+    // 서버에서 보내주는 시간 값을 Date 객체로 바꿈
+    const serverTime = new Date(time);
+    // 클라이언트의 로컬 시간대에 맞추어 변환
+    const localTime = new Date(serverTime.getTime()); //현재 시간에서 뺌
+    const filter = Date.now() - localTime.getTime();
     const filterSeconds = Math.floor(filter / 1000);
     const filterMinutes = Math.floor(filter / 60000);
     const filterHours = Math.floor(filter / 3600000);
@@ -86,83 +106,43 @@ const BoardDetail = () => {
     } else {
       return `${filterDays}일 전`;
     }
+  };
+  if (isLoading || !detailBoard) {
+    return <div>Loading...</div>;
   }
-
   return (
     <S.Container>
       <S.FormContainer>
         <div className='buttons'>
-          <button onClick={() => handleEdit(selectedBoard)}>수정</button>
-          <button type='submit' disabled={!input}>
+          <button onClick={() => handleBoardUpdate(detailBoard)}>수정</button>
+          <button onClick={() => handleBoardDelete(detailBoard.id)}>
             삭제
           </button>
         </div>
-        <h1 className='title'>{selectedBoard.title}</h1>
+        <h1 className='title'>{detailBoard.title}</h1>
         <div className='information'>
           <span className='material-symbols-outlined'>emoji_nature</span>
-          <p className='nickname'>{selectedBoard.nickname}</p>
-          <p className='time'>{filterTime(selectedBoard.time)}</p>
+          <p className='nickname'>{detailBoard.user.nickname}</p>
+          <p className='time'>{filterTime(detailBoard.created_at)}</p>
         </div>
-        <h2 className='content'>{selectedBoard.content}</h2>
-        <h2 className='image'>{selectedBoard.image}</h2>
+        <h2 className='content'>{detailBoard.content}</h2>
+        <S.DetailImage src={detailBoard.image} />
         <p className='comment'>
-          조회 {selectedBoard.views} • 댓글 {selectedBoard.commentCount} • 관심{' '}
-          {selectedBoard.like}
-          {/* <button onClick={handleLikeClick}>
-            {likeCount} {liked ? '취소' : '추가'}
-          </button> */}
+          조회 {detailBoard.views} • 댓글 • 관심
+          {/* <S.HeartIcon isLiked={selectedBoard.isLiked} onClick={handleLike} /> */}
+          {/* <span onClick={handleLike}>
+//             {selectedBoard.isLiked ? (
+//               <S.RedHeartIcon /> // isLiked가 true => 빨간하트
+//             ) : (
+//               <S.EmptyHeartIcon /> // isLiked가 false => 빈하트
+//             )}
+//             {selectedBoard.likes}
+//           </span> */}
         </p>
-        <S.CommentContainer>
-          <form onSubmit={handleSubmit}>
-            {/* 댓글 post요청 */}
-            <input
-              type='text'
-              placeholder='댓글을 입력하세요'
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-            />
-            <button type='submit' disabled={!input}>
-              작성
-            </button>
-          </form>
-          <S.ReplyContainer>
-            {comments.map((comment, index) => (
-              <S.Comment key={index}>
-                <p id='commentText'>{comment.text}</p>
-                <button
-                  onClick={() => setReplyIndex(index)} //replyIndex 상태를 해당 댓글의 index로 변경
-                  disabled={replyIndex === index}>
-                  대댓글 작성
-                </button>
-                {replyIndex === index && ( //index로 변경한걸 통해서 해당 대댓글 작성 폼이 보임
-                  <form onSubmit={(e) => handleReplySubmit(e, index)}>
-                    <input
-                      type='text'
-                      placeholder='대댓글을 입력하세요'
-                      value={replyInput}
-                      onChange={(e) => handleReplyInput(e, index)}
-                    />
-                    <button type='submit' disabled={!replyInput}>
-                      작성
-                    </button>
-                  </form>
-                )}
-                {comment.replies.map(
-                  (
-                    reply,
-                    index // Reply는 댓글의 대댓글임
-                  ) => (
-                    <S.Reply key={index}>
-                      <p>{reply}</p>
-                    </S.Reply>
-                  )
-                )}
-              </S.Comment>
-            ))}
-          </S.ReplyContainer>
-        </S.CommentContainer>
+        <BoardComment />
       </S.FormContainer>
     </S.Container>
   );
 };
+
 export default BoardDetail;

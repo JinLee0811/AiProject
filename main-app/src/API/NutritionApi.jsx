@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 
 // GET Hook
-export const useGetNutrition = (options) => {
+export const useGetNutrition = (input, options) => {
   return useQuery(
-    'nutrition',
+    ['nutrition'],
     async () => {
-      const { data } = await axios.get('/admin/nutrition');
+      const { data } = await serverWithoutToken.get('/tonics');
       return data;
     },
     { ...options }
@@ -14,38 +14,47 @@ export const useGetNutrition = (options) => {
 };
 
 // POST Hook
-export const useCreateNutrition = () => {
+export const useCreateNutrition = (input, options) => {
   const queryClient = useQueryClient();
 
   return useMutation(
     async (newNutrition) => {
-      const { data } = await axios.post('/admin/nutrition', newNutrition);
-      return data;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('nutrition');
-      },
-    }
-  );
-};
-
-// PUT Hook
-export const useUpdateNutrition = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation(
-    async (updatedNutrition) => {
-      const { data } = await axios.put(
-        `/admin/nutrition/${updatedNutrition.id}`,
-        updatedNutrition
+      const { data } = await serverWithToken.post(
+        '/admin/tonics',
+        newNutrition
       );
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('nutrition');
+        queryClient.invalidateQueries(['nutrition']);
       },
+    },
+    { ...options }
+  );
+};
+
+export const useUpdateNutrition = (options) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async ({ id, formData }) => {
+      const { data } = await serverWithToken.patch(
+        `/admin/tonics/${id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      return data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['nutrition']);
+      },
+      ...options,
     }
   );
 };
@@ -56,13 +65,21 @@ export const useDeleteNutrition = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await axios.delete(`/admin/nutrition${id}`);
+      const { data } = await serverWithToken.delete(`/admin/tonics/${id}`);
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('nutrition');
+        queryClient.invalidateQueries(['nutrition']);
       },
     }
   );
+};
+
+//영양제 상세보기
+export const useGetTonicDetail = (tonicId) => {
+  return useQuery(['tonicDetail', tonicId], async () => {
+    const { data } = await serverWithoutToken.get(`/tonics/${tonicId}`);
+    return data;
+  });
 };

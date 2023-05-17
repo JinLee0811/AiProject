@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../../API/authApi';
+import { useAtom } from 'jotai';
+import { Auth } from '../../../API/authApi';
 import LogoPng from '../../../components/image/Logo.png';
+import { isLoggedInAtom, isAdminAtom } from '../../../Atoms/TokenAtom';
 
 const LoginForm = () => {
-  const { login } = useAuth();
+  const [, setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const { login, error, setError } = Auth(); // error 상태값과 setError 함수 추가
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,10 +23,11 @@ const LoginForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await login(email, password);
-      console.log('로그인 성공!');
+      await login({ email, password });
+      setIsLoggedIn(true);
     } catch (error) {
       console.error('로그인 실패:', error.message);
+      setError(error.message); // error 상태값에 에러 메시지 저장
     }
   };
 
@@ -55,6 +59,7 @@ const LoginForm = () => {
           value={password}
           onChange={handlePasswordChange}
         />
+        <ErrorDiv>{error && error}</ErrorDiv>
         <Button type='submit'>로그인</Button>
         <LastDiv>
           <CheckboxLabel>
@@ -68,6 +73,9 @@ const LoginForm = () => {
   );
 };
 
+const ErrorDiv = styled.div`
+  color: red;
+`;
 const LoginFormContainer = styled.div`
   height: 85vh;
   margin: 0 auto;
@@ -92,7 +100,7 @@ const LogoImage = styled.img`
 const Logo = styled.h1`
   font-size: 2.3rem;
   font-weight: bold;
-  color: #759683;
+  color: green;
   margin: 0;
 `;
 
@@ -160,7 +168,7 @@ const Button = styled.button`
   border-radius: 5px;
   cursor: pointer;
   :hover {
-    background-color: #4ba888;
+    background-color: green;
   }
 `;
 

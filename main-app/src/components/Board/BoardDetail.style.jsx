@@ -26,7 +26,7 @@ export const FormContainer = styled.div`
     button {
       margin-right: 10px;
       padding: 10px 20px;
-      background-color: #4ba888;
+      background-color: #759783;
       color: white;
       font-family: 'Spoqa Han Sans Neo';
       font-weight: bold;
@@ -35,7 +35,7 @@ export const FormContainer = styled.div`
       box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       :hover {
-        background-color: #759783;
+        background-color: green;
       }
     }
   }
@@ -49,7 +49,7 @@ export const FormContainer = styled.div`
     padding: 0 25px 0px 25px;
     border-bottom: 1px solid rgb(210, 210, 210);
     font-size: 16px;
-    color: #4ba888;
+    color: #759783;
     font-weight: bold;
   }
   p.nickname {
@@ -80,65 +80,12 @@ export const FormContainer = styled.div`
     border-bottom: 1px solid rgb(210, 210, 210);
     border-top: 1px solid rgb(210, 210, 210);
     padding: 10px 25px;
-    color: #4ba888;
+    color: #759783;
     font-weight: bold;
   }
 `;
-export const CommentContainer = styled.div`
-  button {
-    padding: 10px 20px;
-    background-color: #4ba888;
-    color: white;
-    font-family: 'Spoqa Han Sans Neo';
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    :hover {
-      background-color: #759783;
-    }
-  }
-  form {
-    display: flex;
-    flex-direction: column;
-    margin-top: 20px;
-  }
-  form input {
-    padding: 12px 25px;
-    margin-bottom: 14px;
-    margin-top: 20px;
-    width: 800px;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
-    border: grey;
-    border-radius: 8px;
-  }
-  form button {
-    margin-left: 92%;
-  }
-`;
-export const Reply = styled.div`
-  p {
-    padding: 12px 25px;
-    margin-bottom: 14px;
-    width: 800px;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
-    border: grey;
-    border-radius: 8px;
-    background-color: white;
-  }
-`;
-export const ReplyContainer = styled.div``;
-export const Comment = styled.div`
-  p {
-    margin-left: 44px;
-
-    padding: 12px;
-    color: rgb(43, 43, 43);
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
-    border: grey;
-    border-radius: 6px;
-  }
-  .commentText {
-  }
+export const DetailImage = styled.img`
+  height: 180px;
+  width: 180px;
+  margin: 20px;
 `;

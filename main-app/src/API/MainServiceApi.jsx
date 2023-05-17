@@ -1,29 +1,34 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
+import {useState} from 'react'
 
 // POST Hook: 질병 진단 이미지 업로드 후 결과물 반환
 export const useCreateImage = () => {
-  const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
-  return useMutation(
-    async (newImage) => {
-      const { data } = await axios.post('/solutions/predict', newImage);
-      return data;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('solutions');
-      },
-    }
-  );
+    return useMutation(
+        async (newImage) => {
+            const { data } = await serverWithoutToken.post(
+                '/solution/predict',
+                newImage
+            );
+
+            return data;
+        },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['solutions']);
+            },
+        }
+    );
 };
 
 // GET Hook: 등록된 해결책 조회
 export const useGetSolutions = (options) => {
   return useQuery(
-    'solutions',
+    ['solutions'],
     async () => {
-      const { data } = await axios.get('/solutions');
+      const { data } = await serverWithToken.get('/solution');
       return data;
     },
     { ...options }
@@ -32,20 +37,27 @@ export const useGetSolutions = (options) => {
 
 // POST Hook: 해결책 저장
 export const useCreateSolution = () => {
-  const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
-  return useMutation(
-    async (newSolution) => {
-      const { data } = await axios.post('/solutions', newSolution);
-      return data;
-    },
-    {
-      onSuccess: (newSolution) => {
-        queryClient.invalidateQueries('solutions');
-        console.log('New solution created:', newSolution);
-      },
-    }
-  );
+    return useMutation(
+        async (data) => {
+            const { data: responseData } = await serverWithToken.post(
+                '/solution',
+                data,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            return responseData;
+        },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['solutions']);
+            },
+        }
+    );
 };
 
 // DELETE Hook: 등록된 해결책 삭제
@@ -54,13 +66,21 @@ export const useDeleteSolution = () => {
 
   return useMutation(
     async (id) => {
-      const { data } = await axios.delete(`/solutions/${id}`);
+      const { data } = await serverWithToken.delete(`/solutions/${id}`);
       return data;
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('solutions');
+        queryClient.invalidateQueries(['solutions']);
       },
     }
   );
+};
+
+// GET Hook: 등록된 해결책 상세조회
+export const useGetDetailSolutions = (detailId) => {
+  return useQuery(['solutionDetil', detailId], async () => {
+    const { data } = await serverWithToken.get(`/solution/${detailId}`);
+    return data;
+  });
 };

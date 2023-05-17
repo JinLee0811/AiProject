@@ -32,6 +32,13 @@ function Sidebar() {
             영양제 등록
           </StyledLink>
         </li>
+        <li>
+          <StyledLink
+            to='Category'
+            active={location.pathname === '/admin/Category'}>
+            카테고리 관리
+          </StyledLink>
+        </li>
       </ul>
     </Aside>
   );
@@ -49,31 +56,38 @@ function AdminPage() {
 }
 const StyledLink = styled(Link)`
   text-decoration: none;
-  color: ${(props) => (props.active ? 'red' : 'black')};
+  color: ${(props) => (props.active ? 'green' : 'black')};
 `;
 
-const Container = styled.section`
+const Container = styled.div`
   display: flex;
   flex-direction: row;
-  height: 100vh;
-  width: 100vh;
-  margin-top: 2rem;
-  @media (max-width: 768px) {
+  width: 100%;
+  @media (max-width: 1000px) {
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
   }
 `;
 
-const MainContainer = styled.section`
-  flex: 1;
-  padding: 40px;
+const MainContainer = styled.div`
+  display: flex;
+  width: 100%;
+  margin-left: 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
   font-size: 1.2rem;
+  overflow: scroll;
 `;
 
 const Aside = styled.aside`
-  width: 150px;
+  width: 200px;
   position: relative;
   top: 0;
   left: 0;
+  margin-left: 0px;
   border-right: 1px solid #ccc;
 
   ul {
@@ -87,8 +101,9 @@ const Aside = styled.aside`
       font-size: 1rem;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1000px) {
       display: flex;
+      border-right: none;
       padding-inline-start: 0;
       li {
         padding-right: 1rem;
@@ -97,11 +112,16 @@ const Aside = styled.aside`
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     display: flex;
+    height: 90px;
     justify-content: center;
     width: 100%;
     background-color: #fff;
+    position: relative;
+    margin-left: 0px;
+    top: 0;
+    left: 0;
   }
 `;
 

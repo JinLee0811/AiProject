@@ -1,79 +1,118 @@
+import { useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 import { useAtom } from 'jotai';
-import { useQuery, useMutation } from 'react-query';
-import axios from 'axios';
-import { accessTokenAtom, refreshTokenAtom } from '../Atoms/TokenAtom';
+import { useNavigate } from 'react-router-dom';
+import {
+  isLoggedInAtom,
+  isAdminAtom,
+  accessTokenAtom,
+  refreshTokenAtom,
+  isErrorAtom,
+  userAtom,
+} from '../Atoms/TokenAtom';
 
-// 사용자 로그인 요청
-const login = async (username, password) => {
-  const response = await axios.post('/api/auth/login', { username, password });
-  const { accessToken, refreshToken } = response.data;
-  localStorage.setItem('accessToken', accessToken);
-  localStorage.setItem('refreshToken', refreshToken);
-  return accessToken;
-};
+const LOGIN_MUTATION_KEY = 'loginMutation';
 
-// access token refresh 요청
-const refreshAccessToken = async () => {
-  const refreshToken = localStorage.getItem('refreshToken');
-  const response = await axios.post('/api/auth/refresh', { refreshToken });
-  const { accessToken } = response.data;
-  localStorage.setItem('accessToken', accessToken);
-  return accessToken;
-};
-
-// useAuth Hook
-export const useAuth = () => {
+export const Auth = () => {
+  const queryClient = useQueryClient();
+  const [error, setError] = useAtom(isErrorAtom);
+  const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const [isAdmin, setIsAdmin] = useAtom(isAdminAtom);
   const [accessToken, setAccessToken] = useAtom(accessTokenAtom);
   const [refreshToken, setRefreshToken] = useAtom(refreshTokenAtom);
+  const [user, setUser] = useAtom(userAtom);
 
-  // 로그인을 위한 useMutation Hook
-  const loginMutation = useMutation(login, {
-    onSuccess: (accessToken) => setAccessToken(accessToken),
-  });
+  useEffect(() => {
+    const access_token = localStorage.getItem('access_token');
+    const refresh_token = localStorage.getItem('refresh_token');
 
-  // 로그아웃 함수
-  const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    setAccessToken(null);
-    setRefreshToken(null);
-  };
+    if (access_token && refresh_token) {
+      setAccessToken(access_token);
+      setRefreshToken(refresh_token);
+      setIsLoggedIn(true);
 
-  useQuery(
-    'accessToken', // 쿼리 이름
-    async () => {
-      const token = localStorage.getItem('accessToken'); // local storage에서 access token 가져옴
-      if (token) {
-        try {
-          await axios.get('/api/protected', {
-            // access token이 유효한지 API 요청으로 확인
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          return token;
-        } catch (error) {
-          if (error.response.status === 401) {
-            // access token이 만료되었다면
-            const newToken = await refreshAccessToken(); // refresh token으로 새로운 access token을 가져옴
-            return newToken; // 새로운 access token 반환
-          }
-        }
-      }
-      logout();
-      throw new Error('Access token not found');
-    },
+      serverWithToken
+        .get('/user/profile')
+        .then((response) => {
+          const user = response.data;
+          setUser(user);
+          setIsAdmin(user.is_admin === 1);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsAdmin(false);
+          handleUnauthorized();
+        });
+    } else {
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+      setUser(null);
+    }
+  }, [setUser, isLoggedIn]);
+
+  const loginMutation = useMutation(
+    (data) => serverWithoutToken.post('/user/signin', data),
     {
-      retry: false,
-      refetchInterval: 10 * 60 * 1000, // Refresh access token every 10 minutes
-      onError: () => {
-        logout();
+      onSuccess: (response) => {
+        const { access_token, refresh_token } = response.data;
+        localStorage.setItem('access_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
+        window.location.href = '/';
+      },
+      onError: (error) => {
+        const errorMessage = error.response?.data?.message || '로그인 실패';
+        setError(errorMessage);
       },
     }
   );
+
+  const logoutMutation = useMutation(() =>
+    serverWithToken.post('/user/signout')
+  );
+
+  const refreshMutation = useMutation(
+    () => serverWithToken.post('/user/access'),
+    {
+      onSuccess: (response) => {
+        const { access_token } = response.data;
+        setAccessToken(access_token);
+      },
+      onError: (error) => {
+        console.error(error);
+        handleUnauthorized();
+      },
+    }
+  );
+
+  const handleUnauthorized = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    setIsLoggedIn(false);
+    setIsAdmin(false);
+    setUser(null);
+    window.location.href = '/login';
+  };
+  const login = (data) => loginMutation.mutate(data);
+  const logout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    setIsLoggedIn(false);
+    setIsAdmin(false);
+    setUser(null);
+    logoutMutation.mutate();
+    window.location.href = '/';
+    queryClient.invalidateQueries(LOGIN_MUTATION_KEY);
+  };
+  const refresh = () => refreshMutation.mutate();
+
   return {
-    accessToken,
-    login: loginMutation.mutate,
+    login,
     logout,
+    refresh,
+    error,
+    isLoggedIn,
+    isAdmin,
+    user,
   };
 };
