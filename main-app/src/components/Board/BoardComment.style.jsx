@@ -56,7 +56,18 @@ export const Comment = styled.div`
 `;
 export const CommentManage = styled.div`
   .write {
-    margin-left: 84%;
+    margin-left: 680px;
+    background-color: #759783;
+    :hover {
+      background-color: green;
+      color: white;
+    }
+  }
+`;
+export const ReplyCommentManage = styled.div`
+  .replyWrite {
+    width: 65px;
+    margin-left: 630px;
     background-color: #759783;
     :hover {
       background-color: green;
@@ -119,6 +130,10 @@ export const FirstForm = styled.form`
 `;
 export const Nickname = styled.label`
   width: 60px;
+  color: #759783;
+  span {
+    margin-right: 3px;
+  }
 `;
 export const SecondForm = styled.div``;
 export const CommentEDU = styled.div`
@@ -131,4 +146,21 @@ export const CommentEDU = styled.div`
   .replyComment {
     margin-left: 65%;
   }
+`;
+export const ReplyForm = styled.div`
+  margin-left: 50px;
+  width: 600px;
+  input[type='text'] {
+    width: 650px;
+  }
+`;
+export const ReplyCommentContent = styled.div`
+  color: #759783;
+  padding: 10px;
+  margin-bottom: 8px;
+  padding: 12px 25px;
+  width: 650px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
+  border: solid green;
+  border-radius: 8px;
 `;

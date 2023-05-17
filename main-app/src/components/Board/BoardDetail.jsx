@@ -16,6 +16,7 @@ const BoardDetail = () => {
   const { boardId } = useParams();
   const [user] = useAtom(userAtom);
   const setSelectedBoard = useSetAtom(selectedBoardAtom);
+
   const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
     onError: (error) => console.log(error.message),
   });
@@ -57,34 +58,21 @@ const BoardDetail = () => {
   };
   //   //@@@@@@@@@@@@@@좋아요@@@@@@@@@@@@@@@
 
-  // //   const { mutateAsync: createLike } = useCreateLike(selectedBoard.id);
-  // //   const { mutateAsync: deleteLike } = useDeleteLike(selectedBoard.id);
-  // //   const { currentUser } = useAuth();
+  // const { mutateAsync: createLike } = useCreateLike(user.id);
+  // const [likes, setLikes] = useState(detailBoard.likes);
 
-  //   const handleLike = async () => {
-  //     try {
-  //       if (selectedBoard.user === currentUser.id) {
-  //         // 이미 좋아요를 누른 경우, 삭제
-  //         await deleteLike(currentUser.id);
-  //         setSelectedBoard((prev) => ({
-  //           ...prev,
-  //           user: null,
-  //           isLiked: false,
-  //         }));
-  //       } else {
-  //         // 좋아요를 누르지 않은 경우, 생성
-  //         await createLike(currentUser.id);
-  //         setSelectedBoard((prev) => ({
-  //           //현재 setSelectedBoard 객체 가져와서 거기다 추가
-  //           ...prev,
-  //           user: currentUser.id,
-  //           isLiked: true,
-  //         }));
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
+  // const handleLike = async () => {
+  //   console.log(detailBoard.likes);
+  //   try {
+  //     const response = await createLike({
+  //       likes: detailBoard.likes + 1,
+  //     });
+  //     console.log(response);
+  //     setLikes(response.likes);
+  //   } catch (error) {
+  //     console.error('좋아요 요청 실패:', error);
+  //   }
+  // };
 
   const filterTime = (time) => {
     // 서버에서 보내주는 시간 값을 Date 객체로 바꿈
@@ -129,16 +117,9 @@ const BoardDetail = () => {
         <S.DetailImage src={detailBoard.image} />
         <p className='comment'>
           조회 {detailBoard.views} • 댓글 • 관심
-          {/* <S.HeartIcon isLiked={selectedBoard.isLiked} onClick={handleLike} /> */}
-          {/* <span onClick={handleLike}>
-//             {selectedBoard.isLiked ? (
-//               <S.RedHeartIcon /> // isLiked가 true => 빨간하트
-//             ) : (
-//               <S.EmptyHeartIcon /> // isLiked가 false => 빈하트
-//             )}
-//             {selectedBoard.likes}
-//           </span> */}
+          {/* {likes} */}
         </p>
+        {/* <button onClick={handleLike}>좋아요</button> */}
         <BoardComment />
       </S.FormContainer>
     </S.Container>

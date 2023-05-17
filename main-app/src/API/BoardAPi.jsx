@@ -97,3 +97,18 @@ export const useAdminDeleteBoard = () => {
     }
   );
 };
+
+export const useCreateLike = (boardId) => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    async (newPost) => {
+      const { data } = await serverWithToken.post(`/likes/${boardId}`, newPost);
+      return data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['BoardList']); //여기서 말하는 BoardList는 useQuery의 key?
+      }, //식별자를 가진 쿼리 결과를 무효화(invalidate)하여, 해당 쿼리를 다시 실행하도록 유도하는 역할을 한다라..
+    }
+  );
+};

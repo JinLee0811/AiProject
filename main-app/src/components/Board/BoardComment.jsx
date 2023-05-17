@@ -20,7 +20,6 @@ const BoardComment = () => {
   const [editingCommentText, setEditingCommentText] = useState('');
   const [showReplyCommentId, setShowReplyCommentId] = useState(null);
   const [user] = useAtom(userAtom);
-
   // 정리. 잡고들어가자 user는 토큰으로 해결
   // get : boardId, detailBoard.comment ~  어떻게 쓸지는 내가 정해. useEffect / detailBoard.comments / comments 스테이트에 넣을지
   // post : boardId, 선택한 commentId, input 값
@@ -33,13 +32,22 @@ const BoardComment = () => {
     onError: (error) => console.log(error.message),
   });
   const [comments, setComments] = useState([]);
+  const [replyComments, setReplyComments] = useState([]);
 
   useEffect(() => {
-    if (detailBoard) {
-      setComments(detailBoard.comments);
+    if (detailBoard.comments) {
+      const nullParents = detailBoard.comments.filter(
+        (comment) => comment.parent_comment_id === null
+      );
+      const parents = detailBoard.comments.filter(
+        (comment) => comment.parent_comment_id !== null
+      );
+      setComments(nullParents);
+      setReplyComments(parents);
     }
-  }, [detailBoard]);
+  }, [detailBoard.comments]);
 
+  // console.log(comments[0]);
   // 댓글 post
   const { mutateAsync: createComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는 이미지가 확실할때
   const handleCreateSubmit = async (e) => {
@@ -48,36 +56,14 @@ const BoardComment = () => {
       const response = await createComment({
         content: input,
       });
-      console.log(response);
-
       setComments((prevComments) => [...prevComments, response]);
       setInput('');
     } catch (err) {
       console.log(err);
     }
   };
-  // 대댓글 post
-  const { mutateAsync: createReplyComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는 이미지가 확실할때
-  const handleReplyCreateSubmit = async (e, id) => {
-    // console.log(id);
-    e.preventDefault();
-    try {
-      const response = await createReplyComment({
-        // board_id: detailBoard.id,
-        content: replyInput,
-        parent_comment_id: id,
-      });
-      console.log(response);
 
-      setReplyComments((prevReplyComments) => [...prevReplyComments, response]);
-      setReplyInput('');
-      setReplyCommentId(null);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  //댓글 put
+  //댓글 patch
   const { mutateAsync: updateComment } = useUpdateComment(detailBoard.id);
   const handleCommentUpdate = async (id, contentData) => {
     try {
@@ -88,6 +74,7 @@ const BoardComment = () => {
       });
       const updatedComments = comments.map((comment) => {
         //내가 추가한 커스텀부분
+        console.log(comment);
         if (comment.id === id) {
           //수정하려는 댓글 id랑 일치하는지 확인
           return {
@@ -107,49 +94,12 @@ const BoardComment = () => {
     }
   };
 
-  //대댓글 put
-  const { mutateAsync: updateReplyComment } = useUpdateComment(detailBoard.id);
-  const handleReplyCommentUpdate = async (reply, contentData) => {
-    console.log(reply.parent_comment_id);
-    console.log(reply.id);
-
-    try {
-      const response = await updateReplyComment({
-        //여기까지가 기본적인 서버연동
-        id: reply.id,
-        content: contentData.content,
-        parent_comment_id: reply.parent_comment_id,
-      });
-      console.log(response);
-      const updatedComments = comments.map((comment) => {
-        //내가 추가한 커스텀부분
-        if (comment.id === reply.id) {
-          //수정하려는 댓글 id랑 일치하는지 확인
-          return {
-            ...comment, //수정이 필요한 댓글 객체
-            content: contentData.content, //내용을 수정하려는 내용으로 업데이트
-          };
-        }
-        return comment; //수정 필요없는애들은 그대로
-      });
-      setComments(updatedComments);
-      console.log(response);
-      alert('수정완료');
-      setEditingCommentText('');
-      setEditingCommentId(null);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   // 댓글 delete
   const { mutateAsync: deleteCommentMutation } = useDeleteComment(
     detailBoard.id
   );
 
   const handleCommentDelete = async (select) => {
-    console.log(select);
-    console.log(select.id);
     if (user.id !== select.user.id) {
       // 지우려는 사람이 본인이 아닐경우
       alert('해당 게시글을 삭제할 수 없습니다.');
@@ -169,23 +119,81 @@ const BoardComment = () => {
   };
 
   //대댓글 get
-  const { data: GetReplyComment } = useGetReplyComment(detailBoard.id);
-  const [replycomments, setReplyComments] = useState([]);
-  // 해당 보드 아이디의 전체 대댓글이 담기게
+  // const { data: GetReplyComment } = useGetReplyComment(detailBoard.id);
 
-  useEffect(() => {
-    if (GetReplyComment) {
-      setReplyComments(GetReplyComment);
-    }
-  }, [GetReplyComment]);
+  // // 해당 보드 아이디의 전체 대댓글이 담기게
+
+  // console.log(GetReplyComment);
   // replycomments 모든 대댓글이 달려있다.
+  // console.log('대댓글');
+  // console.log(GetReplyComment);
 
-  // console.log(showReplyCommentId);
+  // 대댓글 post
+  const { mutateAsync: createReplyComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는 이미지가 확실할때
+  const handleReplyCreateSubmit = async (e, id) => {
+    // console.log(id);
+    e.preventDefault();
+    try {
+      const response = await createReplyComment({
+        content: replyInput,
+        parent_comment_id: id,
+      });
+
+      setReplyComments((prevComments) => [...prevComments, response]);
+      console.log(response);
+      setReplyInput('');
+      setReplyCommentId(null);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  //대댓글 put
+  const { mutateAsync: updateReplyComment } = useUpdateComment(detailBoard.id);
+  const handleReplyCommentUpdate = async (reply, contentData) => {
+    console.log(reply.parent_comment_id); //parentId
+    console.log(reply.id); //고유한 대댓글의 id
+
+    try {
+      const response = await updateReplyComment({
+        //여기까지가 기본적인 서버연동
+        id: reply.id,
+        content: contentData.content,
+        parent_comment_id: reply.parent_comment_id,
+      });
+      console.log(response);
+      const updatedComments = comments.map((comment) => {
+        //내가 추가한 커스텀부분
+        console.log(comment.id);
+        if (comment.id === reply.id) {
+          //댓글 아이디랑 고유한 대댓글의 id랑 일치하면
+          //수정하려는 댓글 id랑 일치하는지 확인
+          return {
+            ...comment, //수정이 필요한 댓글 객체
+            content: contentData.content, //내용을 수정하려는 내용으로 업데이트
+          };
+        }
+        return comment; //수정 필요없는애들은 그대로
+      });
+
+      setReplyComments(updatedComments);
+
+      alert('수정완료');
+      setEditingCommentText('');
+      setEditingCommentId(null);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <S.CommentContainer>
         <S.FirstForm onSubmit={handleCreateSubmit}>
-          <S.Nickname>{user && user.nickname}</S.Nickname>
+          <S.Nickname>
+            <span class='material-symbols-outlined'>psychiatry</span>
+            {user && user.nickname}
+          </S.Nickname>
           <input
             type='text'
             placeholder='댓글을 입력하세요'
@@ -226,7 +234,10 @@ const BoardComment = () => {
                   </form>
                 ) : (
                   <>
-                    <S.Nickname>{selectedComment.user.nickname}</S.Nickname>
+                    <S.Nickname>
+                      <span class='material-symbols-outlined'>psychiatry</span>
+                      {selectedComment.user.nickname}
+                    </S.Nickname>
                     <S.CommentContent>
                       {selectedComment.content}
                     </S.CommentContent>
@@ -267,101 +278,113 @@ const BoardComment = () => {
                     </S.CommentEDU>
                   </>
                 )}
-                {replyCommentId === selectedComment.id && (
-                  <form
-                    onSubmit={(e) =>
-                      handleReplyCreateSubmit(e, selectedComment.id)
-                    }>
-                    <S.Nickname>{user.nickname}</S.Nickname>
-                    <input
-                      type='text'
-                      placeholder='대댓글을 입력하세요'
-                      value={replyInput}
-                      onChange={(e) => setReplyInput(e.target.value)}
-                    />
-                    <S.CommentManage>
-                      <button
-                        className='write'
-                        type='submit'
-                        disabled={!replyInput}>
-                        작성
-                      </button>
-                    </S.CommentManage>
-                    <div>
-                      {replycomments &&
-                        replycomments.map(
-                          (reply) =>
-                            selectedComment.id === reply.parent_comment_id &&
-                            reply && (
-                              <div key={reply.id}>
-                                <S.Nickname>{reply.user.nickname}</S.Nickname>
-                                {editingCommentId === reply.id ? (
-                                  <form>
-                                    <input
-                                      type='text'
-                                      placeholder='수정중입니다...'
-                                      value={editingCommentText}
-                                      onChange={(e) =>
-                                        setEditingCommentText(e.target.value)
-                                      }
-                                    />
-                                    <S.CommentEDU>
-                                      <label
-                                        className='write'
-                                        type='button'
-                                        onClick={() => {
-                                          handleReplyCommentUpdate(reply, {
-                                            content: editingCommentText,
-                                          });
-                                          setEditingCommentId(null); // 수정 완료 후 수정 상태 해제
-                                          setEditingCommentText(''); // 수정 완료 후 입력값 초기화
-                                        }}>
-                                        수정완료
-                                      </label>
-                                    </S.CommentEDU>
-                                  </form>
-                                ) : (
-                                  <>
-                                    <S.CommentContent>
-                                      {reply.content}
-                                    </S.CommentContent>
-                                    <S.CommentEDU>
-                                      <label
-                                        type='button'
-                                        onClick={() => {
-                                          if (user.id !== reply.user.id) {
-                                            // 지우려는 사람이 본인이 아닐 경우
-                                            alert(
-                                              '해당 대댓글을 수정할 수 없습니다.'
-                                            );
-                                            return;
-                                          }
-                                          if (editingCommentId === reply.id) {
-                                            setEditingCommentId(null); // 수정 취소
-                                          } else {
-                                            setEditingCommentId(reply.id); // 수정 모드로 전환
-                                            setEditingCommentText(
-                                              reply.content
-                                            ); // 수정할 대댓글 내용 설정
-                                          }
-                                        }}>
-                                        수정
-                                      </label>
-                                      <label
-                                        onClick={() =>
-                                          handleCommentDelete(reply)
-                                        }>
-                                        삭제
-                                      </label>
-                                    </S.CommentEDU>
-                                  </>
-                                )}
-                              </div>
-                            )
-                        )}
-                    </div>
-                  </form>
-                )}
+                <S.ReplyForm>
+                  {replyCommentId === selectedComment.id && (
+                    <form
+                      onSubmit={(e) =>
+                        handleReplyCreateSubmit(e, selectedComment.id)
+                      }>
+                      <div>
+                        {replyComments &&
+                          replyComments.map(
+                            (reply) =>
+                              selectedComment.id === reply.parent_comment_id &&
+                              reply && (
+                                <div key={reply.id}>
+                                  <S.Nickname>
+                                    <span class='material-symbols-outlined'>
+                                      subdirectory_arrow_right
+                                    </span>
+                                    {reply.user.nickname}
+                                  </S.Nickname>
+                                  {editingCommentId === reply.id ? (
+                                    <form>
+                                      <input
+                                        type='text'
+                                        placeholder='수정중입니다...'
+                                        value={editingCommentText}
+                                        onChange={(e) =>
+                                          setEditingCommentText(e.target.value)
+                                        }
+                                      />
+                                      <S.CommentEDU>
+                                        <label
+                                          className='write'
+                                          type='button'
+                                          onClick={() => {
+                                            handleReplyCommentUpdate(reply, {
+                                              content: editingCommentText,
+                                            });
+                                            setEditingCommentId(null); // 수정 완료 후 수정 상태 해제
+                                            setEditingCommentText(''); // 수정 완료 후 입력값 초기화
+                                          }}>
+                                          수정완료
+                                        </label>
+                                      </S.CommentEDU>
+                                    </form>
+                                  ) : (
+                                    <>
+                                      <S.ReplyCommentContent>
+                                        {reply.content}
+                                      </S.ReplyCommentContent>
+                                      <S.CommentEDU>
+                                        <label
+                                          type='button'
+                                          onClick={() => {
+                                            if (user.id !== reply.user.id) {
+                                              // 지우려는 사람이 본인이 아닐 경우
+                                              alert(
+                                                '해당 대댓글을 수정할 수 없습니다.'
+                                              );
+                                              return;
+                                            }
+                                            if (editingCommentId === reply.id) {
+                                              setEditingCommentId(null); // 수정 취소
+                                            } else {
+                                              setEditingCommentId(reply.id); // 수정 모드로 전환
+                                              setEditingCommentText(
+                                                reply.content
+                                              ); // 수정할 대댓글 내용 설정
+                                            }
+                                          }}>
+                                          수정
+                                        </label>
+                                        <label
+                                          onClick={() =>
+                                            handleCommentDelete(reply)
+                                          }>
+                                          삭제
+                                        </label>
+                                      </S.CommentEDU>
+                                    </>
+                                  )}
+                                </div>
+                              )
+                          )}
+                      </div>
+                      <S.Nickname>
+                        <span class='material-symbols-outlined'>
+                          subdirectory_arrow_right
+                        </span>
+                        {user.nickname}
+                      </S.Nickname>
+                      <input
+                        type='text'
+                        placeholder='대댓글을 입력하세요'
+                        value={replyInput}
+                        onChange={(e) => setReplyInput(e.target.value)}
+                      />
+                      <S.ReplyCommentManage>
+                        <button
+                          className='replyWrite'
+                          type='submit'
+                          disabled={!replyInput}>
+                          작성
+                        </button>
+                      </S.ReplyCommentManage>
+                    </form>
+                  )}
+                </S.ReplyForm>
               </S.CommentContainer>
             ))}
         </S.SecondForm>
