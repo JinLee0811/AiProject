@@ -107,6 +107,8 @@ const ImageUpload = () => {
                   <ResultImage src={result.image} />
                   <ResultContents>
                     👉 당신의 작물은{' '}
+                    <ResultStrong>'{result.probability}%'</ResultStrong> 의
+                    정확도로
                     <ResultStrong>'{result.crop_name}'</ResultStrong>이며, 크롭
                     닥터의 진단 결과 질병의 이름은
                     <ResultStrong>'{result.disease_name}'</ResultStrong> 입니다.
@@ -116,11 +118,9 @@ const ImageUpload = () => {
                       👨‍🌾아래의 해결방법을 참고하세요👨‍🌾
                     </ResultStrong2>
                     <ResultStrong3>
-                      "
                       {result.disease_solution.split('\n\n').map((item) => (
                         <div>{item}</div>
                       ))}
-                      "
                     </ResultStrong3>
                   </ResultSolution>
                 </Result>

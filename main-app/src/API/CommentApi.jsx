@@ -13,9 +13,9 @@ import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 //대댓글 get
 export const useGetReplyComment = (boardId) => {
   return useQuery(
-    ['BoardDetail'], //query-key
+    ['BoardDetaiasdl'], //query-key
     async () => {
-      const { data } = await serverWithoutToken.get(`comment/${boardId}`);
+      const { data } = await serverWithoutToken.get(`comment/95`);
       return data;
     }
   );

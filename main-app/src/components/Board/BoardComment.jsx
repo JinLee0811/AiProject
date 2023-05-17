@@ -63,12 +63,9 @@ const BoardComment = () => {
     e.preventDefault();
     try {
       const response = await createReplyComment({
-        // board_id: detailBoard.id,
         content: replyInput,
         parent_comment_id: id,
       });
-      console.log(response);
-
       setReplyComments((prevReplyComments) => [...prevReplyComments, response]);
       setReplyInput('');
       setReplyCommentId(null);
@@ -132,8 +129,8 @@ const BoardComment = () => {
         }
         return comment; //수정 필요없는애들은 그대로
       });
+      console.log(updatedComments);
       setComments(updatedComments);
-      console.log(response);
       alert('수정완료');
       setEditingCommentText('');
       setEditingCommentId(null);
@@ -176,6 +173,7 @@ const BoardComment = () => {
   useEffect(() => {
     if (GetReplyComment) {
       setReplyComments(GetReplyComment);
+      console.log(GetReplyComment);
     }
   }, [GetReplyComment]);
   // replycomments 모든 대댓글이 달려있다.

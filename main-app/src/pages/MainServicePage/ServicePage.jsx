@@ -2,6 +2,7 @@ import React from 'react';
 import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
 import { Link } from 'react-scroll';
+import { useGetReplyComment } from '../../API/CommentApi';
 
 const MainPage = () => {
   const [ref1, inView1] = useInView({
