@@ -26,8 +26,7 @@ const LoginForm = () => {
       await login({ email, password });
       setIsLoggedIn(true);
     } catch (error) {
-      console.error('로그인 실패:', error.message);
-      setError(error.message); // error 상태값에 에러 메시지 저장
+      setError(error); // error 상태값에 에러 메시지 저장
     }
   };
 

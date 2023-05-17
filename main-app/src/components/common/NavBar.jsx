@@ -49,14 +49,14 @@ const Navbar = () => {
 
   return (
     <>
-      <NavLogo>
-        <StyledLink to='/'>
-          <LogoBox>
+      <StyledLink to='/'>
+        <MenuItem>
+          <NavLogo>
             <LogoImage src='https://cdn-icons-png.flaticon.com/512/5186/5186886.png' />
             <Logo>CropDoctor</Logo>
-          </LogoBox>
-        </StyledLink>
-      </NavLogo>
+          </NavLogo>
+        </MenuItem>
+      </StyledLink>
       <Nav1>
         <MenuIcon onClick={toggleMenu}>
           <div />
@@ -120,12 +120,12 @@ const Navbar = () => {
               </>
             )}
             <MenuItem>
-              <SearchBox>
+              {/* <SearchBox>
                 <SearchInput type='text' placeholder='Crop을 검색하세요' />
                 <SearchButton onClick={onClickSearch}>
                   <span class='material-symbols-outlined'>search</span>
                 </SearchButton>
-              </SearchBox>
+              </SearchBox> */}
             </MenuItem>
           </RightMenu>
           <CloseButton onClick={closeMenu}>X</CloseButton>
@@ -236,7 +236,7 @@ const fadeInOut = keyframes`
 `;
 const NavWrite = styled.div`
   width: 100%;
-  height: 15px;
+  height: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -255,6 +255,8 @@ const NavWriteTag = styled.p`
 `;
 
 const Logo = styled.h1`
+  display: flex;
+  align-items: center;
   font-size: 1.5rem;
   font-weight: bold;
   color: green;
@@ -274,7 +276,7 @@ const RightMenu = styled.ul`
   list-style: none;
   display: flex;
   align-items: center;
-  margin-left: 250px;
+  margin-left: 50px;
   padding: 0;
   @media (max-width: 998px) {
     margin-left: 0px;

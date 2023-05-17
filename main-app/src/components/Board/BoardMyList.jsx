@@ -91,7 +91,8 @@ const BoardMyList = ({ onPageChange }) => {
                   <p className='nickname'>{board.user.nickname}</p>
                 </S.Infor>
                 <p className='comment'>
-                  조회 {board.views} • 댓글 • 관심 {board.likes}
+                  조회 {board.views} • 댓글 {board.commentCount} • 관심{' '}
+                  {board.likes}
                 </p>
                 <button
                   className='Detail'

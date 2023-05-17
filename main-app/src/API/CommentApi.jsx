@@ -15,7 +15,7 @@ export const useGetReplyComment = (boardId) => {
   return useQuery(
     ['boardComment'], //query-key
     async () => {
-      const { data } = await serverWithoutToken.get('comment/132');
+      const { data } = await serverWithoutToken.get(`/comment/${boardId}`);
       return data;
     }
   );
@@ -48,10 +48,10 @@ export const useUpdateComment = (boardId) => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async ({ id, content, parent_comment_id }) => {
+    async ({ id, content }) => {
       const { data } = await serverWithToken.patch(
         `/comment/${boardId}/${id}`,
-        { content, parent_comment_id }
+        { content }
       );
       return data;
     },

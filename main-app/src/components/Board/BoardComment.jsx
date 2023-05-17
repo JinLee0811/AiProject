@@ -20,6 +20,7 @@ const BoardComment = () => {
   const [editingCommentText, setEditingCommentText] = useState('');
   const [showReplyCommentId, setShowReplyCommentId] = useState(null);
   const [user] = useAtom(userAtom);
+  const [commentNumber, setCommentNumber] = useState('');
   // 정리. 잡고들어가자 user는 토큰으로 해결
   // get : boardId, detailBoard.comment ~  어떻게 쓸지는 내가 정해. useEffect / detailBoard.comments / comments 스테이트에 넣을지
   // post : boardId, 선택한 commentId, input 값
@@ -42,12 +43,14 @@ const BoardComment = () => {
       const parents = detailBoard.comments.filter(
         (comment) => comment.parent_comment_id !== null
       );
+      const number = detailBoard.comments.length;
       setComments(nullParents);
       setReplyComments(parents);
+      setCommentNumber(number);
     }
   }, [detailBoard.comments]);
 
-  // console.log(comments[0]);
+  console.log(commentNumber);
   // 댓글 post
   const { mutateAsync: createComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는 이미지가 확실할때
   const handleCreateSubmit = async (e) => {
@@ -159,7 +162,6 @@ const BoardComment = () => {
         //여기까지가 기본적인 서버연동
         id: reply.id,
         content: contentData.content,
-        parent_comment_id: reply.parent_comment_id,
       });
       // console.log(response);
       const updatedComments = comments.map((comment) => {

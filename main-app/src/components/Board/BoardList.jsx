@@ -15,14 +15,6 @@ const BoardList = ({ onPageChange }) => {
   const navigate = useNavigate();
   const [boards, setBoards] = useAtom(boardsAtom); //axois.get을 통해 불러올 게시글 목록 표시
   const setSelectedBoard = useSetAtom(selectedBoardAtom); //클릭한 게시글의 정보를 저장하는 상태
-  // const {
-  //   data: fetchedBoard,
-  //   isLoading,
-  //   isError,
-  // } = useGetBoard({
-  //   onError: (error) => console.log(error.message),
-  // }); //get
-
   useEffect(() => {
     serverWithoutToken
       .get('/board')
@@ -91,30 +83,31 @@ const BoardList = ({ onPageChange }) => {
         </div>
         <S.FormContainer>
           <ul>
-            {boards.map((board) => (
-              <li key={board.id}>
-                <p className='time'>{filterTime(board.created_at)}</p>{' '}
-                {/* 등록날짜 표시 */}
-                <h2>{board.title}</h2>
-                <p>{shortenContent(board.content)}</p>
-                {/* content는 미리보기식으로 첫줄만 보이고 이후엔 ... 표기 */}
-                <S.ListImage src={board.image} alt={board.title} />
-                <S.Infor>
-                  <span className='material-symbols-outlined'>
-                    emoji_nature
-                  </span>
-                  <p className='nickname'>{board.user.nickname}</p>
-                </S.Infor>
-                <p className='comment'>
-                  조회 {board.views} • 댓글 {} • 관심 {board.likes}
-                </p>
-                <button
-                  className='Detail'
-                  onClick={() => detailClick(board.id)}>
-                  구경하기
-                </button>
-              </li>
-            ))}
+            {boards &&
+              boards.map((board) => (
+                <li key={board.id}>
+                  <p className='time'>{filterTime(board.created_at)}</p>
+                  {/* 등록날짜 표시 */}
+                  <h2>{board.title}</h2>
+                  <p>{board.content}</p>
+                  <S.ListImage src={board.image} alt={board.title} />
+                  <S.Infor>
+                    <span className='material-symbols-outlined'>
+                      emoji_nature
+                    </span>
+                    <p className='nickname'>{board.user.nickname}</p>
+                  </S.Infor>
+                  <p className='comment'>
+                    조회 {board.views} • 댓글 {board.commentCount} • 관심
+                    {board.likes}
+                  </p>
+                  <button
+                    className='Detail'
+                    onClick={() => detailClick(board.id)}>
+                    구경하기
+                  </button>
+                </li>
+              ))}
           </ul>
         </S.FormContainer>
       </S.Container>
