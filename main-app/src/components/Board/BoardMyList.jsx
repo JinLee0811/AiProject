@@ -66,7 +66,7 @@ const BoardMyList = ({ onPageChange }) => {
     <>
       <S.Container>
         <S.BannerImage
-          src='https://img.freepik.com/free-photo/home-decor-indoor-planhttps://img.freepik.com/free-photo/picture-frame-leaning-against-white-wall_53876-133178.jpg?size=626&ext=jpg&ga=GA1.1.383630718.1678090108&semt=aist-shelf_53876-130000.jpg?w=1800&t=st=1683690318~exp=1683690918~hmac=28f5fe10fb2f0e42e923ea8ff4069705e5a82327e6f34b6521afc857a956bc93'
+          src='https://img.freepik.com/premium-photo/different-green-house-plants-window-sunny-summer-day-banner-selective-focus_121867-1623.jpg'
           alt='Example'
         />
         <div className='buttons'>

@@ -36,18 +36,18 @@ const Box = styled.div`
   background-color: #f2f2f2;
   padding: 20px;
   width: 100%;
-  height: 350px;
+  height: 300px;
   @media (max-width: 1000px) {
   }
 `;
 const CompanyInfo = styled.div`
   display: flex;
   justify-content: center;
-  font-size: 16px;
+  font-size: 12px;
   margin-top: 40px;
 `;
 const Logo = styled.h1`
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: green;
   margin: 0;
@@ -101,7 +101,7 @@ const Row = styled.div`
 const FooterLink = styled.a`
   color: black;
   margin-bottom: 20px;
-  font-size: 18px;
+  font-size: 13px;
   text-decoration: none;
 
   &:hover {
@@ -111,7 +111,7 @@ const FooterLink = styled.a`
 `;
 
 const Heading = styled.p`
-  font-size: 24px;
+  font-size: 17px;
   color: black;
   margin-bottom: 40px;
   font-weight: bold;

@@ -34,10 +34,7 @@ const NutritionDetailPage = () => {
               ✔️ 규격 : 500ml
               <br />
             </h4>
-            <ButtonContainer>
-              <Button>구매하기</Button>
-              <Button>장바구니</Button>
-            </ButtonContainer>
+            <Banner src='https://cdn.shopify.com/s/files/1/0047/9730/0847/files/nurserylive-app-home-page-banner-plants-v3_9a4542b8-e6b2-4c88-8c5a-0dc0993fac5f_670x400.jpg?v=1636743230' />
           </ProductDescription>
         </Container>
       )}
@@ -99,12 +96,11 @@ const ButtonContainer = styled.div`
   margin-top: 30px;
 `;
 
-const Button = styled.button`
-  width: 100px;
-  height: 40px;
+const Banner = styled.img`
+  width: 300px;
+  height: 100px;
   border: none;
   border-radius: 5px;
-  margin-right: 10px;
   background-color: #eee;
   font-weight: bold;
   cursor: pointer;

@@ -73,7 +73,7 @@ const BoardList = ({ onPageChange }) => {
     <>
       <S.Container>
         <S.BannerImage
-          src='https://i.pinimg.com/564x/3b/f6/6d/3bf66d28aaf0ba444320c705dbc77808.jpg'
+          src='https://candsinteriors.co.uk/wp-content/uploads/2019/10/house-plants-stratford-garden-centre-header.jpg'
           alt='Example'
         />
         <div className='buttons'>
