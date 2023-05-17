@@ -34,6 +34,7 @@ const BoardComment = () => {
   const [comments, setComments] = useState([]);
   const [replyComments, setReplyComments] = useState([]);
 
+  //필터링해서 parent_comment_id가 null값인애들, 아닌애들 구분
   useEffect(() => {
     if (detailBoard.comments) {
       const nullParents = detailBoard.comments.filter(
@@ -47,7 +48,6 @@ const BoardComment = () => {
     }
   }, [detailBoard.comments]);
 
-  // console.log(comments[0]);
   // 댓글 post
   const { mutateAsync: createComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는 이미지가 확실할때
   const handleCreateSubmit = async (e) => {
@@ -74,7 +74,6 @@ const BoardComment = () => {
       });
       const updatedComments = comments.map((comment) => {
         //내가 추가한 커스텀부분
-        console.log(comment);
         if (comment.id === id) {
           //수정하려는 댓글 id랑 일치하는지 확인
           return {
@@ -118,16 +117,6 @@ const BoardComment = () => {
     }
   };
 
-  //대댓글 get
-  // const { data: GetReplyComment } = useGetReplyComment(detailBoard.id);
-
-  // // 해당 보드 아이디의 전체 대댓글이 담기게
-
-  // console.log(GetReplyComment);
-  // replycomments 모든 대댓글이 달려있다.
-  // console.log('대댓글');
-  // console.log(GetReplyComment);
-
   // 대댓글 post
   const { mutateAsync: createReplyComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는 이미지가 확실할때
   const handleReplyCreateSubmit = async (e, id) => {
@@ -148,18 +137,14 @@ const BoardComment = () => {
     }
   };
 
-  //대댓글 put
+  //대댓글 patch
   const { mutateAsync: updateReplyComment } = useUpdateComment(detailBoard.id);
   const handleReplyCommentUpdate = async (reply, contentData) => {
-    // console.log(reply.parent_comment_id); //parentId
-    // console.log(reply.id); //고유한 대댓글의 id
-
     try {
       const response = await updateReplyComment({
         //여기까지가 기본적인 서버연동
         id: reply.id,
         content: contentData.content,
-        parent_comment_id: reply.parent_comment_id,
       });
       // console.log(response);
       const updatedComments = comments.map((comment) => {
@@ -265,7 +250,6 @@ const BoardComment = () => {
                         삭제
                       </label>
                       <label
-                        className='replyComment'
                         type='button'
                         onClick={() => {
                           if (replyCommentId === selectedComment.id) {
@@ -274,7 +258,7 @@ const BoardComment = () => {
                             setReplyCommentId(selectedComment.id); // 답글달기 열기
                           }
                         }}>
-                        답글달기
+                        답글
                       </label>
                     </S.CommentEDU>
                   </>
@@ -333,7 +317,7 @@ const BoardComment = () => {
                                           type='button'
                                           onClick={() => {
                                             if (user.id !== reply.user.id) {
-                                              // 지우려는 사람이 본인이 아닐 경우
+                                              // 작성하려는 사람이 본인이 아닐 경우
                                               alert(
                                                 '해당 대댓글을 수정할 수 없습니다.'
                                               );

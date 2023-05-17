@@ -1,21 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
 
-// const selectedBoard = useAtomValue(selectedBoardAtom);
-//댓글 get
-// export const useGetComment = (boardId) => {
-//   return useQuery('comment', async () => {
-//     const { data } = serverWithoutToken.get(`/comment/${boardId}`);
-//     return data;
-//   });
-// };
-
-//대댓글 get
+//댓글, 대댓글 get
 export const useGetReplyComment = (boardId) => {
   return useQuery(
     ['boardComment'], //query-key
     async () => {
-      const { data } = await serverWithoutToken.get('comment/132');
+      const { data } = await serverWithoutToken.get(`comment/${boardId}`);
       return data;
     }
   );
@@ -48,10 +39,10 @@ export const useUpdateComment = (boardId) => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async ({ id, content, parent_comment_id }) => {
+    async ({ id, content }) => {
       const { data } = await serverWithToken.patch(
         `/comment/${boardId}/${id}`,
-        { content, parent_comment_id }
+        { content }
       );
       return data;
     },
@@ -63,7 +54,7 @@ export const useUpdateComment = (boardId) => {
   );
 };
 
-// delete 댓글 삭제
+// 댓글 삭제
 export const useDeleteComment = (boardId) => {
   const queryClient = useQueryClient();
 

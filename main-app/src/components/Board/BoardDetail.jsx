@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import * as S from './BoardDetail.style';
 import { useAtom, useSetAtom } from 'jotai';
-import { useDeleteBoard } from '../../API/BoardAPi';
-import { useCreateLike, useDeleteLike } from '../../API/LikeAPi';
-import { detailBoardAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
+import { useDeleteBoard, useCreateLike } from '../../API/BoardAPi';
+import { selectedBoardAtom } from '../../Atoms/BoardAtom'; // 현재는 selectedPostAtom에 해당 id의 게시글 정보가 들어간상태
 import { useNavigate } from 'react-router-dom';
 import { BOARD_FORM_PATH, BOARD_PATH } from '../common/path';
 import { userAtom } from '../../Atoms/TokenAtom';
@@ -16,10 +15,18 @@ const BoardDetail = () => {
   const { boardId } = useParams();
   const [user] = useAtom(userAtom);
   const setSelectedBoard = useSetAtom(selectedBoardAtom);
-
   const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
     onError: (error) => console.log(error.message),
   });
+  const [likes, setLikes] = useState('');
+  // const { mutateAsync: createLike } = useCreateLike(detailBoard.id);
+  // const [likeChange, setLikeChange] = useState(false);
+  console.log(detailBoard);
+  useEffect(() => {
+    if (detailBoard) {
+      setLikes(detailBoard.likes);
+    }
+  }, []);
 
   const handleBoardUpdate = (detailBoard) => {
     if (user.id !== detailBoard.user.id) {
@@ -56,19 +63,15 @@ const BoardDetail = () => {
     alert('삭제되었습니다!');
     navigate(BOARD_PATH);
   };
-  //   //@@@@@@@@@@@@@@좋아요@@@@@@@@@@@@@@@
 
-  // const { mutateAsync: createLike } = useCreateLike(user.id);
-  // const [likes, setLikes] = useState(detailBoard.likes);
+  //좋아요
 
   // const handleLike = async () => {
-  //   console.log(detailBoard.likes);
   //   try {
-  //     const response = await createLike({
-  //       likes: detailBoard.likes + 1,
-  //     });
+  //     const response = await createLike();
   //     console.log(response);
   //     setLikes(response.likes);
+  //     setLikeChange(!likeChange);
   //   } catch (error) {
   //     console.error('좋아요 요청 실패:', error);
   //   }
@@ -113,13 +116,23 @@ const BoardDetail = () => {
           <p className='nickname'>{detailBoard.user.nickname}</p>
           <p className='time'>{filterTime(detailBoard.created_at)}</p>
         </div>
-        <h2 className='content'>{detailBoard.content}</h2>
         <S.DetailImage src={detailBoard.image} />
+        <h2 className='content'>{detailBoard.content}</h2>
         <p className='comment'>
-          조회 {detailBoard.views} • 댓글 • 관심
-          {/* {likes} */}
+          조회 {detailBoard.views}회 • 댓글 {detailBoard.comments.length}개 •
+          관심
+          {/* {likes}
+          <label onClick={handleLike}>
+            {likeChange ? (
+              <span class='material-symbols-outlined'>favorite</span>
+            ) : (
+              <span class='material-symbols-outlined' style={{ color: 'red' }}>
+                favorite
+              </span>
+            )}
+          </label> */}
         </p>
-        {/* <button onClick={handleLike}>좋아요</button> */}
+
         <BoardComment />
       </S.FormContainer>
     </S.Container>
