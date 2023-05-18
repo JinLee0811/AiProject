@@ -28,8 +28,9 @@ const BoardList = ({ onPageChange }) => {
   useEffect(() => {
     if (likeCheck) {
       setLikedBoard(likeCheck.boardId);
+      console.log(likeCheck.boardId);
     }
-  }, []);
+  }, [likeCheck]);
 
   useEffect(() => {
     serverWithoutToken
@@ -124,10 +125,9 @@ const BoardList = ({ onPageChange }) => {
               boards
                 .filter((board) => board.status === 'PUBLIC')
                 .map((board) => {
-                  const isLiked = false;
-                  //  = likedBoard.some(
-                  //   (postId) => postId == board.id
-                  // );
+                  const isLiked =
+                    likedBoard &&
+                    likedBoard.some((postId) => postId == board.id);
                   return (
                     <li key={board.id}>
                       <p className='time'>{filterTime(board.created_at)}</p>
