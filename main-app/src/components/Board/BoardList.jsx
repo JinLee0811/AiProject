@@ -124,7 +124,7 @@ const BoardList = ({ onPageChange }) => {
                     <li key={board.id}>
                       <p className='time'>{filterTime(board.created_at)}</p>
                       <h2>{board.title}</h2>
-                      <p>{board.content}</p>
+                      <p style={{ whiteSpace: 'pre-line' }}>{board.content}</p>
                       <S.ListImage src={board.image} alt={board.title} />
                       <S.Infor>
                         <span className='material-symbols-outlined'>

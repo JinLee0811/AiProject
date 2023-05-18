@@ -154,7 +154,9 @@ const BoardDetail = () => {
           <p className='time'>{filterTime(detailBoard.created_at)}</p>
         </div>
         <S.DetailImage src={detailBoard.image} />
-        <h2 className='content'>{detailBoard.content}</h2>
+        <h2 className='content' style={{ whiteSpace: 'pre-line' }}>
+          {detailBoard.content}
+        </h2>
         <p className='comment'>
           <LikeHeart onClick={handleLike}>{liked ? '❤️' : '🤍'}</LikeHeart>
           조회 {detailBoard.views} • 댓글 {detailBoard.comments.length} • 좋아요{' '}

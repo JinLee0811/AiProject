@@ -10,11 +10,6 @@ import { selectedBoardAtom } from '../../Atoms/BoardAtom';
 
 const BoardForm = ({ onPageChange }) => {
   const [select, setSelect] = useAtom(selectedBoardAtom);
-  // const { boardId } = useParams();
-  // const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
-  //   onError: (error) => console.log(error.message),
-  // });
-  // console.log(boardId);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState('');
@@ -35,8 +30,6 @@ const BoardForm = ({ onPageChange }) => {
       for (const pair of formData.entries()) {
         console.log(pair[0] + ': ' + pair[1]);
       }
-      // const formData = new FormData(e.target); 위 방식과 다를 게 없는 듯 한데 맞는지 근데 이럼 title 이름이랑 실제데이터 지정 못하는거아님?
-      // mutate(formData);
       if (select && select.id) {
         // selectedPost가 있으면서 유효한 id가 있는 경우에만 업데이트 수행
         await updatePost({ id: select.id, updatedPost: formData });
@@ -100,6 +93,7 @@ const BoardForm = ({ onPageChange }) => {
               id='content'
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              style={{ whiteSpace: 'pre-line' }}
             />
           </div>
           <div>
