@@ -52,7 +52,10 @@ const BoardList = ({ onPageChange }) => {
     onPageChange(BOARD_MY_PATH);
   };
   const formClick = () => {
-    // setSelectedBoard('');
+    if (!isLoggedIn) {
+      window.location.href = '/login';
+      return;
+    }
     onPageChange(BOARD_FORM_PATH);
   };
   const shortenContent = (content) => {
