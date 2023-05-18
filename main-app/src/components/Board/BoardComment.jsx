@@ -14,22 +14,13 @@ import { Auth } from '../../API/authApi';
 
 const BoardComment = () => {
   const { isLoggedIn } = Auth();
-  const [input, setInput] = useState(''); //댓글입력상태
-  const [replyInput, setReplyInput] = useState(''); //대댓글 입력상태
-  const [replyCommentId, setReplyCommentId] = useState(''); //답글달기 =>내가 지금 작성하려는 댓글이 / 최상위 댓글의 대댓글이 맞는지 확인용
-  const [commentId, setCommentId] = useState('');
+  const [input, setInput] = useState('');
+  const [replyInput, setReplyInput] = useState('');
+  const [replyCommentId, setReplyCommentId] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState('');
-  const [showReplyCommentId, setShowReplyCommentId] = useState(null);
   const [user] = useAtom(userAtom);
   const [commentNumber, setCommentNumber] = useState('');
-  // 정리. 잡고들어가자 user는 토큰으로 해결
-  // get : boardId, detailBoard.comment ~  어떻게 쓸지는 내가 정해. useEffect / detailBoard.comments / comments 스테이트에 넣을지
-  // post : boardId, 선택한 commentId, input 값
-  // put : boardId, commentId, input값은 맞지만 변경된 inputEdit 값이겠지
-  // delete : boardId, commentId   commentId의 경우는 select로 받아와서 select.id user.id
-
-  //댓글 get
   const { boardId } = useParams();
   const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
     onError: (error) => console.log(error.message),
@@ -37,7 +28,6 @@ const BoardComment = () => {
   const [comments, setComments] = useState([]);
   const [replyComments, setReplyComments] = useState([]);
 
-  //필터링해서 parent_comment_id가 null값인애들, 아닌애들 구분
   useEffect(() => {
     if (detailBoard.comments) {
       const nullParents = detailBoard.comments.filter(
@@ -53,7 +43,7 @@ const BoardComment = () => {
     }
   }, [detailBoard.comments]);
   // 댓글 post
-  const { mutateAsync: createComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는 이미지가 확실할때
+  const { mutateAsync: createComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -72,20 +62,17 @@ const BoardComment = () => {
   const handleCommentUpdate = async (id, contentData) => {
     try {
       const response = await updateComment({
-        //여기까지가 기본적인 서버연동
         id: id,
         content: contentData.content,
       });
       const updatedComments = comments.map((comment) => {
-        //내가 추가한 커스텀부분
         if (comment.id === id) {
-          //수정하려는 댓글 id랑 일치하는지 확인
           return {
-            ...comment, //수정이 필요한 댓글 객체
-            content: contentData.content, //내용을 수정하려는 내용으로 업데이트
+            ...comment,
+            content: contentData.content,
           };
         }
-        return comment; //수정 필요없는애들은 그대로
+        return comment;
       });
       setComments(updatedComments);
       alert('수정완료');
@@ -103,13 +90,12 @@ const BoardComment = () => {
 
   const handleCommentDelete = async (select) => {
     if (user.id !== select.user.id) {
-      // 지우려는 사람이 본인이 아닐경우
       alert('해당 게시글을 삭제할 수 없습니다.');
       return;
     }
     if (window.confirm('회원의 댓글을 삭제하시겠습니까?')) {
       try {
-        await deleteCommentMutation(select.id); //서버요청은 이걸로 끝. / 아래는 프론트쪽에서 내가 해결할 부분
+        await deleteCommentMutation(select.id);
         setComments((prevComments) =>
           prevComments.filter((comment) => comment.id !== select.id)
         );
@@ -121,7 +107,7 @@ const BoardComment = () => {
   };
 
   // 대댓글 post
-  const { mutateAsync: createReplyComment } = useCreateComment(detailBoard.id); //mutateAsync는 반환되는 이미지가 확실할때
+  const { mutateAsync: createReplyComment } = useCreateComment(detailBoard.id);
   const handleReplyCreateSubmit = async (e, id) => {
     // console.log(id);
     e.preventDefault();
@@ -145,23 +131,18 @@ const BoardComment = () => {
   const handleReplyCommentUpdate = async (reply, contentData) => {
     try {
       const response = await updateReplyComment({
-        //여기까지가 기본적인 서버연동
         id: reply.id,
         content: contentData.content,
       });
       // console.log(response);
       const updatedComments = comments.map((comment) => {
-        //내가 추가한 커스텀부분
-
         if (comment.id === reply.id) {
-          //댓글 아이디랑 고유한 대댓글의 id랑 일치하면
-          //수정하려는 댓글 id랑 일치하는지 확인
           return {
-            ...comment, //수정이 필요한 댓글 객체
-            content: contentData.content, //내용을 수정하려는 내용으로 업데이트
+            ...comment,
+            content: contentData.content,
           };
         }
-        return comment; //수정 필요없는애들은 그대로
+        return comment;
       });
 
       setReplyComments(updatedComments);
@@ -197,7 +178,7 @@ const BoardComment = () => {
                           handleCommentUpdate(selectedComment.id, {
                             content: editingCommentText,
                           });
-                          setEditingCommentText(''); // 수정완료 후 입력값 초기화
+                          setEditingCommentText('');
                         }}>
                         수정완료
                       </label>
@@ -214,7 +195,7 @@ const BoardComment = () => {
                         type='button'
                         onClick={() => {
                           if (!isLoggedIn) {
-                            window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+                            window.location.href = '/login';
                             return;
                           }
                           if (user.id !== selectedComment.user.id) {
@@ -225,8 +206,8 @@ const BoardComment = () => {
                           if (editingCommentId === selectedComment.id) {
                             setEditingCommentId(null); // 수정 취소
                           } else {
-                            setEditingCommentId(selectedComment.id); // 수정 모드로 전환
-                            setEditingCommentText(selectedComment.content); // 수정할 댓글 내용 설정
+                            setEditingCommentId(selectedComment.id);
+                            setEditingCommentText(selectedComment.content);
                           }
                         }}>
                         수정
@@ -234,7 +215,7 @@ const BoardComment = () => {
                       <label
                         onClick={() => {
                           if (!isLoggedIn) {
-                            window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+                            window.location.href = '/login';
                             return;
                           }
                           handleCommentDelete(selectedComment);
@@ -246,13 +227,13 @@ const BoardComment = () => {
                         type='button'
                         onClick={() => {
                           if (!isLoggedIn) {
-                            window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+                            window.location.href = '/login';
                             return;
                           }
                           if (replyCommentId === selectedComment.id) {
-                            setReplyCommentId(null); // 답글달기 닫기
+                            setReplyCommentId(null);
                           } else {
-                            setReplyCommentId(selectedComment.id); // 답글달기 열기
+                            setReplyCommentId(selectedComment.id);
                           }
                         }}>
                         답글보기
@@ -297,8 +278,8 @@ const BoardComment = () => {
                                             handleReplyCommentUpdate(reply, {
                                               content: editingCommentText,
                                             });
-                                            setEditingCommentId(null); // 수정 완료 후 수정 상태 해제
-                                            setEditingCommentText(''); // 수정 완료 후 입력값 초기화
+                                            setEditingCommentId(null);
+                                            setEditingCommentText('');
                                           }}>
                                           수정완료
                                         </label>
@@ -314,19 +295,18 @@ const BoardComment = () => {
                                           type='button'
                                           onClick={() => {
                                             if (user.id !== reply.user.id) {
-                                              // 작성하려는 사람이 본인이 아닐 경우
                                               alert(
                                                 '해당 대댓글을 수정할 수 없습니다.'
                                               );
                                               return;
                                             }
                                             if (editingCommentId === reply.id) {
-                                              setEditingCommentId(null); // 수정 취소
+                                              setEditingCommentId(null);
                                             } else {
-                                              setEditingCommentId(reply.id); // 수정 모드로 전환
+                                              setEditingCommentId(reply.id);
                                               setEditingCommentText(
                                                 reply.content
-                                              ); // 수정할 대댓글 내용 설정
+                                              );
                                             }
                                           }}>
                                           수정

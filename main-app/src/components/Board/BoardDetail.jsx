@@ -44,7 +44,6 @@ const BoardDetail = () => {
 
   const handleBoardUpdate = (detailBoard) => {
     if (user.id !== detailBoard.user.id) {
-      // 지우려는 사람이 본인이 아닐경우
       alert('해당 게시글을 수정할 수 없습니다.');
       return;
     }

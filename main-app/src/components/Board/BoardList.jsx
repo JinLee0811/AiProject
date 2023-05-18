@@ -3,13 +3,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import styled from 'styled-components';
 import * as S from './BoardList.style';
 import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
-import {
-  BOARD_PATH,
-  BOARD_DETAIL_PATH,
-  BOARD_MY_PATH,
-  BOARD_FORM_PATH,
-  LOGIN_PATH,
-} from '../common/path';
+import { BOARD_PATH, BOARD_MY_PATH, BOARD_FORM_PATH } from '../common/path';
 import { useCreateLike, useGetLike } from '../../API/BoardAPi';
 import { useNavigate } from 'react-router-dom';
 import { serverWithoutToken } from '../../config/AxiosRequest';
@@ -18,9 +12,9 @@ const BoardList = ({ onPageChange }) => {
   const navigate = useNavigate();
   const [boards, setBoards] = useAtom(boardsAtom);
   const { isLoggedIn } = Auth();
-  const setSelectedBoard = useSetAtom(selectedBoardAtom);
-  const [liked, setLiked] = useState(true);
-  const [likeCount, setLikeCount] = useState('');
+  // const setSelectedBoard = useSetAtom(selectedBoardAtom);
+  // const [liked, setLiked] = useState(true);
+  // const [likeCount, setLikeCount] = useState('');
   const [likedBoard, setLikedBoard] = useState('');
 
   const { data: likeCheck } = useGetLike();
@@ -36,15 +30,14 @@ const BoardList = ({ onPageChange }) => {
     serverWithoutToken
       .get('/board')
       .then((response) => {
-        setBoards(response.data); //가져온 data가 비어있던 boardsAtom 업데이트 됨
+        setBoards(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [setBoards]); //두번째 매개변수로 setPosts 박아둠으로써 상태가 업데이트될 때마다 데이터를 가져오고 컴포넌트를 업데이트
+  }, [setBoards]);
 
   const detailClick = (boardId) => {
-    //해당 id의 게시글 정보를 selectedPostAtom에 저장 (selectedPostAtom에을 Detail에서 쓸거임)
     navigate(`/board/detail/${boardId}`);
   };
   const boardClick = () => {
@@ -52,7 +45,7 @@ const BoardList = ({ onPageChange }) => {
   };
   const myBoardClick = () => {
     if (!isLoggedIn) {
-      window.location.href = '/login'; // 로그인 페이지 경로로 리디렉션
+      window.location.href = '/login';
       return;
     }
 
@@ -63,7 +56,6 @@ const BoardList = ({ onPageChange }) => {
     onPageChange(BOARD_FORM_PATH);
   };
   const shortenContent = (content) => {
-    //5글자 이상인 경우 뒤는 ... 으로 요약처리!
     if (content.length > 3) {
       return content.slice(0, 5) + '...';
     }
@@ -73,7 +65,7 @@ const BoardList = ({ onPageChange }) => {
     // 서버에서 보내주는 시간 값을 Date 객체로 바꿈
     const serverTime = new Date(time);
     // 클라이언트의 로컬 시간대에 맞추어 변환
-    const localTime = new Date(serverTime.getTime()); //현재 시간에서 뺌
+    const localTime = new Date(serverTime.getTime());
     const filter = Date.now() - localTime.getTime();
     const filterSeconds = Math.floor(filter / 1000);
     const filterMinutes = Math.floor(filter / 60000);
