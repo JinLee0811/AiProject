@@ -154,7 +154,7 @@ const Nav1 = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: transparent;
+  background-color: white;
   padding: 1rem;
 `;
 
@@ -164,6 +164,7 @@ const MenuIcon = styled.div`
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
+    width: 100%;
     cursor: pointer;
 
     div {
@@ -180,6 +181,7 @@ const MenuLinks = styled.div`
   display: flex;
   justify-content: flex-end;
   color: white;
+  background-color: white;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -188,7 +190,7 @@ const MenuLinks = styled.div`
     left: ${({ isOpen }) => (isOpen ? '0' : '-100%')};
     width: 90%;
     transition: all 0.3s ease-in-out;
-    background-color: transparent;
+    background-color: white;
     padding: 2rem 1rem;
     text-align: center;
   }
@@ -202,7 +204,7 @@ const NavLogo = styled.div`
   align-items: center;
   color: white;
   font-weight: 700;
-  background-color: transparent;
+  background-color: white;
   padding: 10px;
   margin-bottom: 0px;
   margin-top: 15px;
@@ -247,6 +249,9 @@ const NavWrite = styled.div`
   border-bottom: 1px solid #e5e8e7;
   font-size: 17px;
   transition: color 0.5s ease-in-out;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 const NavWriteTag = styled.p`
   color: white;
@@ -265,6 +270,7 @@ const Logo = styled.h1`
 const LeftMenu = styled.ul`
   list-style: none;
   display: flex;
+  background-color: white;
   align-items: center;
   margin-right: 0;
   padding: 0;
@@ -276,6 +282,7 @@ const RightMenu = styled.ul`
   display: flex;
   align-items: center;
   margin-left: 530px;
+  background-color: white;
   padding: 0;
   @media (max-width: 998px) {
     margin-left: 0px;

@@ -134,7 +134,7 @@ const BoardList = ({ onPageChange }) => {
               <RankList>
                 {boards &&
                   boards
-                    .sort((a, b) => b.like - a.like)
+                    .sort((a, b) => b.likes - a.likes)
                     .slice(0, 5) // 상위 5개 요소 추출
                     .map((board, index) => (
                       <RankListItem key={board.title} isFirst={index === 0}>
@@ -221,7 +221,7 @@ const Ranking = styled.div`
 `;
 const BothBox = styled.div`
   display: flex;
-  margin-left: 33px;
+  margin-left: 30px;
   margin-top: 15px;
 `;
 const LikeRanking = styled.div`
