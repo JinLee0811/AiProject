@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { serverWithToken, serverWithoutToken } from '../config/AxiosRequest';
+import { Auth } from './authApi';
 
 // 전체 get
 export const useGetBoard = () => {
@@ -118,7 +119,13 @@ export const useCreateLike = (boardId) => {
 };
 
 export const useGetLike = () => {
+  const { isLoggedIn } = Auth();
+
   return useQuery(['like'], async () => {
+    if (!isLoggedIn) {
+      return null; // 로그인되지 않은 경우, 더미 데이터(null)를 반환합니다.
+    }
+
     const { data } = await serverWithToken.get('/board/likes');
     return data;
   });

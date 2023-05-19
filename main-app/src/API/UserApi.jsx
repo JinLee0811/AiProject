@@ -1,8 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { serverWithToken } from '../config/AxiosRequest';
+import { Auth } from './authApi';
 
 export const useUser = () => {
+  const { isLoggedIn } = Auth();
+
   return useQuery(['user'], async () => {
+    if (!isLoggedIn) {
+      return null; // 로그인되지 않은 경우, 더미 데이터(null)를 반환합니다.
+    }
+
     const { data } = await serverWithToken.get('/user/profile');
     return data;
   });

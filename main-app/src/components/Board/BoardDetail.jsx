@@ -18,7 +18,7 @@ const BoardDetail = () => {
   const { isLoggedIn } = Auth();
   const { boardId } = useParams();
   const setSelectedBoard = useSetAtom(selectedBoardAtom);
-  const [liked, setLiked] = useState(true);
+  const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState('');
   const { isLoading, data: detailBoard } = useGetDetailBoard(boardId, {
     onError: (error) => console.log(error.message),
@@ -27,6 +27,9 @@ const BoardDetail = () => {
   const { data: likeCheck } = useGetLike();
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      return; // 로그인되지 않은 경우, 요청을 수행하지 않고 종료합니다.
+    }
     if (likeCheck) {
       const userLikedPosts = likeCheck.boardId;
       const isLiked = userLikedPosts.some((postId) => postId == boardId);
@@ -34,7 +37,7 @@ const BoardDetail = () => {
     } else {
       setLiked(false);
     }
-  }, [boardId, likeCheck]);
+  }, [boardId, likeCheck, isLoggedIn]);
 
   useEffect(() => {
     if (detailBoard) {
@@ -43,19 +46,31 @@ const BoardDetail = () => {
   }, [detailBoard]);
 
   const handleBoardUpdate = (detailBoard) => {
+    if (!isLoggedIn) {
+      return; // 로그인되지 않은 경우, 함수 실행을 건너뜁니다.
+    }
+
     if (user.id !== detailBoard.user.id) {
       alert('해당 게시글을 수정할 수 없습니다.');
       return;
     }
+
     alert('게시글을 수정하시겠습니까?');
     setSelectedBoard(detailBoard);
     navigate(BOARD_FORM_PATH);
+  };
+  const handleBoardGo = () => {
+    navigate('/board');
   };
 
   //   //게시글 삭제
   const { mutateAsync: deleteBoard } = useDeleteBoard();
 
   const handleBoardDelete = async (id) => {
+    if (!isLoggedIn) {
+      return; // 로그인되지 않은 경우, 함수 실행을 건너뜁니다.
+    }
+
     if (user.id !== detailBoard.user.id) {
       // 지우려는 사람이 본인이 아닐경우
       alert('해당 게시글을 삭제할 수 없습니다.');
@@ -125,6 +140,12 @@ const BoardDetail = () => {
     <S.Container>
       <S.FormContainer>
         <div className='buttons'>
+          <button
+            onClick={() => {
+              handleBoardGo();
+            }}>
+            목록
+          </button>
           <button
             onClick={() => {
               if (!isLoggedIn) {
