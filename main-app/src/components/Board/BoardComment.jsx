@@ -154,7 +154,27 @@ const BoardComment = () => {
       console.log(err);
     }
   };
+  const filterTime = (time) => {
+    // 서버에서 보내주는 시간 값을 Date 객체로 바꿈
+    const serverTime = new Date(time);
+    // 클라이언트의 로컬 시간대에 맞추어 변환
+    const localTime = new Date(serverTime.getTime()); //현재 시간에서 뺌
+    const filter = Date.now() - localTime.getTime();
+    const filterSeconds = Math.floor(filter / 1000);
+    const filterMinutes = Math.floor(filter / 60000);
+    const filterHours = Math.floor(filter / 3600000);
+    const filterDays = Math.floor(filter / 86400000);
 
+    if (filterSeconds < 60) {
+      return `${filterSeconds}초 전`;
+    } else if (filterMinutes < 60) {
+      return `${filterMinutes}분 전`;
+    } else if (filterHours < 24) {
+      return `${filterHours}시간 전`;
+    } else {
+      return `${filterDays}일 전`;
+    }
+  };
   return (
     <>
       <S.CommentContainer>
@@ -187,6 +207,7 @@ const BoardComment = () => {
                 ) : (
                   <>
                     <S.Nickname>{selectedComment.user.nickname}</S.Nickname>
+                    <S.Time>{filterTime(selectedComment.created_at)}</S.Time>
                     <S.CommentContent>
                       {selectedComment.content}
                     </S.CommentContent>
@@ -260,6 +281,9 @@ const BoardComment = () => {
                                     </span>
                                     {reply.user.nickname}
                                   </S.Nickname>
+                                  <S.Time>
+                                    {filterTime(reply.created_at)}
+                                  </S.Time>
                                   {editingCommentId === reply.id ? (
                                     <form>
                                       <input
