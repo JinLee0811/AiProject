@@ -111,7 +111,7 @@ export const FirstForm = styled.form`
 export const Nickname = styled.span`
   width: 400px;
   margin-bottom: 30px;
-  color: #84b699;
+  color: #62b585;
   span {
     margin-right: 3px;
   }
@@ -120,7 +120,7 @@ export const Nickname1 = styled.span`
   width: 400px;
   margin-top: 40px;
   margin-bottom: 20px;
-  color: #527b63;
+  color: #328253;
   span {
     margin-right: 3px;
   }
@@ -164,9 +164,10 @@ export const ReplyCommentContent = styled.div`
 `;
 export const Time = styled.span`
   width: 400px;
+  font-size: 11px;
   margin-left: 10px;
   margin-bottom: 30px;
-  color: #84b699;
+  color: #aca4a4;
   span {
     margin-right: 3px;
   }
