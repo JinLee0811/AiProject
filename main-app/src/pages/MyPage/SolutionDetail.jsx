@@ -24,6 +24,8 @@ const SolutionDetail = () => {
 
               <ResultContents>
                 👉 당신의 작물은{' '}
+                <ResultStrong>'{detailSoultion.probability}%'</ResultStrong> 의
+                정확도로
                 <ResultStrong>
                   '{detailSoultion.solution.crop_name}'
                 </ResultStrong>

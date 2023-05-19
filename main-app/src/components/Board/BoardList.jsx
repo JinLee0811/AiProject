@@ -5,7 +5,7 @@ import * as S from './BoardList.style';
 import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
 import { BOARD_PATH, BOARD_MY_PATH, BOARD_FORM_PATH } from '../common/path';
 import { useCreateLike, useGetLike } from '../../API/BoardAPi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { serverWithoutToken } from '../../config/AxiosRequest';
 import { Auth } from '../../API/authApi';
 const BoardList = ({ onPageChange }) => {
@@ -101,7 +101,7 @@ const BoardList = ({ onPageChange }) => {
   //     console.error(error);
   //   }
   // };
-
+  const MAX_TITLE_LENGTH = 13;
   return (
     <>
       <S.Container>
@@ -109,6 +109,56 @@ const BoardList = ({ onPageChange }) => {
           src='https://candsinteriors.co.uk/wp-content/uploads/2019/10/house-plants-stratford-garden-centre-header.jpg'
           alt='Example'
         />
+        <Ranking>
+          <BothBox>
+            {' '}
+            <ViewRanking>
+              <Title>조회수 순위</Title>
+              <RankList>
+                {boards &&
+                  boards
+                    .sort((a, b) => b.views - a.views) // view를 기준으로 내림차순 정렬
+                    .slice(0, 5) // 상위 5개 요소 추출
+                    .map((board, index) => (
+                      <RankListItem key={board.title} isFirst={index === 0}>
+                        <ViewRankingTitle>
+                          <LinkStyle to={`/board/detail/${board.id}`}>
+                            {board.title.length > MAX_TITLE_LENGTH
+                              ? board.title.slice(0, MAX_TITLE_LENGTH) + '...'
+                              : board.title}
+                            {'   '}
+                            <CommentBox>({board.commentCount})</CommentBox>
+                          </LinkStyle>
+                        </ViewRankingTitle>
+                      </RankListItem>
+                    ))}
+              </RankList>
+            </ViewRanking>
+            <LikeRanking>
+              <Title>좋아요 순위</Title>
+              <RankList>
+                {boards &&
+                  boards
+                    .sort((a, b) => b.like - a.like)
+                    .slice(0, 5) // 상위 5개 요소 추출
+                    .map((board, index) => (
+                      <RankListItem key={board.title} isFirst={index === 0}>
+                        <ViewRankingTitle>
+                          <LinkStyle to={`/board/detail/${board.id}`}>
+                            {board.title.length > MAX_TITLE_LENGTH
+                              ? board.title.slice(0, MAX_TITLE_LENGTH) + '...'
+                              : board.title}
+                            {'   '}
+                            <CommentBox>({board.commentCount})</CommentBox>
+                          </LinkStyle>
+                        </ViewRankingTitle>
+                      </RankListItem>
+                    ))}
+              </RankList>
+            </LikeRanking>
+          </BothBox>
+        </Ranking>
+
         <div className='buttons'>
           <button onClick={boardClick}>전체보기</button>
           <button onClick={myBoardClick}>내 게시글 보기</button>
@@ -162,5 +212,73 @@ const LikeHeart = styled.button`
   background-color: transparent;
   margin-right: 10px;
   background-color: white;
+`;
+const Ranking = styled.div`
+  display: flex;
+  padding: 10px;
+  border-radius: 5px;
+  align-items: center;
+  margin-top: 10px;
+  margin-left: 37px;
+  background-color: white;
+  width: 550px;
+  height: 200px;
+`;
+const BothBox = styled.div`
+  display: flex;
+  margin-left: 33px;
+  margin-top: 15px;
+`;
+const LikeRanking = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-left: 50px;
+  width: 220px;
+  height: 200px;
+`;
+
+const ViewRanking = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-left: 20px;
+  width: 220px;
+  height: 200px;
+`;
+
+const ViewRankingTitle = styled.div`
+  font-size: 15px;
+  margin-bottom: 10px;
+  font-weight: bold;
+`;
+const Title = styled.div`
+  margin-bottom: 5px;
+  font-weight: bold;
+  margin-left: 30px;
+`;
+const RankList = styled.ol`
+  margin-left: 10px;
+  padding-left: 0px;
+`;
+const RankListItem = styled.li`
+  color: ${(props) => (props.isFirst ? 'red' : 'inherit')};
+  font-weight: bold;
+  font-style: italic;
+`;
+const CommentBox = styled.div`
+  display: inline;
+  color: red;
+`;
+
+const LinkStyle = styled(Link)`
+  color: black;
+  text-decoration: none;
+  margin-left: 4px;
+  font-style: normal;
+  :hover {
+    text-decoration: underline;
+    text-decoration-color: #99aca1;
+  }
 `;
 export default BoardList;

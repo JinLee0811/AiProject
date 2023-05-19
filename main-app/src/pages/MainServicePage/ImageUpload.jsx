@@ -51,6 +51,7 @@ const ImageUpload = () => {
         image: result.image,
         solution_id: result.id,
         resolved_at: result.resolved_at,
+        probability: result.probability,
       };
       const data = await createSolution(solution);
       alert('저장이 완료되었습니다.');

@@ -80,7 +80,7 @@ export const FormContainer = styled.div`
   }
   .time {
     font-size: 13px;
-    margin-left: 88%;
+    margin-left: 92%;
     margin-bottom: 0px;
     margin-top: 0px;
   }
