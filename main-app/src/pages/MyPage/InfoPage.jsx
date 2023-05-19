@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useAtom } from 'jotai';
 import { useUpdateNickname, useUser } from '../../API/UserApi';
+import { userAtom } from '../../Atoms/TokenAtom';
 
 const Info = () => {
   const [nickName, setNickName] = useState('');
+  const [user, setUser] = useAtom(userAtom);
   const [profileImage, setProfileImage] = useState('');
-  const { data: fetchUser } = useUser();
   const { mutateAsync: updateNickname } = useUpdateNickname();
 
   useEffect(() => {
-    if (fetchUser) {
-      setNickName(fetchUser.nickname);
+    if (user) {
+      setNickName(user.nickname);
     }
-  }, [fetchUser]);
+  }, [user]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -30,7 +32,7 @@ const Info = () => {
     if (window.confirm('정말 닉네임을 변경하시겠습니까?')) {
       try {
         await updateNickname({ nickname: nickName });
-        setNickName(nickName);
+        setUser({ ...user, nickname: nickName });
         alert('닉네임이 변경되었습니다.');
       } catch (error) {
         console.error(error);
@@ -52,7 +54,7 @@ const Info = () => {
       </ProfileImageWrapper>
       <FormGroup>
         <label htmlFor='email'>이메일</label>
-        <input type='email' name='email' value={fetchUser?.email} disabled />
+        <input type='email' name='email' value={user?.email} disabled />
       </FormGroup>
       <FormGroup>
         <label htmlFor='name'>닉네임</label>

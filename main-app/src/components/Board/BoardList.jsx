@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import styled from 'styled-components';
 import * as S from './BoardList.style';
-import { boardsAtom, selectedBoardAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
+import { boardsAtom } from '../../Atoms/BoardAtom'; //전역으로 관리 초기값들을 저장해둔 곳
 import { BOARD_PATH, BOARD_MY_PATH, BOARD_FORM_PATH } from '../common/path';
-import { useCreateLike, useGetLike } from '../../API/BoardAPi';
+import { useGetLike } from '../../API/BoardAPi';
 import { useNavigate, Link } from 'react-router-dom';
 import { serverWithoutToken } from '../../config/AxiosRequest';
 import { Auth } from '../../API/authApi';
@@ -12,9 +12,6 @@ const BoardList = ({ onPageChange }) => {
   const navigate = useNavigate();
   const [boards, setBoards] = useAtom(boardsAtom);
   const { isLoggedIn } = Auth();
-  // const setSelectedBoard = useSetAtom(selectedBoardAtom);
-  // const [liked, setLiked] = useState(true);
-  // const [likeCount, setLikeCount] = useState('');
   const [likedBoard, setLikedBoard] = useState('');
 
   const { data: likeCheck } = useGetLike();
@@ -22,7 +19,6 @@ const BoardList = ({ onPageChange }) => {
   useEffect(() => {
     if (likeCheck) {
       setLikedBoard(likeCheck.boardId);
-      console.log(likeCheck.boardId);
     }
   }, [likeCheck]);
 
@@ -85,7 +81,6 @@ const BoardList = ({ onPageChange }) => {
       return `${filterDays}일 전`;
     }
   };
-
   // const { mutateAsync: createLike } = useCreateLike();
   // const handleLike = async (id) => {
   //   try {

@@ -24,6 +24,9 @@ export const Auth = () => {
   const [user, setUser] = useAtom(userAtom);
 
   useEffect(() => {
+    if (isLoggedIn) {
+      return;
+    }
     const access_token = localStorage.getItem('access_token');
     const refresh_token = localStorage.getItem('refresh_token');
 
