@@ -184,7 +184,7 @@ const BoardList = ({ onPageChange }) => {
                         <LikeHeart onClick={() => detailClick(board.id)}>
                           {isLiked && isLoggedIn ? '❤️' : '🤍'}
                         </LikeHeart>
-                        조회 {board.views} • 댓글 {board.commentCount} • 관심{' '}
+                        조회 {board.views} • 댓글 {board.commentCount} • 좋아요{' '}
                         {board.likes}
                       </p>
                       <button
