@@ -108,7 +108,7 @@ export const CommentContent = styled.div`
 export const FirstForm = styled.form`
   margin-bottom: 5px;
 `;
-export const Nickname = styled.label`
+export const Nickname = styled.span`
   width: 400px;
   margin-bottom: 30px;
   color: #84b699;
@@ -116,7 +116,7 @@ export const Nickname = styled.label`
     margin-right: 3px;
   }
 `;
-export const Nickname1 = styled.label`
+export const Nickname1 = styled.span`
   width: 400px;
   margin-top: 40px;
   margin-bottom: 20px;
@@ -154,10 +154,20 @@ export const ReplyForm = styled.div`
 export const ReplyCommentContent = styled.div`
   color: #759783;
   padding: 10px;
+  margin-top: 10px;
   margin-bottom: 8px;
   padding: 12px 25px;
   width: 650px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 6px;
   border: grey;
   border-radius: 8px;
+`;
+export const Time = styled.span`
+  width: 400px;
+  margin-left: 10px;
+  margin-bottom: 30px;
+  color: #84b699;
+  span {
+    margin-right: 3px;
+  }
 `;
