@@ -1,3 +1,3 @@
 # AiProject
 Ai WebService Project
-Go to the Main Channel
+# Go to the Master Channel
