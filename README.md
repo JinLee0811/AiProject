@@ -1,66 +1,97 @@
-# **서비스 기획서**
+# **Crop Doctor** 🌱  
+AI-Based Plant Diagnosis and Management Platform  
 
-## 서비스 개요📝
+---
 
-**주제**: 작물을 키우는 사람들을 위한 작물 관리 플랫폼
+## **Overview** 📝  
+**Crop Doctor** is a smart platform designed to help plant growers easily identify diseases in their crops and find appropriate solutions. By uploading images of plants, users can receive AI-driven disease analysis and recommended treatments. The service also offers a community for sharing knowledge and tools for managing crop growth diaries.
 
-**소개**: 우리 서비스는 식물을 키우는 사람들이 식물의 질병을 파악하고 적절한 해결책을 찾을 수 있도록 도와주는 플랫폼입니다. 사용자가 식물의 질병 관련 이미지를 업로드하면, 서비스는 해당 질병을 분석하여 해결책을 제공합니다. 또한, 작물 성장일지를 작성하고 정보를 공유할 수 있는 커뮤니티 기능과 영양제 소개를 제공합니다.
+---
 
-## 기획 의도 **🌱**
+## **Project Goal** 🌱  
+To simplify disease management for plant growers by leveraging AI technology, addressing the growing need for accurate plant disease information in the face of increasing interest in personal and commercial crop cultivation.
 
-최근 작물을 키우는 사람들이 급증하면서, 작물의 질병과 해결책에 대한 정보를 찾는 것이 어렵다는 문제가 있습니다. 이러한 문제를 해결하고, 작물을 키우는 사람들의 불편을 덜어주기 위해 "작물 질병 분류 모델"과 이를 활용한 "작물 진단 서비스"인 Crop Doctor 서비스를 기획하게 되었습니다.
+---
 
-## **서비스의 메인 기능과 서브 기능 🚀**
+## **Features** 🚀  
 
-### **메인 기능**
+### **Main Features**  
+1. **AI Disease Diagnosis**:  
+   - Upload crop images to analyze and diagnose plant diseases using the Crop Doctor AI model.  
+   - Receive detailed recommendations and solutions for treatment.  
 
-- 사용자의 작물이 가지고 있는 질병 관련 이미지 업로드, 해당 이미지를 토대로 Crop Doctor AI 모델을 이용하여 이미지 분석을 통해 질병을 파악한 후 해결책을 제공합니다.
-- 사용자가 작물 성장일지를 작성하고 관리할 수 있도록 도와주며, 사용자 간 정보 공유를 통해 작물을 보다 효과적으로 관리하고 성장시키는 기능을 제공합니다.
+2. **Growth Diary Management**:  
+   - Create and manage crop growth logs.  
+   - Track progress and maintain organized records.  
 
-### **서브 기능**
+3. **Community Sharing**:  
+   - Share crop-related experiences and knowledge with other users.  
 
-- 정보 공유 커뮤니티
-- 나의 작물 일지
-- 작물 영양제 소개
+### **Additional Features**  
+- **Nutrient Information Management**:  
+  - Admin-curated details about crop nutrients and fertilizers.  
 
-### 서비스 사용법 📖
+- **User Dashboard**:  
+  - View diagnosis history and manage account settings.  
 
-1. 홈페이지에 접속합니다.
-2. 사용자는 식물의 질병 관련 이미지를 업로드합니다.
-3. 해당 이미지를 분석하여 질병을 파악하고, 적절한 해결책을 제공합니다.
-4. 사용자는 작물의 성장 상황을 기록하고, 성장일지를 작성할 수 있습니다.
-5. 다른 사용자들과 작물의 성장 정보를 공유할 수 있습니다.
+- **Community Rankings**:  
+  - Track most popular posts and discussions within the platform.  
 
-## **AI 모델 기획서**
+---
 
-### **모델명**
+## **Technical Details** 🛠️  
 
-작물 질병 분류 모델 (Crop Disease Classification Model)
+### **AI Model**  
+- **Model Type**: MobileNetV2 (Transfer Learning)  
+- **Purpose**: Classify diseases based on uploaded plant images and recommend solutions.  
+- **Input**: Images in formats like `.jpg`, `.png` (224x224 resolution).  
+- **Output**: Predicted disease classification with detailed treatment solutions.  
+- **Techniques Used**:  
+  - **Data Augmentation**: Rotation, cropping, horizontal flipping.  
+  - **Loss Function**: Weighted Cross-Entropy (WCE).  
+  - **Optimizers**: Adam.  
 
-### **목적**
+### **Frontend Technologies**  
+- **React**: For building a dynamic user interface.  
+- **Styled-Components**: For modular and reusable CSS styles in JavaScript.  
+- **Figma**: For UI/UX design and prototyping.  
+- **React Query & Jotai**: For state and server data management.
 
-사용자가 제공하는 작물 이미지를 분석하여 해당 작물이 어떤 질병에 걸렸는지 분류하고, 적절한 해결책을 제공함으로써 작물 재배자의 작물 관리를 돕는 것이 목적입니다.
+### **Backend Technologies**  
+- **Node.js & Nest.js**: Server-side frameworks for scalable and maintainable API development.  
+- **MySQL**: Relational database for storing user and plant-related data.  
+- **AWS**: Cloud infrastructure for database hosting and deployment.  
 
-### **입력 데이터**
+### **Security**  
+- **Authentication**:  
+  - JSON Web Token (JWT) implementation with access and refresh tokens.  
+  - Admin authorization for sensitive operations.  
 
-사용자가 업로드한 작물 이미지 데이터 (jpg, png, jpeg 등)
+---
 
-### **출력 데이터**
+## **How to Use** 📖  
+1. Visit the [Crop Doctor website](http://kdt-ai6-team03.elicecoding.com/) (Demo login credentials: `user@test.com` / `test`).  
+2. Upload a plant image to receive a disease diagnosis and recommended solution.  
+3. Track your crop's growth by logging entries in the diary section.  
+4. Join the community to share and discuss your experiences with other users.  
 
-작물 이미지에 대한 질병 분류 결과와 해당 질병에 대한 해결책
+---
 
-### **모델 구조**
+## **System Architecture** 📊  
+- **ER Diagram**: Relationships between users, crops, diseases, and diagnoses are carefully designed for scalability and ease of use.  
 
-Convolutional Neural Network (CNN) 기반의 이미지 분류 모델입니다. 이미지 데이터를 입력으로 받아 다양한 사이즈의 컨볼루션 필터와 풀링 레이어를 거쳐 특징 맵(feature map)을 추출하고, 추출된 특징 맵을 다층 퍼셉트론(multi-layer perceptron)에 입력하여 분류 결과를 출력합니다. 모델은 이미지 데이터에 대한 전처리 과정을 거치며, 데이터 증강(data augmentation)을 통해 학습 데이터를 보강합니다.
+- **API Documentation**: Developed and maintained using Postman, ensuring clear communication between frontend and backend components.  
 
-### **학습 데이터**
+---
 
-공개된 작물 이미지 데이터셋 또는 수집한 사용자 데이터셋을 사용할 수 있습니다. 학습 데이터셋은 다양한 작물의 이미지와 각 이미지에 해당하는 질병 정보를 포함해야 합니다.
+## **Deployment** 🚀  
+The project is hosted on AWS for high availability, leveraging cloud services for optimized performance and secure data handling.
 
-### **평가 방법**
+---
 
-모델의 분류 정확도(accuracy)를 평가 지표로 사용합니다. 학습 데이터셋과 검증 데이터셋으로 모델을 학습하고, 테스트 데이터셋을 사용해 모델의 성능을 평가합니다.
+### **Demo Video** 🎥  
+[Watch the Demo](#) (Link to a video showcasing the platform functionality)
 
-### **적용 방안**
+---
 
-작물 관련 웹 서비스 등에 적용하여 작물 재배자가 간편하게 작물 질병을 분류하고, 해결책을 얻을 수 있도록 돕습니다.
+For further details, explore the [full documentation](#). Contributions and feedback are welcome!
